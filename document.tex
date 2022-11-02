@@ -1,0 +1,82 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[left=3.00cm, right=2.00cm, top=2.00cm, bottom=2.00cm]{geometry}
+\usepackage[utf8]{vietnam}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\author{LHD}
+\newcommand{\nocontentsline}[3]{}
+\newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
+\author{LHD}
+
+\begin{document}
+	\begin{center}
+		BAN CƠ YẾU CHÍNH PHỦ\\
+		\textbf{HỌC VIỆN KỸ THUẬT MẬT MÃ}
+	\end{center}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.25\linewidth]{"Pics/Logo HV"}
+	\label{fig:logo-hv}
+\end{figure}
+
+\begin{center}
+	ĐỀ CƯƠNG CHUYÊN ĐỀ AN TOÀN HỆ THỐNG THÔNG TIN\\
+	\textbf{Nghiên cứu giải pháp đảm bảo an toàn cho Microservices trên Kubernetes}
+\end{center}
+\begin{flushright}
+	Ngành: An toàn thông tin
+\end{flushright}
+\bigskip
+\bigskip
+\begin{flushleft}
+	\textit{Sinh viên thực hiện:}\\
+	\textbf{Phương Văn Sơn}\\
+	Mã sinh viên: AT160258\\
+	\textbf{Lê Huy Dũng}\\
+	Mã sinh viên: AT160211
+\end{flushleft}
+
+	\tableofcontents
+	
+	\chapter*{\centering Lời cảm ơn}
+	\addcontentsline{toc}{chapter}{Lời cảm ơn}
+	Nhóm chúng em xin chân thành cảm ơn các thầy cô trường Học viện Kỹ thuật Mật mã nói chung, quý thầy cô của khoa An toàn thông tin nói riêng đã tận tình dạy bảo, truyền đạt kiến thức cho chúng em trong suốt quá trình học.\\
+	Kính gửi đến Thầy Nguyễn Mạnh Thắng lời cảm ơn chân thành và sâu sắc nhất, cảm ơn thầy đã tận tình theo sát, chỉ bảo và hướng dẫn cho nhóm em trong quá trình thực hiện đề tài này. Thầy không chỉ hướng dẫn chúng em những kiến thức chuyên ngành, mà còn giúp chúng em học thêm những kĩ năng mềm, tinh thần học hỏi, thái độ khi làm việc nhóm.\\
+	Trong quá trình tìm hiểu nhóm chúng em xin cảm ơn các bạn sinh viên đã góp ý, giúp đỡ và hỗ trợ nhóm em rất nhiều trong quá trình tìm hiểu và làm đề tài.\\
+	Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi những thiếu sót trong quá trình làm đề tài.Chúng em rất mong nhận được sự đóng góp ý kiến của quý thầy cô để đề tài của chúng em đạt được kết quả tốt hơn.\\
+	Chúng em xin chân thành cảm ơn!
+	\chapter*{Lời mở đầu}
+	\addcontentsline{toc}{chapter}{Lời mở đầu}
+	
+	
+	\chapter{Giới thiệu về công nghệ Container và kiến trúc Microservices}
+		\section{Giới thiệu về công nghệ Container}
+		\section{Giới thiệu về kiến trúc Microservices}
+		\section{Giới thiệu về Kubernetes}
+		\section{Một số vấn đề bảo mật Microservices trên Kubernetes}
+		\section*{Kết luận Chương 1}
+	
+	\chapter{Tổng quan về Istio}
+		\section{Tổng quan về Istio}
+			\subsection{Tổng quan về Service Mesh}
+			\subsection{Kiến trúc của Istio}
+		\subsection{Tổng quan về Envoy Proxy}
+		\section{Quản lý mạng giữa các Microservices với Istio}
+			\subsection{Tổng quan về Istio Ingress Gateway}
+			\subsection{Định tuyến trong Istio}
+			\subsection{Giải quyết các vấn đề về mạng trong Microservices}
+		\section{Giám sát các Microservices với Istio}
+			\subsection{Một số Metrics quan trọng của Istio}
+			\subsection{Giám sát các lưu lượng mạng qua Jaeger và Kiali}
+		\section{Bảo mật các Microservices bằng Istio}
+			\subsection{Xác thực giữa các Microservices với Istio}
+			\subsection{Phân quyền cho các Microservices với Istio}
+		\section*{Kết luận chương 2}
+	\chapter{Triển khai Istio trên Kubernetes}
+		\section{Mô hình triển khai}
+		\section{Kịch bản triển khai}
+		\section{Thực nghiệm}
+		\section{Kết luận}
+	
+\end{document}

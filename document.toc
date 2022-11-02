@@ -1,0 +1,27 @@
+\contentsline {chapter}{Lời cảm ơn}{3}{}%
+\contentsline {chapter}{Lời mở đầu}{4}{}%
+\contentsline {chapter}{\numberline {1}Giới thiệu về công nghệ Container và kiến trúc Microservices}{5}{}%
+\contentsline {section}{\numberline {1.1}Giới thiệu về công nghệ Container}{5}{}%
+\contentsline {section}{\numberline {1.2}Giới thiệu về kiến trúc Microservices}{5}{}%
+\contentsline {section}{\numberline {1.3}Giới thiệu về Kubernetes}{5}{}%
+\contentsline {section}{\numberline {1.4}Một số vấn đề bảo mật Microservices trên Kubernetes}{5}{}%
+\contentsline {chapter}{\numberline {2}Tổng quan về Istio}{6}{}%
+\contentsline {section}{\numberline {2.1}Tổng quan về Istio}{6}{}%
+\contentsline {subsection}{\numberline {2.1.1}Tổng quan về Service Mesh}{6}{}%
+\contentsline {subsection}{\numberline {2.1.2}Kiến trúc của Istio}{6}{}%
+\contentsline {subsection}{\numberline {2.1.3}Tổng quan về Envoy Proxy}{6}{}%
+\contentsline {section}{\numberline {2.2}Quản lý mạng giữa các Microservices với Istio}{6}{}%
+\contentsline {subsection}{\numberline {2.2.1}Tổng quan về Istio Ingress Gateway}{6}{}%
+\contentsline {subsection}{\numberline {2.2.2}Định tuyến trong Istio}{6}{}%
+\contentsline {subsection}{\numberline {2.2.3}Giải quyết các vấn đề về mạng trong Microservices}{6}{}%
+\contentsline {section}{\numberline {2.3}Giám sát các Microservices với Istio}{6}{}%
+\contentsline {subsection}{\numberline {2.3.1}Một số Metrics quan trọng của Istio}{6}{}%
+\contentsline {subsection}{\numberline {2.3.2}Giám sát các lưu lượng mạng qua Jaeger và Kiali}{6}{}%
+\contentsline {section}{\numberline {2.4}Bảo mật các Microservices bằng Istio}{6}{}%
+\contentsline {subsection}{\numberline {2.4.1}Xác thực giữa các Microservices với Istio}{6}{}%
+\contentsline {subsection}{\numberline {2.4.2}Phân quyền cho các Microservices với Istio}{6}{}%
+\contentsline {chapter}{\numberline {3}Triển khai Istio trên Kubernetes}{7}{}%
+\contentsline {section}{\numberline {3.1}Mô hình triển khai}{7}{}%
+\contentsline {section}{\numberline {3.2}Kịch bản triển khai}{7}{}%
+\contentsline {section}{\numberline {3.3}Thực nghiệm}{7}{}%
+\contentsline {section}{\numberline {3.4}Kết luận}{7}{}%
