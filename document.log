@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.10.24)  3 NOV 2022 00:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.10.24)  3 NOV 2022 16:21
 entering extended mode
  restricted \write18 enabled.
- file:line:error style messages enabled.
  %&-line parsing enabled.
-**d:/Tai-Lieu/Nam4-K1-22-23/Chuyen-de-an-toan-HTTT/Documents/Istio/document.tex
-(d:/Tai-Lieu/Nam4-K1-22-23/Chuyen-de-an-toan-HTTT/Documents/Istio/document.tex
+**document.tex
+(./document.tex
 LaTeX2e <2021-11-15> patch level 1
-L3 programming layer <2022-02-24> (c:/texlive/2022/texmf-dist/tex/latex/base/report.cls
+L3 programming layer <2022-02-24>
+(c:/texlive/2022/texmf-dist/tex/latex/base/report.cls
 Document Class: report 2021/10/04 v1.4n Standard LaTeX document class
 (c:/texlive/2022/texmf-dist/tex/latex/base/size12.clo
 File: size12.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
@@ -23,14 +23,18 @@ File: size12.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 \abovecaptionskip=\skip47
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
-) (c:/texlive/2022/texmf-dist/tex/latex/geometry/geometry.sty
+)
+(c:/texlive/2022/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
- (c:/texlive/2022/texmf-dist/tex/latex/graphics/keyval.sty
+
+(c:/texlive/2022/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks16
-) (c:/texlive/2022/texmf-dist/tex/generic/iftex/ifvtex.sty
+)
+(c:/texlive/2022/texmf-dist/tex/generic/iftex/ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
- (c:/texlive/2022/texmf-dist/tex/generic/iftex/iftex.sty
+
+(c:/texlive/2022/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2022/02/03 v1.0f TeX engine tests
 ))
 \Gm@cnth=\count194
@@ -45,17 +49,22 @@ Package: iftex 2022/02/03 v1.0f TeX engine tests
 \Gm@layouthoffset=\dimen145
 \Gm@layoutvoffset=\dimen146
 \Gm@dimlist=\toks17
-) (c:/texlive/2022/texmf-dist/tex/latex/vntex/vietnam.sty
+)
+(c:/texlive/2022/texmf-dist/tex/latex/vntex/vietnam.sty
 Package: vietnam 2009/07/12 v1.3 support for Vietnamese
- (c:/texlive/2022/texmf-dist/tex/latex/base/ifthen.sty
+
+(c:/texlive/2022/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2020/11/24 v1.1c Standard LaTeX ifthen package (DPC)
-) (c:/texlive/2022/texmf-dist/tex/latex/base/fontenc.sty
+)
+(c:/texlive/2022/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
- (c:/texlive/2022/texmf-dist/tex/latex/vntex/t5enc.def
+
+(c:/texlive/2022/texmf-dist/tex/latex/vntex/t5enc.def
 File: t5enc.def 2006/11/21 v1.4 Vietnamese T5 encoding
 Now handling font encoding T5 ...
 ... processing UTF-8 mapping file for font encoding T5
- (c:/texlive/2022/texmf-dist/tex/latex/vntex/t5enc.dfu
+
+(c:/texlive/2022/texmf-dist/tex/latex/vntex/t5enc.dfu
 File: t5enc.dfu 2006/08/19 v1.1 UTF8 support for Vietnamese
    defining Unicode char U+00AB (decimal 171)
    defining Unicode char U+00BB (decimal 187)
@@ -209,30 +218,38 @@ File: t5enc.dfu 2006/08/19 v1.1 UTF8 support for Vietnamese
    defining Unicode char U+203A (decimal 8250)
    defining Unicode char U+2423 (decimal 9251)
 ))
-LaTeX Font Info:    Trying to load font information for T5+cmr on input line 112.
- (c:/texlive/2022/texmf-dist/tex/latex/vntex/t5cmr.fd
+LaTeX Font Info:    Trying to load font information for T5+cmr on input line 11
+2.
+
+(c:/texlive/2022/texmf-dist/tex/latex/vntex/t5cmr.fd
 File: t5cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
-)) (c:/texlive/2022/texmf-dist/tex/latex/base/inputenc.sty
+))
+(c:/texlive/2022/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2021/02/14 v1.3d Input encoding file
 \inpenc@prehook=\toks18
 \inpenc@posthook=\toks19
-) (c:/texlive/2022/texmf-dist/tex/latex/vntex/vncaps.tex
+)
+(c:/texlive/2022/texmf-dist/tex/latex/vntex/vncaps.tex
 File: vncaps.tex 2006/06/07 v1.1 Captions in Vietnamese
-)) (c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsmath.sty
+))
+(c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2021/10/15 v2.17l AMS math features
 \@mathmargin=\skip49
 
 For additional information on amsmath, use the `?' option.
 (c:/texlive/2022/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2021/08/26 v2.01 AMS text
- (c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsgen.sty
+
+(c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks20
 \ex@=\dimen147
-)) (c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsbsy.sty
+))
+(c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 \pmbraise@=\dimen148
-) (c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsopn.sty
+)
+(c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2021/08/26 v2.02 operator names
 )
 \inf@bad=\count197
@@ -272,35 +289,44 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
 \mathdisplay@stack=\toks24
 LaTeX Info: Redefining \[ on input line 2938.
 LaTeX Info: Redefining \] on input line 2939.
-) (c:/texlive/2022/texmf-dist/tex/latex/amsfonts/amssymb.sty
+)
+(c:/texlive/2022/texmf-dist/tex/latex/amsfonts/amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
- (c:/texlive/2022/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+
+(c:/texlive/2022/texmf-dist/tex/latex/amsfonts/amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)) (c:/texlive/2022/texmf-dist/tex/latex/graphics/graphicx.sty
+))
+(c:/texlive/2022/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
- (c:/texlive/2022/texmf-dist/tex/latex/graphics/graphics.sty
+
+(c:/texlive/2022/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
- (c:/texlive/2022/texmf-dist/tex/latex/graphics/trig.sty
+
+(c:/texlive/2022/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
-) (c:/texlive/2022/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+)
+(c:/texlive/2022/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 107.
- (c:/texlive/2022/texmf-dist/tex/latex/graphics-def/pdftex.def
+
+(c:/texlive/2022/texmf-dist/tex/latex/graphics-def/pdftex.def
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen156
 \Gin@req@width=\dimen157
-) (c:/texlive/2022/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+)
+(c:/texlive/2022/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2022-02-07 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count275
 \l__pdf_internal_box=\box52
-) (./document.aux)
+)
+(./document.aux)
 \openout1 = `document.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
@@ -369,9 +395,12 @@ LaTeX Font Info:    ... okay on input line 12.
 \everyMPtoPDFconversion=\toks26
 ) (c:/texlive/2022/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
- (c:/texlive/2022/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(c:/texlive/2022/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
 ))
 <Pics/Logo HV.png, id=1, 609.77812pt x 607.51968pt>
 File: Pics/Logo HV.png Graphic file (type png)
@@ -380,13 +409,16 @@ Package pdftex.def Info: Pics/Logo HV.png  used on input line 19.
 (pdftex.def)             Requested size: 113.81102pt x 113.38126pt.
  [1
 
-{c:/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./Pics/Logo HV.png>] (./document.toc
+{c:/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./Pics/Logo HV.
+png>]
+(./document.toc
 LaTeX Font Info:    Trying to load font information for U+msa on input line 4.
  (c:/texlive/2022/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 4.
- (c:/texlive/2022/texmf-dist/tex/latex/amsfonts/umsb.fd
+
+(c:/texlive/2022/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ))
 \tf@toc=\write3
@@ -394,9 +426,44 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
  [2
 
-] [3
+]
+Underfull \hbox (badness 10000) in paragraph at lines 52--53
 
-] [4
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--55
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 56--57
+
+ []
+
+[3
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 63--64
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 65--66
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 67--68
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 69--70
+
+ []
+
+[4
 
 ]
 Ch\uhorn \ohorn ng 1.
@@ -412,15 +479,17 @@ Ch\uhorn \ohorn ng 3.
 
 ] (./document.aux) ) 
 Here is how much of TeX's memory you used:
- 3896 strings out of 478268
- 55454 string characters out of 5850344
+ 3895 strings out of 478268
+ 55261 string characters out of 5850344
  350803 words of memory out of 5000000
  22065 multiletter control sequences out of 15000+600000
  482541 words of font info for 55 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,6n,65p,546b,247s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<c:/texlive/2022/texmf-dist/fonts/type1/vntex/vnr/vnbx12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/vntex/vnr/vnr12.pfb><c:/texlive/2022/texmf-dist/fonts/type1/vntex/vnr/vnti12.pfb>
-Output written on document.pdf (7 pages, 196314 bytes).
+ 55i,6n,65p,838b,247s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/texlive/2022/texmf-dist/fonts/type1/vntex/vnr/vnbx12.pf
+b><c:/texlive/2022/texmf-dist/fonts/type1/vntex/vnr/vnr12.pfb><c:/texlive/2022/
+texmf-dist/fonts/type1/vntex/vnr/vnti12.pfb>
+Output written on document.pdf (7 pages, 199130 bytes).
 PDF statistics:
  46 PDF objects out of 1000 (max. 8388607)
  28 compressed objects within 1 object stream
