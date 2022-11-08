@@ -32,30 +32,42 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2.3}Ưu điểm của Microservices}{11}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2.4}Các nhược điểm của kiến trúc Microservice}{12}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2.5}Những yêu cầu bắt buộc khi phát triển phần mềm theo kiến trúc Microservice}{12}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {1.3}Giới thiệu về Kubernetes}{13}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {1.4}Một số vấn đề bảo mật Microservices trên Kubernetes}{13}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {2}Tổng quan về Istio}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.3}Giới thiệu về Kubernetes}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.1}Kiến trúc của Kubernetes}{13}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1.1}{\ignorespaces Kiến trúc của Kubernetes}}{13}{}\protected@file@percent }
+\newlabel{fig:kube-architecture}{{1.1}{13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.2}Tổng quan về Pod}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.3}Vòng đời của Pod}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.4}Quản lí pod bằng Workload trên Kubernetes}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.4}Một số vấn đề bảo mật kiến trúc Microservices}{16}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4.1}Càng nhiều microservices thì nguy cơ bị tấn công càng cao}{16}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4.2}Kiểm tra bảo mật phân tán có thể dẫn đến hiệu suất giảm}{16}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4.3}Sự phức tạp khi triển khai xác thực khởi động giữa các microservices}{16}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4.4}Khó theo dõi các request của các microservice}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4.5}Tính bất biến của container làm việc xác thực và chính sách kiểm soát truy cập của các dịch vụ khó khăn}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4.6}Kiến trúc đa ngôn ngữ đòi hỏi các developer phải có thêm nhiều kiến thức bảo mật hơn}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}Tổng quan về Istio}{19}{}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {2.1}Tổng quan về Istio}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}Tổng quan về Service Mesh}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.2}Kiến trúc của Istio}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.3}Tổng quan về Envoy Proxy}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2.2}Quản lý mạng giữa các Microservices với Istio}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}Tổng quan về Istio Ingress Gateway}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.2}Định tuyến trong Istio}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.3}Giải quyết các vấn đề về mạng trong Microservices}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2.3}Giám sát các Microservices với Istio}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}Một số Metrics quan trọng của Istio}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}Giám sát các lưu lượng mạng qua Jaeger và Kiali}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2.4}Bảo mật các Microservices bằng Istio}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}Xác thực giữa các Microservices với Istio}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Phân quyền cho các Microservices với Istio}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}Triển khai Istio trên Kubernetes}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Tổng quan về Istio}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}Tổng quan về Service Mesh}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.2}Kiến trúc của Istio}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.3}Tổng quan về Envoy Proxy}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}Quản lý mạng giữa các Microservices với Istio}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}Tổng quan về Istio Ingress Gateway}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.2}Định tuyến trong Istio}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.3}Giải quyết các vấn đề về mạng trong Microservices}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Giám sát các Microservices với Istio}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}Một số Metrics quan trọng của Istio}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}Giám sát các lưu lượng mạng qua Jaeger và Kiali}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}Bảo mật các Microservices bằng Istio}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}Xác thực giữa các Microservices với Istio}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Phân quyền cho các Microservices với Istio}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Triển khai Istio trên Kubernetes}{20}{}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}Mô hình triển khai}{15}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}Kịch bản triển khai}{15}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Thực nghiệm}{15}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.4}Kết luận}{15}{}\protected@file@percent }
-\gdef \@abspage@last{16}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Mô hình triển khai}{20}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Kịch bản triển khai}{20}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Thực nghiệm}{20}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Kết luận}{20}{}\protected@file@percent }
+\gdef \@abspage@last{21}
