@@ -8,7 +8,7 @@
 \contentsline {subsubsection}{Nhu cầu tài nguyên}{6}{}%
 \contentsline {subsection}{\numberline {1.1.3}Đặc điểm kỹ thuật của Container}{7}{}%
 \contentsline {subsection}{\numberline {1.1.4}Ứng dụng của Container trong thực tế}{7}{}%
-\contentsline {subsection}{\numberline {1.1.5}Về Containerization}{7}{}%
+\contentsline {subsection}{\numberline {1.1.5}Về Containerization}{8}{}%
 \contentsline {subsubsection}{Những lợi ích của Container}{8}{}%
 \contentsline {subsubsection}{Tốn rất ít dung lượng}{8}{}%
 \contentsline {subsubsection}{Các Container có tính linh hoạt}{8}{}%
@@ -20,25 +20,25 @@
 \contentsline {subsection}{\numberline {1.1.6}Những thách thức trong việc sử dụng Container}{9}{}%
 \contentsline {subsubsection}{Container còn tương đối mới}{9}{}%
 \contentsline {subsubsection}{Không phải dịch vụ nào cũng được hỗ trợ Container hóa}{9}{}%
-\contentsline {subsubsection}{Container yêu cầu nhiều thay đổi về quy trình và kỹ năng}{9}{}%
+\contentsline {subsubsection}{Container yêu cầu nhiều thay đổi về quy trình và kỹ năng}{10}{}%
 \contentsline {section}{\numberline {1.2}Giới thiệu về kiến trúc Microservices}{10}{}%
 \contentsline {subsection}{\numberline {1.2.1}Khái niệm Microservices}{10}{}%
 \contentsline {subsection}{\numberline {1.2.2}Những đặc điểm của Microservices}{11}{}%
 \contentsline {subsection}{\numberline {1.2.3}Ưu điểm của Microservices}{11}{}%
 \contentsline {subsection}{\numberline {1.2.4}Các nhược điểm của kiến trúc Microservice}{12}{}%
 \contentsline {subsection}{\numberline {1.2.5}Những yêu cầu bắt buộc khi phát triển phần mềm theo kiến trúc Microservice}{12}{}%
-\contentsline {section}{\numberline {1.3}Giới thiệu về Kubernetes}{12}{}%
+\contentsline {section}{\numberline {1.3}Giới thiệu về Kubernetes}{13}{}%
 \contentsline {subsection}{\numberline {1.3.1}Kiến trúc của Kubernetes}{13}{}%
 \contentsline {subsection}{\numberline {1.3.2}Tổng quan về Pod}{14}{}%
-\contentsline {subsection}{\numberline {1.3.3}Vòng đời của Pod}{14}{}%
+\contentsline {subsection}{\numberline {1.3.3}Vòng đời của Pod}{15}{}%
 \contentsline {subsection}{\numberline {1.3.4}Quản lí pod bằng Workload trên Kubernetes}{15}{}%
 \contentsline {section}{\numberline {1.4}Một số vấn đề bảo mật kiến trúc Microservices}{16}{}%
 \contentsline {subsection}{\numberline {1.4.1}Càng nhiều microservices thì nguy cơ bị tấn công càng cao}{16}{}%
 \contentsline {subsection}{\numberline {1.4.2}Kiểm tra bảo mật phân tán có thể dẫn đến hiệu suất giảm}{16}{}%
-\contentsline {subsection}{\numberline {1.4.3}Sự phức tạp khi triển khai xác thực khởi động giữa các microservices}{16}{}%
+\contentsline {subsection}{\numberline {1.4.3}Sự phức tạp khi triển khai xác thực khởi động giữa các microservices}{17}{}%
 \contentsline {subsection}{\numberline {1.4.4}Khó theo dõi các request của các microservice}{17}{}%
-\contentsline {subsection}{\numberline {1.4.5}Tính bất biến của container làm việc xác thực và chính sách kiểm soát truy cập của các dịch vụ khó khăn}{17}{}%
-\contentsline {subsection}{\numberline {1.4.6}Kiến trúc đa ngôn ngữ đòi hỏi các developer phải có thêm nhiều kiến thức bảo mật hơn}{17}{}%
+\contentsline {subsection}{\numberline {1.4.5}Tính bất biến của container làm việc xác thực và chính sách kiểm soát truy cập của các dịch vụ khó khăn}{18}{}%
+\contentsline {subsection}{\numberline {1.4.6}Kiến trúc đa ngôn ngữ đòi hỏi các developer phải có thêm nhiều kiến thức bảo mật hơn}{18}{}%
 \contentsline {chapter}{\numberline {2}Tổng quan về Istio}{19}{}%
 \contentsline {section}{\numberline {2.1}Tổng quan về Istio}{19}{}%
 \contentsline {subsection}{\numberline {2.1.1}Tổng quan về Service Mesh}{19}{}%
