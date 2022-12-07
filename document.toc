@@ -70,13 +70,13 @@
 \contentsline {subsubsection}{Cân bằng tải phía máy khách}{39}{section*.37}%
 \contentsline {subsubsection}{Cân bằng tải nhận biết cục bộ}{40}{section*.38}%
 \contentsline {section}{\numberline {2.3}Giám sát các Microservices với Istio}{41}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Một số Metrics quan trọng của Istio}{41}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Giám sát các lưu lượng mạng qua Jaeger và Kiali}{41}{subsection.2.3.2}%
-\contentsline {section}{\numberline {2.4}Bảo mật các Microservices bằng Istio}{41}{section.2.4}%
-\contentsline {subsection}{\numberline {2.4.1}Xác thực giữa các Microservices với Istio}{41}{subsection.2.4.1}%
-\contentsline {subsection}{\numberline {2.4.2}Phân quyền cho các Microservices với Istio}{41}{subsection.2.4.2}%
-\contentsline {chapter}{\numberline {3}Triển khai Istio trên Kubernetes}{42}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Mô hình triển khai}{42}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Kịch bản triển khai}{42}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Thực nghiệm}{42}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Kết luận}{42}{section.3.4}%
+\contentsline {subsection}{\numberline {2.3.1}Cách Istio Giám sát các lưu lượng mạng}{41}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Theo dõi phân tán với Istio}{43}{subsection.2.3.2}%
+\contentsline {section}{\numberline {2.4}Bảo mật các Microservices bằng Istio}{45}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Xác thực giữa các Microservices với Istio}{45}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Phân quyền cho các Microservices với Istio}{45}{subsection.2.4.2}%
+\contentsline {chapter}{\numberline {3}Triển khai Istio trên Kubernetes}{46}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Mô hình triển khai}{46}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Kịch bản triển khai}{46}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Thực nghiệm}{46}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Kết luận}{46}{section.3.4}%

@@ -1141,17 +1141,97 @@ Nhà khai thác và nhà phát triển dịch vụ có thể cấu hình thuật
 			\subsubsection{Cân bằng tải nhận biết cục bộ}
 \hspace{0.6cm}Một vai trò của control plane như với Istio là nắm được cấu trúc liên kết của dịch vụ và cách cấu trúc liên kết đó có thể phát triển. Một lợi thế của việc nắm được1 cấu trúc liên kết tổng thể của các dịch vụ trong lưới dịch vụ là tự động đưa ra các quyết định định tuyến và cân bằng tải dựa trên kinh nghiệm như vị trí của dịch vụ và dịch vụ ngang hàng.
 
-Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các tuyến và đưa ra các quyết định định tuyến dựa trên vị trí của một khối lượng công việc cụ thể. Ví dụ: Istio có thể xác định khu vực và vùng khả dụng trong đó một dịch vụ cụ thể được triển khai và ưu tiên cho các dịch vụ gần hơn. Nếu các dịch vụ phụ trợ được triển khai trên nhiều khu vực (tây Mỹ, đông Mỹ, tây Âu), thì có nhiều tùy chọn để gọi dịch vụ đó. Nếu một dịch vụ web được triển khai ở khu vực phía tây của chúng ta, chúng tôi muốn các cuộc gọi từ dịch vụ web đến dihcj vụ phụ trợ để duy trì cục bộ ở phía tây của chúng ta (xem hình 2.20). Nếu chúng ta đối xử bình đẳng với tất cả các điểm đầu cuối, chúng ta có thể sẽ phải chịu độ trễ cao cũng như chi phí khi chúng ta thực hiện chuyển vùng hoặc khu vực.
+Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các tuyến và đưa ra các quyết định định tuyến dựa trên vị trí của một khối lượng công việc cụ thể. Ví dụ: Istio có thể xác định khu vực và vùng khả dụng trong đó một dịch vụ cụ thể được triển khai và ưu tiên cho các dịch vụ gần hơn. Nếu các dịch vụ phụ trợ được triển khai trên nhiều khu vực (tây Mỹ, đông Mỹ, tây Âu), thì có nhiều tùy chọn để gọi dịch vụ đó. Nếu một dịch vụ web được triển khai ở khu vực phía tây của chúng ta, chúng tôi muốn các cuộc gọi từ dịch vụ web đến dịch vụ phụ trợ để duy trì cục bộ ở phía tây của chúng ta (xem hình 2.20). Nếu chúng ta đối xử bình đẳng với tất cả các điểm đầu cuối, chúng ta có thể sẽ phải chịu độ trễ cao cũng như chi phí khi chúng ta thực hiện chuyển vùng hoặc khu vực.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{Pics/2.2.3-p3}
 	\caption{Ưu tiên các dịch vụ cục bộ}
 	\label{fig:2.2.3-3}
 \end{figure}
-
-	\section{Giám sát các Microservices với Istio}
-		\subsection{Một số Metrics quan trọng của Istio}
-		\subsection{Giám sát các lưu lượng mạng qua Jaeger và Kiali}
+\newpage
+\section{Giám sát các Microservices với Istio}
+	{\hspace{0.6cm}Hệ thống giám sát dùng để thu thập thông tin về phần cứng và phần mềm của một hệ thống. Hệ thống giám sát có thể thu thập từ trạng thái của của server (CPU, memory, network, …) cho đến những thông tin chi tiết về cách server xử lý request đến từ người dùng (số lượng requests/s, thời gian server xử lý requests, …), hoặc là cái file nhật kí của hệ thống hoặc ứng dụng.\\
+	
+	Một hệ thống giám sẽ giúp các quản có một cái nhìn dễ dàng về chất lượng và những vấn đề xảy ra với sản phẩm. Nó sẽ tự động cảnh báo cho chúng ta ngay khi phát hiện ra điều bất thường. Bây giờ, thay vì được người dùng thông báo rằng server gặp trục trặc, chúng ta sẽ sớm phát hiện và giải quyết trước khi người dùng nhận ra. Hơn nữa, đối với các hệ thống đủ lớn và phức tạp, hệ thống giám sát còn giúp chúng ta biết được những thành phần nào hay gặp sự cố để có thể tập trung cải thiện chất lượng.
+		\subsection{Cách Istio Giám sát các lưu lượng mạng}
+	{\hspace{0.6cm}Istio ở một vị trí đặc biệt để giúp một hệ thống giám sát có thể lấy dữ liệu của Istio proxy là Envoy, và Envoy proxy đứng giữa đường truyền của các service. Thông qua proxy dịch vụ Envoy, Istio có thể nắm bắt các chỉ số quan trọng liên quan đến xử lý yêu cầu và tương tác dịch vụ, chẳng hạn như số lượng request mỗi giây, thời gian thực hiện request, số lượng requests không thành công mà và nhiều thông tin khác.\\		
+	
+	Istio đi kèm với một số công cụ mẫu sẵn dùng như Prometheus, Grafana và Kiali, có thể giúp các quản trị viên dễ dàng giám sát các microservice một cách tập trung và có thể vẽ các biểu đồ cho các chỉ số của microserivces và làm quản trị viên dễ dàng đánh giá trạng thái của các microservice.
+	
+	Envoy có thể giữ một tập hợp lớn các số liệu về kết nối, yêu cầu và thời gian chạy mà chúng ta có thể sử dụng để tạo thành một bức tranh về tình trạng mạng và giao tiếp của dịch vụ. Chúng ta có thể sử dụng câu lệnh:
+	\begin{lstlisting}
+		$ kubectl exec -it deploy/webapp -c istio-proxy \
+		-- curl localhost:15000/stats
+	\end{lstlisting}
+	Và chúng ta có thể thấy rất nhiều các chỉ số mà envoy proxy cung cấp.Đối với lưu lượng HTTP, HTTP/2 và GRPC, Istio tạo các chỉ số sau:
+	\begin{itemize}				
+		\item istio\_requests\_total: Đây là bộ đếm được tăng lên cho mọi yêu cầu được xử lý bởi proxy Istio.
+		\item istio\_request\_duratio\_milliseconds: Là thời gian Istio proxy xử lý một request.
+		\item  istio\_request\_bytes: tổng số byte của HTTP request
+		\item  istio\_response\_bytes: tổng số byte của HTTP response
+		\item  istio\_request\_messages\_total: Đây là bộ đếm tăng dần cho mỗi tin nhắn gRPC được gửi từ máy khách.
+		\item istio\_response\_messages\_total: Đây là bộ đếm tăng dần cho mỗi tin nhắn gRPC được gửi từ server.
+	\end{itemize}
+	Đối với lưu lượng TCP, Istio tạo các chỉ số sau:
+	\begin{itemize}				
+		\item istio\_tcp\_sent\_bytes\_total: Đây là bộ đếm đo kích thước của tổng số byte được gửi trong quá trình phản hồi trong trường hợp kết nối TCP.
+		\item istio\_tcp\_received\_bytes\_total: Đây là bộ đếm đo kích thước của tổng số byte nhận được trong khi yêu cầu trong trường hợp kết nối TCP.
+		\item istio\_tcp\_connections\_opened\_total: Đây là bộ đếm được tăng lên cho mỗi kết nối được mở.
+		\item istio\_tcp\_connections\_closed\_total: Đây là bộ đếm được tăng lên cho mọi kết nối đã đóng.
+	\end{itemize}
+	Từ các chỉ số được Envoy cung cấp các hệ thống giám sát như promethues có thể lấy các chỉ số này về và Grafana sẽ cung lấy các chỉ số này từ promethues và vẽ ra các biểu đồ cho quản trị viên có thể quan sát các 
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{Pics/2.3.1-p1}
+		\caption{Mô hình proxy kết hợp với các hệ thống quản lý}
+		\label{fig:2}
+	
+\end{figure}
+\pagebreak
+	\subsection{Theo dõi phân tán với Istio}
+		{\hspace{0.6cm}Khi xây dựng một ứng dụng theo kiến trúc microservice, chúng ta tạo ra một mạng lưới phân tán của các microserivce để chúng hoạt động như một ứng dụng bình thường, như được minh họa hình 2.3.2. Khi có sự cố bắt đầu xảy ra khi các mircrosevice gọi nhau, điều quan trọng là phải hiểu điều gì đang xảy ra để có thể chẩn đoán và khắc phục nhanh chóng. Trong các phần trước, chúng ta đã thấy cách Istio có thể giúp thu thập các số liệu và phép đo từ xa liên quan đến kết nối mạng thay mặt cho ứng dụng. Theo dõi phân tán giúp các quản trị viên có thể chẩn đoán microservice nào đang bị lỗi.\\
+			
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.3\linewidth]{Pics/Untitled}
+			\caption{Mô hình để thực hiện một request cần đi qua nhiều microservice.}
+			\label{fig:untitled}
+		\end{figure}
+	
+		Khi có request bị lỗi khi đi qua nhiều các microservice, quản trị viên phải hiểu chuyện gì đang xảy ra và chuẩn đoán lỗi để có thể nhanh chóng khắc phục. Trong phần trước, Istio đã thu thập các chỉ số về mạng cho các microserivce. Ở phần này, Istio hỗ trợ việc theo dõi phân phân tán để chuẩn đoán khi các request bị lỗi khi đi qua các microservice và tìm xem request bị lỗi ở microservice nào.\\
+		
+		Theo dõi phân tán cung cấp thông tin chi tiết về các thành phần của hệ thống phân khi phục vụ các request. Nó được giới thiệu bởi bài báo Google Dapper (“Dapper, a LargeScale Distributed Systems Tracing Infrastructure” 2010, https://research.google/pubs/pub36356) 
+		và nói về việc đánh nhãn các các request bằng các ID tương ứng với mỗi request đại diện cho các cuộc gọi từ dịch vụ đến dịch vụ và ID theo dõi đại diện cho một request cụ thể khi các service gọi lẫn nhau. Istio proxy có thể thêm các metadata khi các request đi qua chúng.\\
+		
+		OpenTelemetry là một framework bao gồm OpenTracing, OpenTracing là một API không phụ thuộc vào nhà cung cấp để giúp các kĩ sư phần mềm dễ dàng đưa công cụ theo dõi vào mã nguồn của họ. Theo dõi phân tán, một phần, dựa vào các kĩ sư phần mềm viết code của họ và đánh nhãn các request khi chúng được ứng dụng xử lý và đưa ra các request mới cho các hệ thống khác. Công cụ theo dõi giúp tổng hợp bức tranh toàn thể về luồng request, có thể được sử dụng để xác định các nguồn bị lỗi trong kiến trúc microservice của ứng dụng.\\
+		
+		Ở dạng đơn giản nhất, theo dõi phân tán với OpenTracing bao gồm các ứng dụng tạo Span, chia sẻ các Span đó với công cụ OpenTracing và chia sẻ thông tin của Span đó tới bất kỳ dịch vụ nào mà nó gọi sau đó. Span là một tập hợp dữ liệu đại diện cho một đơn vị công việc trong một dịch vụ hoặc các thành phần liên quan. Dữ liệu này bao gồm những thứ như thời gian bắt đầu hoạt động, thời gian kết thúc, tên hoạt động cũng như một tập hợp các tag và nhật ký.\\
+		
+		Các dịch vụ ngược tạo một Span lấy một số thông tin của request, gửi span đó đến công cụ OpenTracing và tiếp tục chia sẻ thông tin của Span đó tới bất kỳ dịch vụ nào mà nó gọi sau đó. Sử dụng các Span này và các trace, trace được tạo ra từ công cụ OpenTracing được tạo ra từ mối quan hệ giữa các dịch vụ hiển thị hướng, thời gian và thông tin gỡ lỗi khác. Span có ID riêng và một trace ID. Các ID này được sử dụng để tương quan và dự kiến sẽ được phổ biến giữa các dịch vụ.
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=1\linewidth]{Pics/2.3.2-p2}
+			\caption{Mô hình span và trace}
+			\label{fig:2}
+		\end{figure}
+		
+		Istio có thể xử lý việc gửi các span tới công cụ theo dõi phân tán, vì vậy bạn không cần các thư viện dành riêng cho ngôn ngữ và cấu hình dành riêng cho ứng dụng để thực hiện việc này. Khi một request đi qua proxy, một trace mới sẽ được bắt đầu nếu không có request nào đang diễn ra, đồng thời thời gian bắt đầu và kết thúc của request được ghi lại như một phần của Span. Istio thêm các HTTP header, được gọi là Zipkin tracing header, vào request có thể được sử dụng để tương quan các đối tượng Span tiếp theo với Trace. Nếu một request đến với một dịch vụ và proxy Istio nhận ra các header, thì proxy sẽ coi đó là Trace đang diễn ra và không cố gắng tạo một Trace mới. Các Zipkin tracing header sau đây được sử dụng bởi Istio và chức năng theo dõi phân tán:
+		
+		\begin{itemize}				
+			\item x-request-id
+			\item x-b3-traceid
+			\item x-b3-spanid
+			\item x-b3-parentspanid
+			\item x-b3-sampled
+			\item x-b3-flags
+			\item x-ot-span-context
+		\end{itemize}
+		
+		Để chức năng theo dõi phân tán do Istio cung cấp hoạt động, mỗi ứng dụng cần thêm các header này tới bất kỳ request nào mà gọi đi nào mà nó thực hiện. Lý do là Istio không thể biết đâu là request đi và đâu là request đến.
+		
+\pagebreak		
 	\section{Bảo mật các Microservices bằng Istio}
 		\subsection{Xác thực giữa các Microservices với Istio}
 		\subsection{Phân quyền cho các Microservices với Istio}

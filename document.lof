@@ -21,4 +21,7 @@
 \contentsline {figure}{\numberline {2.18}{\ignorespaces Dịch vụ A, dịch vụ gọi B, có thể đang gặp sự cố.}}{39}{figure.2.18}%
 \contentsline {figure}{\numberline {2.19}{\ignorespaces Proxy web đơn giản dùng các điểm đầu cuối phụ trợ.}}{40}{figure.2.19}%
 \contentsline {figure}{\numberline {2.20}{\ignorespaces Ưu tiên các dịch vụ cục bộ}}{41}{figure.2.20}%
+\contentsline {figure}{\numberline {2.21}{\ignorespaces Mô hình proxy kết hợp với các hệ thống quản lý}}{42}{figure.2.21}%
+\contentsline {figure}{\numberline {2.22}{\ignorespaces Mô hình để thực hiện một request cần đi qua nhiều microservice.}}{43}{figure.2.22}%
+\contentsline {figure}{\numberline {2.23}{\ignorespaces Mô hình span và trace}}{44}{figure.2.23}%
 \addvspace {10\p@ }
