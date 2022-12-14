@@ -1190,7 +1190,7 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 \end{figure}
 \pagebreak
 	\subsection{Theo dõi phân tán với Istio}
-		{\hspace{0.6cm}Khi xây dựng một ứng dụng theo kiến trúc microservice, chúng ta tạo ra một mạng lưới phân tán của các microserivce để chúng hoạt động như một ứng dụng bình thường, như được minh họa hình 2.3.2. Khi có sự cố bắt đầu xảy ra khi các mircrosevice gọi nhau, điều quan trọng là phải hiểu điều gì đang xảy ra để có thể chẩn đoán và khắc phục nhanh chóng. Trong các phần trước, chúng ta đã thấy cách Istio có thể giúp thu thập các số liệu và phép đo từ xa liên quan đến kết nối mạng thay mặt cho ứng dụng. Theo dõi phân tán giúp các quản trị viên có thể chẩn đoán microservice nào đang bị lỗi.\\
+		{\hspace{0.6cm}Khi xây dựng một ứng dụng theo kiến trúc microservice, chúng ta tạo ra một mạng lưới phân tán của các microserivce để chúng hoạt động như một ứng dụng bình thường, như được minh họa hình 2.3.2. Khi có sự cố bắt đầu xảy ra khi các mircrosevice gọi nhau, điều quan trọng là phải hiểu điều gì đang xảy ra để có thể chẩn đoán và khắc phục nhanh chóng. Trong các phần trước, chúng ta đã thấy cách Istio có thể giúp thu thập các số liệu và phép đo từ xa liên quan đến kết nối mạng thay mặt cho ứng dụng. Theo dõi phân tán giúp các quản trị viên có thể chẩn đoán microservice nào đang bị lỗi.}\\
 			
 		\begin{figure}[h]
 			\centering
@@ -1231,10 +1231,118 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 		
 		Để chức năng theo dõi phân tán do Istio cung cấp hoạt động, mỗi ứng dụng cần thêm các header này tới bất kỳ request nào mà gọi đi nào mà nó thực hiện. Lý do là Istio không thể biết đâu là request đi và đâu là request đến.
 		
-\pagebreak		
 	\section{Bảo mật các Microservices bằng Istio}
-		\subsection{Xác thực giữa các Microservices với Istio}
+		{\hspace{0.6cm}Bảo mật ứng dụng bao gồm tất cả các hoạt động góp phần bảo vệ dữ liệu ứng dụng có giá trị quan trọng và không bị xâm phạm, đánh cắp hoặc truy cập trái phép bởi người dùng trái phép. Để bảo vệ dữ liệu người dùng, các quản trị viên cần:}
+		\begin{itemize}
+			\item Xác thực và ủy quyền của người dùng trước khi cho phép truy cập vào tài nguyên.
+			\item Mã hóa dữ liệu khi truyền để ngăn không cho dữ liệu bị nghe trộm trong khi truyền qua nhiều thiết bị mạng để tiếp cận khách hàng yêu cầu dữ liệu.
+		\end{itemize}
+		
+		\subsection{Bảo mật trong kiến trúc monoliths và kiến trúc microservices}
+			{\hspace{0.6cm}Cả microservice và monolith đều cần triển khai xác thực và ủy quyền giữa người dùng cuối và dịch vụ với dịch vụ. Tuy nhiên, các microsevice có nhiều kết nối hơn và nhiều request di chuyển trong mạng. Ngược lại, monolith có ít kết nối hơn và thường được chạy trên cơ sở hạ tầng tĩnh hơn như máy ảo hoặc máy vật lý. Việc chạy trong cơ sở hạ tầng tĩnh làm cho địa chỉ IP trở thành một nguồn nhận dạng tốt và vì lý do đó, chúng thường được sử dụng trong các chứng chỉ để xác thực (cũng như các quy tắc tường lửa mạng).}
+			
+			Mặt khác, các microservice dễ dàng phát triển thành hàng trăm, hàng nghìn dịch vụ, khiến việc vận hành các dịch vụ trong môi trường tĩnh rất khó quản trị. Vì lý do này, các doanh nghiệp thường sử dụng dịch vụ điện toán đám mấy (ECS, EKS, AKS, ...) hoăc là các container orchestration (Docker Swarm, Nomad, Kubernetes, ...), nơi các dịch vụ được lên lịch cho nhiều máy chủ và các microserice thường có vòng đời ngắn. Điều này làm cho các phương pháp truyền thống như sử dụng địa chỉ IP trở thành nguồn nhận dạng không đáng tin cậy. Tệ hơn nữa, các dịch vụ không nhất thiết phải chạy trong cùng một mạng và có thể trải rộng trên các nhà cung cấp dịch vụ điện toán đám mây khác nhau và thậm chí chạy các cụm máy vật lý.
+			
+			Để giải quyết những thách thức này và cung cấp danh tính cho các microserice, Istio sử dụng đặc tả SPIFFE. SPIFFE là một tập hợp các tiêu chuẩn nguồn mở để cung cấp danh tính cho khối lượng công việc trong các môi trường không đồng nhất và năng động cao.
+			
+			SPIFFE là một URI tuân thủ RFC 3986 được tạo ở định dạng spiffe://trust-domain/path, trong đó:
+			\begin{itemize}
+				\item trust-domain đại diện cho nhà phát hành danh tính, chẳng hạn như một cá nhân hoặc tổ chức.
+				\item path xác định duy nhất một khối lượng công việc trong trust-domain
+			\end{itemize}
+		
+			Chi tiết về cách đường dẫn xác định khối lượng công việc được quyết định bởi SPIFFE. Istio điền vào đường dẫn này bằng cách sử dụng tài khoản dịch vụ mà theo đó một khối lượng công việc cụ thể sẽ chạy. Danh tính SPIFFE này được mã hóa trong chứng chỉ X.509, còn được gọi là Tài liệu nhận dạng có thể xác minh SPIFFE (SPIFFE Verifiable Identity Document), mà Istio control plane tạo ra cho khối lượng công việc. Các chứng chỉ này sau đó được sử dụng để mã hóa các đường truyền khi các dịch vụ kết nối với nhau.
+		
+		\subsection{Cách Istio bảo mật các microsevice}
+			{\hspace{0.6cm}Istio có ba thành phần sau dùng để cấu hình Istio proxy để thực hiện các chức năng bảo mật:}
+			\begin{itemize}
+				\item Tài nguyên PeerAuthentication định cấu hình proxy để xác thực lưu lượng dịch vụ đến dịch vụ. Khi xác thực thành công, proxy sẽ trích xuất thông tin được mã hóa trong chứng chỉ và cung cấp thông tin đó để cho phép gửi các request.
+				\item Tài nguyên RequestAuthentication định cấu hình proxy để xác thực thông tin đăng nhập của người dùng cuối đối với các máy chủ đã cấp chúng. Khi xác thực thành công, nó cũng trích xuất thông tin được mã hóa trong thông tin xác thực và cung cấp thông tin đó để cho phép gửi các request.
+				\item Tài nguyên AuthorizationPolicy định cấu hình proxy để cho phép hoặc từ chối các thực hiện các request bằng cách đưa ra quyết định dựa trên dữ liệu được trích xuất bởi hai tài nguyên trước đó.
+			\end{itemize}
+		
+		\subsection{Xác thực và mã hóa đường truyền giữa các Microservices với Istio}
+			{\hspace{0.6cm}Theo mặc định, lưu lượng truy cập giữa các dịch vụ đã chèn proxy sidecar được mã hóa và xác thực lẫn nhau. Việc có một quy trình tự động phát hành và tạo mới chứng chỉ là rất quan trọng bởi vì theo lịch sử, quy trình này rất dễ xảy ra lỗi khi được quản lý bởi con người. Điều này gây ra những lần ngừng hoạt động không cần thiết và tốn kém mà lẽ ra có thể tránh được bằng cách sử dụng quy trình tự động, chẳng hạn như quy trình do Istio triển khai. Hình dưới đây cho thấy cách các dịch vụ sử dụng chứng chỉ do Istio control plane khiển cấp để xác thực lẫn nhau và mã hóa lưu lượng theo mặc định.}
+			
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.7\linewidth]{Pics/2.4.3-p1}
+				\caption{Các microservice xác thực lẫn nhau bằng cách sử dụng chứng chỉ SVID do cơ quan cấp chứng chỉ Istio cấp }
+				\label{fig:2}
+			\end{figure}
+			
+			Tài nguyên PeerAuthentication cấu hình các microserivce bắt buộc sử dụng mTLS hoặc chấp nhận các đường truyền không được mã hóa, có hai chế độ xác thực chính là STRICT (bắt buộc sử dụng mTLS) hoặc PERMISSIVE (có thể sử dụng mTLS hoặc không dùng mTLS). Và chế độ xác thực này có thể được cấu hình với nhiều phạm vi khác nhau như:
+			
+			\begin{itemize}
+				\item Áp dụng chính sách xác thực của PeerAuthentication lên tất cả các microservice.
+				\item Áp dụng chính sách xác thực của PeerAuthentication lên các microservice trên một namespace được chỉ định
+				\item Áp dụng chính sách xác thực của PeerAuthentication lên các microservice được chỉ định cụ thể
+			\end{itemize}
+			 
+			
 		\subsection{Phân quyền cho các Microservices với Istio}
+			{\hspace{0.6cm}Ủy quyền là quy trình xác định xem chủ thể được xác thực có được phép thực hiện một thao tác hay không, chẳng hạn như truy cập, chỉnh sửa hoặc xóa tài nguyên. Các chính sách được hình thành cùng với chủ thể được xác thực (“ai”) và ủy quyền (“cái gì”) và xác định ai có thể làm gì.}
+			
+			Istio cung cấp tài nguyên AuthorizationPolicy, là API khai báo để xác định các chính sách truy cập trên tất cả các microsevice, hoặc một số microservice trên một namespace cụ thể, hoặc một microservice cụ thể.
+			
+			Proxy dịch vụ được triển khai với mỗi dịch vụ là công cụ ủy quyền hoặc thực thi vì nó chứa tất cả các chính sách để xác định liệu một yêu cầu nên bị từ chối hay cho phép. Do đó, kiểm soát truy cập trong Istio cực kỳ hiệu quả vì các quyết định được đưa ra trực tiếp trong proxy. Proxy được định cấu hình với tài nguyên AuthorizationPolicy, tài nguyên này xác định các chính sách. Ví dụ:
+			
+			\begin{lstlisting}
+			apiVersion: "security.istio.io/v1beta1"
+			kind: "AuthorizationPolicy"
+			metadata:
+			  name: "allow-catalog-requests-in-web-app"
+			  namespace: istioinaction
+			spec:
+			  selector:
+			    matchLabels:
+				  app: webapp
+			  action: ALLOW
+			  rules:
+			  - to:
+				- operation:
+				    paths: ["/api/catalog*"]
+			\end{lstlisting}
+			
+			Khi istiod khi nhận được AuthorizationPolicy mới đã được áp dụng cho cụm, nó sẽ xử lý và cập nhật các luật của AuthorizationPolicy vào các proxy của các microservice.
+			
+			AuthorizationPolicy cung cấp ba trường để định cấu hình và xác định chính sách:
+			
+			\begin{itemize}
+				\item Trường selector xác định tập hợp các tài nguyên được áp dụng luật.
+				\item Trường action có ba lựa chọn là ALLOW (cho phép), DENY (từ chối), hoặc là CUSTOM (tùy chỉnh). Các hành động sẽ chỉ được áp dụng nếu một trong các thành phần của trường rules giống với request.
+				\item Trường rules xác định danh sách quy tắc xác request có bị vi phạm với quy tắc không và từ đó sẽ kích hoạt các chính sách như cho phép(ALLOW) hoặc chặn (DENY).
+			\end{itemize}
+		
+			Trường rules còn có nhiều trường khác như:
+			\begin{enumerate}
+				\item[$\blacksquare$] Trường from chỉ định nguồn của yêu cầu, có thể là một trong các loại sau:
+				\begin{itemize}
+					\item principals: Một danh sách các định danh nguồn (SPIFFE ID)
+					\item namespaces: Một danh sách các namespace.
+					\item ipBlocks: Một địa chỉ IP hoặc một dải địa chỉ IP.
+				\end{itemize}
+				\item[$\blacksquare$] Trường to chỉ định các hoạt động của request, chẳng hạn như máy chủ hoặc phương thức của request.
+				\item[$\blacksquare$] Trường when chỉ định danh sách các điều kiện cần phải đáp ứng sau khi quy tắc đã khớp.
+			\end{enumerate}
+			
+			Sự phức tạp của các chính sách phát sinh khi nhiều chính sách được áp dụng cho các microservice và rất khó để phân biệt luật nào được ưu tiên trước. Nhiều giải pháp sử dụng trường ưu tiên để xác định quyền nào được ưu tiên hơn. Istio sử dụng một cách tiếp cận khác để đánh giá các chính sách:
+			
+			\begin{enumerate}
+				\item[$\blacksquare$] CUSTOM được ưu tiên đầu tiên.
+				\item[$\blacksquare$] DENY được ưu tiên thứ hai nếu không có CUSTOM.
+				\item[$\blacksquare$] ALLOW được ưu tiên tiếp theo.
+				\item[$\blacksquare$] Nếu có chính sách áp dụng lên tất cả các microservice hoặc không có chính sách nào áp dụng lên tất cả các microservice thì sẽ xảy ra hai trường hợp sau:
+				\begin{itemize}
+					\item Nếu có chính sách áp dụng lên tất cả các microservice, thì chính sách đó quyết định request đó dược chấp nhận hay không.
+					\item Nếu không chính sách áp dụng lên tất cả các microservice, thì request sẽ:
+					\begin{enumerate}
+						\item[a.] được cho phép nếu không có chính sách ALLOW nào.
+						\item[b.] sẽ từ chối nếu có chính sách ALLOW nhưng request không khớp với luật của ALLOW.
+					\end{enumerate}
+				\end{itemize}
+			\end{enumerate}
+			
 	\section*{Kết luận chương 2}
 \chapter{Triển khai Istio trên Kubernetes}
 	\section{Mô hình triển khai}
