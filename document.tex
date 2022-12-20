@@ -714,396 +714,36 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 			\label{fig:2.2.1-2}
 		\end{figure}
 		
-		Nếu ta muốn xác minh rằng proxy dịch vụ Istio (proxy Envoy) thực sự đang chạy trong Istio gateway, ta có thể chạy thứ một số câu lệnh như sau:
-		\shellcmd{kubectl -n istio-system exec \ \\
-			deploy/istio-ingressgateway -- ps}
-		\begin{verbatim}
-			PID TTY	TIME CMD
-			1 ?	00:00:04 pilot-agent
-			14 ?	00:00:24 envoy
-			44 ?	00:00:00 ps
-		\end{verbatim}
 	
 		Ta sẽ thấy đầu ra dưới dạng đầu ra một danh sách, hiển thị dòng lệnh dịch vụ proxy Istio với các pilot-agent và envoy dưới dạng các tiến trình đang chạy. Tiến trình pilot- agent ban đầu định cấu hình và khởi động proxy Envoy và nó cũng triển khai proxy DNS.
 		
 		Để cấu hình gateway của Istio nhằm cho phép lưu lượng truy cập vào cụm và thông qua lưới dịch vụ, chúng ta sẽ bắt đầu bằng cách khám phá hai tài nguyên của Istio: Cổng và Dịch vụ ảo. Cả hai đều là nền tảng để có được lưu lượng truy cập trong Istio, nhưng chúng ta sẽ chỉ xem xét chúng trong bối cảnh cho phép lưu lượng truy cập vào cụm.
 		
-			\subsubsection{Chỉ định tài nguyên của cổng}
 		
-		\hspace{0.6cm}Để cấu hình gateway trong Istio, chúng ta sử dụng tài nguyên Cổng và chỉ định cổng nào chúng ta muốn mở và máy chủ ảo nào cho phép các cổng đó. Ví dụ về cấu hình tài nguyên Cổng mà chúng ta sẽ khám phá khá đơn giản và hiển thị một cổng HTTP trên cổng 80 chấp nhận lưu lượng dành cho máy chủ ảo webapp.istioinaction.io như dưới hình 2.12.
-		
-		\begin{figure}[h]
-			\centering
-			\includegraphics[width=0.7\linewidth]{Pics/2.2.1-p3}
-			\caption{Cầu hình cài nguyên của gateway}
-			\label{fig:2.2.1-3}
-		\end{figure}
-		
-		Gateway ở đây cấu hình Envoy để nghe trên cổng 80 và cho phép lưu lượng HTTP. Hãy bắt đầu với việc tạo các cấu hình tài nguyên và theo dõi quá trình hoạt đông. Trong thư mục gốc của mã nguồn ở ví dụ này là tệp ch4/coolstore-gw.yaml. Để tạo tệp cấu hình, ta chạy câu lệnh như sau:
-		\shellcmd{kubectl -n istioinaction apply -f ch4/coolstore-gw.yaml}
-		\newpage
-		Ta kiểm tra xem liệu cài đặt của chúng ta có hiệu lực hay không bằng cách dùng câu lệnh:
-		\shellcmd{istioctl -n istio-system proxy-config \ \\ listener deploy/istio-ingressgateway}
-		
-		\begin{verbatim}
-			ADDRESS PORT MATCH DESTINATION
-			0.0.0.0 8080 ALL	Route: http.80
-			0.0.0.0 15021 ALL	Inline Route: /healthz/ready*
-			0.0.0.0 15090 ALL	Inline Route: /stats/prometheus*
-		\end{verbatim}
-	
-		Nếu bạn thấy đầu ra này, thì bạn đã hiển thị đúng cổng HTTP (cổng 80). Nhìn vào các tuyến đường cho các dịch vụ ảo, chúng ta thấy rằng cổng hiện không có bất kỳ tuyến đường nào (ta có thể thấy một tuyến đường khác cho Prometheus, nhưng hiện tại ta có thể bỏ qua nó):
-		
-		\textbf{\color{blue}Note }Nếu không sử dụng Docker Desktop, tên của listener (trong trường hợp này là “http.8080”) có thể khác. Hãy cập nhật lệnh dưới đây cho phù hợp.
-		
-\begin{lstlisting}
-$ istioctl proxy-config route deploy/istio-ingressgateway \
--o json --name http.8080 -n istio-system
-
-[
-{
-	"name": "http.8080", "virtualHosts": [
-	{
-		"name": "blackhole:80", "domains": [
-		"*"
-		],
-	}
-	],
-	"validateClusters": false
-}
-]		
-\end{lstlisting}
-
-Ở đây listener bị ràng buộc với một tuyến đường mặc định dẫn tới một lỗ đen đưa mọi thứ tới HTTP 404. Trong phần tiếp theo, ta thiết lập một máy chủ ảo để định tuyến lưu lượng truy cập từ cổng 80 đến một dịch vụ trong mạng lưới dịch vụ.
-
-Trước khi tiếp tục, có một điểm quan trọng cuối cùng cần được thực hiện. Pod mà gateway chạy trên nó, cho dù đó là gateway vào hệ thống mặc định hay gateway tùy chỉnh của riêng bạn, đều phải có khả năng lắng nghe trên một cổng hoặc IP được hiển thị bên ngoài cụm. Ví dụ: trên Docker Desktop cục bộ trong mô hình mà đang sử dụng cho các ví dụ này, gateway đang lắng nghe trên cổng 80. Nếu bạn đang triển khai trên một dịch vụ đám mây như Google Container Engine (GKE), hãy đảm bảo rằng bạn sử dụng một dịch vụ loại LoadBalancer, nhận địa chỉ IP có thể định tuyến bên ngoài. Bạn có thể tìm thêm thông tin tại \url{https://istio.io/v1.13/docs/tasks/traffic-management/ingress/}.
-
-Ngoài ra, gateway mặc định của hệ thống không cần có cập đặc quyền để mở bất kỳ cổng nào vì nó không lắng nghe trên bất kỳ cổng hệ thống nào (80 cho HTTP). istio- ingressgateway theo mặc định lắng nghe trên cổng 8080; tuy nhiên, bất kỳ dịch vụ hoặc bộ cân bằng tải nào bạn sử dụng để hiển thị gateway đều là cổng thực tế. Trong các ví dụ ở đây với Docker Desktop, chúng hiển thị dịch vụ trên cổng 80.
-			
-			\subsubsection{Định tuyến gateway với các dịch vụ ảo}
-\hspace{0.6cm}Cho đến bây giờ, tất cả những gì ta đã làm là cấu hình Istio gateway để hiển thị một cổng cụ thể, cho phép một giao thức cụ thể trên cổng đó và xác định các máy chủ cụ thể sẽ phục vụ từ cặp cổng/giao thức. Khi lưu lượng truy cập vào cổng, chúng ta cần một cách để đưa nó đến một dịch vụ cụ thể trong lưới dịch vụ; và để làm điều đó, chúng ta sẽ sử dụng VirtualService. Trong Istio, VirtualService xác định cách máy khách trao đổi với một dịch vụ cụ thể thông qua tên miền đủ điều kiện của nó, phiên bản nào của dịch vụ khả dụng và các thuộc tính định tuyến khác (như retries và request timeouts). Chúng ta sẽ đề cập sâu hơn về Dịch vụ ảo trong chương tiếp theo khi khám phá định tuyến lưu lượng truy cập; trong chương này, chỉ cần biết rằng VirtualService cho phép chúng ta định tuyến lưu lượng truy cập từ cổng vào đến một dịch vụ cụ thể là đủ.
-
-Một ví dụ về VirtualService định tuyến lưu lượng truy cập cho máy chủ ảo "webapp.istioinaction.io" tới các dịch vụ được triển khai trong lưới dịch vụ của chúng ta trông giống như hình 2.13.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.7\linewidth]{Pics/2.2.1-p4}
-	\caption{Ví dụng về VirtualService}
-	\label{fig:2.2.1-4}
-\end{figure}
-
-Với tài nguyên VirtualService này, chúng tôi xác định phải làm gì với lưu lượng truy cập khi đi vào gateway. Trong trường hợp này, như ta có thể thấy từ trường spec.gateways, các quy tắc lưu lượng này chỉ áp dụng cho lưu lượng truy cập đến từ cổng được định sẵn coolstore-gateway mà chúng ta đã tạo trong phần trước. Ngoài ra, chúng ta chỉ định máy chủ ảo webapp.istioinaction.io mà lưu lượng truy cập phải tuân thủ các quy tắc đã được định sẵn. Một ví dụ về các quy tắc này là một ứng dụng khách đang truy vấn http://webapp.istio inaction.io, truy vấn này phân giải thành một IP mà cổng Istio đang lắng nghe. Ngoài ra, một máy khách có thể đặt tiêu đề Máy chủ trong yêu cầu HTTP là webapp.istioinaction.io, như sẽ trình bày qua một ví dụ.
-
-Một lần nữa, để có thể xác minh rằng ta đang ở trong thư mục gốc của mã nguồn:
-\begin{lstlisting}
-	$ kubectl apply -n istioinaction -f ch4/coolstore-vs.yaml
-\end{lstlisting}
-
-Sau một lúc (cấu hình cần phải đồng bộ hóa; chờ cấu hình trong lưới dịch vụ Istio nhất quán), chúng ta có thể chạy lại các lệnh của mình để liệt kê những listener và route:
-
-\begin{lstlisting}
-	$ istioctl proxy-config route deploy/istio-ingressgateway \
-	-o json --name http.8080 -n istio-system
-\end{lstlisting}
-
-\begin{lstlisting}
-	[
-	{
-		"name": "http.8080", "virtualHosts": [
-		{
-			"name": "webapp-vs-from-gw:80",
-			"domains": [
-				"webapp.istioinaction.io"
-			],
-			"routes": [
-			{
-				"match": {
-					"prefix": "/"
-				},
-				"route": {	  
-					"cluster":				
-					"outbound|8080||webapp.istioinaction.svc.cluster.local", "timeout": "0.000s"
-				}
-			}
-			]
-		}
-		]
-	}
-	]
-	
-\end{lstlisting}
-
-Đầu ra cho route ở đây sẽ trông giống như danh sách trước đó, mặc dù nó có thể chứa các thuộc tính và thông tin khác. Phần quan trọng là chúng ta có thể thấy cách xác định VirtualService đã tạo tuyến đường Envoy trong Istio gateway của chúng ta định tuyến lưu lượng truy cập phù hợp với miền webapp.istioinaction.io tới ứng dụng web trong lưới dịch vụ.
-
-Chúng ta đã thiết lập định tuyến cho các dịch vụ của mình, nhưng chúng ta nên triển khai các dịch vụ để chúng hoạt động. Các lệnh sau đây được dùng để chạy từ thư mục gốc của mã nguồn:
-
-\begin{lstlisting}
-$ kubectl config set-context $(kubectl config current-context) \
---namespace=istioinaction
-$ kubectl apply -f services/catalog/kubernetes/catalog.yaml
-$ kubectl apply -f services/webapp/kubernetes/webapp.yaml
-\end{lstlisting}
-
-Khi tất cả các Pod đã sẵn sàng, ta sẽ thấy một thông báo như thế này:
-
-\begin{lstlisting}
-$ kubectl get pod
-NAME	READY	STATUS	RESTARTS	AGE
-webapp-bd97b9bb9-q9g46	2/2	Running	18	19d
-catalog-786894888c-8lbk4	2/2	Running	8	6d
-\end{lstlisting}
-
-Xác minh rằng các tài nguyên gateway và VirtualService của ta đã được cài đặt chính xác:
-
-\begin{lstlisting}
-	$ kubectl get gateway
-	NAME	CREATED AT
-	coolstore-gateway	2h
-	
-	$ kubectl get virtualservice
-	NAME	GATEWAYS	HOSTS
-	webapp-vs-from-gw	["coolstore-gateway"]	["webapp.istioinaction.io"]
-	
-\end{lstlisting}
-Bây giờ, hãy thử gọi gateway và xác minh rằng lưu lượng truy cập được phép vào cluster. Hãy nhớ rằng chúng ta đang sử dụng phương pháp Docker Desktop, trong đó  Istio gateway có sẵn trên cổng 80 trên máy chủ cục bộ. Nếu bạn đang sử dụng dịch vụ đám mây hoặc dịch vụ Node-Cổng, bạn sẽ cần tìm hiểu địa chỉ IP công khai bên ngoài đó là gì. Ví dụ, chúng ta có một cách để lấy đúng máy chủ cho cổng vào được hiển thị trên bộ cân bằng tải công khai trông như sau:
-\begin{lstlisting}
-	$ URL=$(kubectl -n istio-system get svc istio-ingressgateway \
-	-o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-\end{lstlisting}
-
-Khi bạn có một điểm đầu cuối chính xác, bạn có thể chạy thứ gì đó tương tự như thế này (hãy nhớ rằng localhost nằm trên Docker Desktop):
-\begin{lstlisting}
-	$ curl http://localhost/api/catalog
-\end{lstlisting}
-
-Ta sẽ không thấy phản hồi. Tại sao vậy? Nếu chúng ta xem xét kỹ hơn lời gọi bằng cách in ra các tiêu đề, chúng ta sẽ thấy rằng tiêu đề Máy chủ mà chúng ta đã gửi không phải là máy chủ mà cổng nhận ra:
-\begin{lstlisting}
-	$	curl -v http://localhost/api/catalog
-	
-	*	Trying ::1...	
-	*
-	*	TCP_NODELAY set
-	Connected to localhost (::1) port 80	<--	Host
-	>	GET /api/catalog HTTP/1.1	
-	>	Host: localhost	
-	>	User-Agent: curl/7.54.0	
-	>	Accept: */*	
-	>
-	<	
-	HTTP/1.1 404 Not Found		<-- 	Not found
-	<	date: Tue, 21 Aug 2018 16:08:28 GMT	
-	<	server: envoy	
-	<	content-length: 0	
-	<		
-	* Connection #0 to host 192.168.64.27 left intact
-	
-\end{lstlisting}
-
-Cả Istio gateway lẫn bất kỳ quy tắc định tuyến nào mà chúng tôi đã khai báo trong Vỉtural services đều không biết gì về Máy chủ: localhost:80, nhưng nó biết về máy chủ ảo webapp.istioinaction.io. Hãy ghi đè tiêu đề Máy chủ trên dòng lệnh của chúng ta và sau đó lệnh gọi sẽ hoạt động:
-\begin{lstlisting}
-	$ curl http://localhost/api/catalog -H "Host: webapp.istioinaction.io"
-\end{lstlisting}
-
-Lúc này ta sẽ nhận được một phản hồi thành công
-
-			\subsubsection{Tổng quan về luồng lưu lượng}
-\hspace{0.6cm}Trong các phần trước, chúng ta đã thực hành với các tài nguyên Gateway và Virtural Services từ Istio. Tài nguyên gateway xác định các cổng, giao thức và máy chủ ảo mà chúng tôi muốn lắng nghe ở rìa cụm lưới dịch vụ của chúng tôi. Tài nguyên Virtural Services xác định nơi lưu lượng truy cập sẽ đi sau khi được cho phép ở biên. Hình 2.14 cho thấy toàn bộ luồng từ đầu đến cuối.
+		\break
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{Pics/2.2.1-p5}
 	\caption{Luồng lưu lượng từ máy khách bên ngoài lưới/cụm dịch vụ đến các dịch vụ bên trong lưới dịch vụ thông qua gateway}
 	\label{fig:2.2.1-5}
 \end{figure}
-		\subsection{Định tuyến trong Istio}
-\hspace{0.6cm}Trong phần trước, chúng ta đã sử dụng Istio để kiểm soát lưu lượng truy cập vào dịch vụ catalog. Chúng ta đã sử dụng tài nguyên Istio VirtualService để chỉ định cách định tuyến lưu lượng. Chúng ta hãy xem xét kỹ hơn cách thức hoạt động của nó. Chúng ta sẽ kiểm soát lộ trình của một yêu cầu dựa trên nội dung của nó (bằng cách theo dõi các tiêu đề của nó). Bằng cách này, chúng tôi có thể cung cấp mô hình triển khai cho một số người dùng nhất định bằng kỹ thuật gọi là dark launch. Trong lần dark launch, một tỷ lệ lớn người dùng được chuyển đến phiên bản dịch vụ đã biết, trong khi một số lớp người dùng nhất định được chuyển đến phiên bản mới hơn. Do đó, chúng tôi có thể hiển thị chức năng mới theo cách có kiểm soát cho một nhóm cụ thể mà không ảnh hưởng đến những người khác.
-
-Trước khi bắt đầu, hãy dọn dẹp môi trường của chúng ta để chúng ta có thể bắt đầu từ một môi trường mới. Nếu bạn chưa ở trong không gian tên istioinaction trong cụm Kubernetes của mình, hãy chuyển sang không gian tên istioinaction như sau:
-\begin{lstlisting}
-	$ kubectl config set-context $(kubectl config current-context) \
-	--namespace=istioinaction
-\end{lstlisting}
-
-Sau đó xoá toàn bộ các tài nguyên:
-\begin{lstlisting}
-	$ kubectl delete deployment,svc,gateway,\ 
-	virtualservice,destinationrule --all -n istioinaction
-\end{lstlisting}
-			\subsubsection{Triển khai phiên bàn đầu tiên của dịch vụ}
-\hspace{0.6cm}Hãy triển khai version 1 của dịch vụ catalog của chúng tôi. Từ thư mục gốc của mã nguồn, hãy chạy lệnh sau:
-\begin{lstlisting}
-	$ kubectl apply -f services/catalog/kubernetes/catalog.yaml 
-\end{lstlisting}
-
-\begin{verbatim}
-	serviceaccount/catalog created
-	service/catalog created deployment.extensions/catalog created
-\end{verbatim}
-
-Đợi một vài phút để các tiến trình khởi động. Bạn có thể xem quá trình tiến trình hoạt động bằng lệnh sau:
-\begin{lstlisting}
-	$ kubectl get pod -w
-\end{lstlisting}
-
-\begin{verbatim}
-	NAME	READY	STATUS	RESTARTS	AGE
-	catalog-98cfcf4cd-xnv79	2/2	Running	0	33s
-\end{verbatim}
-
-Tại thời điểm này, chúng ta chỉ có thể truy cập dịch vụ catalog từ bên trong cụm. Chạy lệnh sau để xác minh rằng chúng ta có thể truy cập dịch vụ catalog và dịch vụ đó phản hồi chính xác:
-\begin{lstlisting}
-	$ kubectl run -i -n default --rm --restart=Never dummy \
-	--image=curlimages/curl --command -- \
-	sh -c 'curl -s http:/./catalog.istioinaction/items'
-\end{lstlisting}
-
-Bây giờ, hãy hiển thị dịch vụ catalog cho các máy khách đặt bên ngoài cụm. Chúng ta sử dụng Istio Gateway để thực hiện việc này (lưu ý rằng miền chúng ta đang sử dụng là catalog.istioinaction.io):
-\begin{verbatim}
-	apiVersion: networking.istio.io/v1alpha3 kind: Gateway
-	metadata:
-	name: catalog-gateway spec:
-	selector:
-	istio: ingressgateway servers:
-	- port:
-	number: 80 name: http protocol: HTTP
-	hosts:
-	- "catalog.istioinaction.io"
-\end{verbatim}
-
-Chạy câu lệnh sau:
-\begin{lstlisting}
-	$ kubectl apply -f ch5/catalog-gateway.yaml
-\end{lstlisting}
-\begin{verbatim}
-	gateway.networking.istio.io/catalog-gateway created
-\end{verbatim}
-
-Tiếp theo, chúng ta cần tạo một tài nguyên VirtualService để định tuyến lưu lượng truy cập đến dịch vụ catalog của chúng ta. Tài nguyên VirtualService sẽ trông như thế này:
-\begin{verbatim}
-	apiVersion: networking.istio.io/v1alpha3 kind: VirtualService
-	metadata:
-	name: catalog-vs-from-gw spec:
-	hosts:
-	-	"catalog.istioinaction.io" gateways:
-	-	catalog-gateway http:
-	-	route:
-	- destination: host: catalog
-\end{verbatim}
-
-Khởi tạo VirturalServices:
-\begin{lstlisting}
-	$ kubectl apply -f ch5/catalog-vs.yaml 
-\end{lstlisting}
-\begin{verbatim}
-	virtualservice.networking.istio.io/catalog-vs-from-gw created
-\end{verbatim}
-
-Bây giờ chúng ta có thể truy cập dịch vụ catalog từ bên ngoài cụm bằng cách gọi vào Istio gateway. Chúng ta đang sử dụng Docker Desktop với Istio gateway trên
-localhost:80, vì vậy chúng ta có thể chạy lệnh sau:
-\begin{lstlisting}
-	$ curl http:/./localhost/items -H "Host: catalog.istioinaction.io"
-\end{lstlisting}
-
-Ta sẽ thấy kết quả giống như khi chúng ta gọi dịch vụ từ bên trong cụm. Trong trường hợp này, chúng ta sẽ đi qua gateway và gọi dịch vụ catalog từ bên ngoài cụm (xem hình 2.15).
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.7\linewidth]{Pics/2.2.2-p1}
-	\caption{Gọi danh mục dịch vụ trực tiếp thông qua gaterway}
-	\label{fig:2.2.2-1}
-\end{figure}
-			\subsubsection{Triển khai phiên bàn cập nhật của dịch vụ}
-\hspace{0.6cm}Để xem các tính năng kiểm soát lưu lượng của Istio, hãy triển khai phiên bản thứ 2 của dịch vụ catalog. Lệnh này giả định rằng bạn đang ở thư mục gốc của thư mục mã nguồn:
-\begin{lstlisting}
-	$ kubectl apply -f services/catalog/kubernetes/catalog-deployment-v2.yaml 
-\end{lstlisting}
-\begin{verbatim}
-	deployment.extensions/catalog-v2 created
-\end{verbatim}
-
-Liệt kê các Pod trong cụm của bạn:
-\begin{lstlisting}
-	$ kubectl get pod
-\end{lstlisting}
-\begin{verbatim}
-	NAME	READY	STATUS	RESTARTS	AGE
-	catalog-98cfcf4cd-xnv79	2/2	Running	0	14m
-	catalog-v2-598b8cfbb5-6vw84	2/2	Running	0	36s
-\end{verbatim}
-
-Nếu bạn yêu cầu gọi dịch vụ catalog nhiều lần, một số phản hồi sẽ có trường bổ sung. phản hồi v2 có một trường được gọi là imageUrl, trong khi phản hồi v1 thì không:
-\begin{lstlisting}
-	$ for in in {1..10}; do curl http:/./localhost/items \
-	-H "Host: catalog.istioinaction.io"; printf "\n\n"; done
-\end{lstlisting}
-\begin{lstlisting}
-[
-	{
-		"id": 0,
-		"color": "teal",
-		"department": "Clothing",
-		"name": "Small Metal Shoes",
-		"price": "232.00",
-		"imageUrl": "http:/./lorempixel.com/640/480"
-	}
-]
-[
-	{
-		"id": 0,
-		"color": "teal",
-		"department": "Clothing",
-		"name": "Small Metal Shoes",
-		"price": "232.00"
-	}
-]
-\end{lstlisting}
-			\subsubsection{Định tuyến các lưu lượng cụ thể đến v2}
-\hspace{0.6cm}Có thể chúng ta muốn định tuyến bất kỳ lưu lượng truy cập nào bao gồm tiêu đề HTTP x-istio-cohort: internal tới v2 của catalog. Chúng ta có thể cấu hình định tuyến các yêu cầu này trong Istio Virtual Service như sau:
-\begin{lstlisting}
-	apiVersion: networking.istio.io/v1alpha3 kind: VirtualService
-	metadata:
-	name: catalog-vs-from-gw spec:
-	hosts:
-	-	"catalog.istioinaction.io" gateways:
-	-	catalog-gateway http:
-	-	match:
-	-	headers:
-	x-istio-cohort: exact: "internal"
-	route:
-	-	destination: host: catalog
-	subset: version-v2
-	-	route:
-	-	destination: host: catalog
-	subset: version-v1
-\end{lstlisting}
-
-Cập nhật Virtural Services:
-\begin{lstlisting}
-	$ kubectl apply -f ch5/catalog-vs-v2-request.yaml 
-\end{lstlisting}
-\begin{verbatim}
-	virtualservice.networking.istio.io/catalog-vs-from-gw configured
-\end{verbatim}
-
-Khi chúng ta gọi dịch vụ của mình, chúng ta vẫn thấy phản hồi v1. Tuy nhiên, nếu chúng ta gửi yêu cầu có tiêu đề x-istio-cohort, chúng ta sẽ được chuyển đến phiên bản 2 của dịch vụ catalog và chờ phản hồi thể hiện trong hình 2.16 như dự kiến:
-\begin{lstlisting}
-	$ curl http:/./localhost/items \
-	-H "Host: catalog.istioinaction.io" -H "x-istio-cohort: internal"
-\end{lstlisting}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.7\linewidth]{Pics/2.2.2-p2}
-	\caption{Định tuyến cho các yêu cầu có nội dung nhất định}
-	\label{fig:2.2.2-2}
-\end{figure}
-			\subsubsection{Định tuyến sâu bên trong biểu đồ cuộc lời gọi}
-\hspace{0.6cm}Cho đến thời điểm này, chúng ta đã thấy cách ta có thể sử dụng Istio để thực hiện định tuyến các yêu cầu, nhưng chúng ta đã thực hiện định tuyến từ rìa/gateway. Các quy tắc lưu lượng này cũng có thể được áp dụng sâu bên trong biểu đồ lời gọi (xem hình 2.17). Chúng ta đã làm điều này trước đó, vì vậy hãy tạo lại quy trình và xác minh rằng nó hoạt động như mong đợi:
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.7\linewidth]{Pics/2.2.2-p3}
-	\caption{Định tuyến cho các yêu cầu có nội dung cụ thể trong biểu đồ lời gọi}
-	\label{fig:2.2.2-3}
-\end{figure}
-
-\textbf{\color{blue}Note }Khả năng định tuyến của Istio bắt nguồn từ khả năng của Envoy. Đối với định tuyến theo yêu cầu cụ thể, các nhóm có thể chọn sử dụng các tiêu đề được đưa vào ứng dụng, như chúng ta thấy trong ví dụ này về việc sử dụng x-istio-cohort hoặc dựa vào các tiêu đề đã biết như Agent hoặc giá trị từ cookie. Trong thực tế, bạn cũng có thể sử dụng các công cụ quyết định để chọn những tiêu đề nào sẽ được đưa vào và sau đó cho ra các yêu cầu định tuyến.
+		\subsection{Định tuyến đường đi các Microservices trong Kubernetes sử dụng Istio}
+			\hspace{0.6cm} Trong kiến trúc monolith, chúng ta có một dịch vụ khổng lồ duy nhất với tất cả logic nghiệp vụ để xử lý tất cả các yêu cầu từ người dùng, nhưng trong kiến trúc microservices, chúng ta có nhiều dịch vụ tập trung vào logic nghiệp vụ cụ thể. Một yêu cầu của người dùng duy nhất có thể trờ thành nhiều yêu cầu cho các dịch vụ phụ thuộc
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.7\linewidth]{Pics/2.2.2-p4}
+				\caption{Ví dụ về mô hình microservices}
+				\label{fig:2}
+			\end{figure}
+			Như thể hiện trong sơ đồ trên, một yêu cầu của người dùng tới microservice-A được gửi đến microservice-B, microservice-C, và microservice-D. Cuối cùng, một phản hồi được gửi đến người dùng. Bây giờ, giả sử microservice-B có một tính năng mới, cần được phát triển và thử nghiệm trên một nhóm user được chọn cụ thể ở đây là User1, hoặc cho tỉ lệ 10\% người dùng có thể dụng tính năng mới này. 
+			Để giải quyết bài toán trên Istio đã cung cấp một số cơ chế định tuyến sau:
+			\begin{itemize}
+				\item Canary deployment: Một trong những lợi ích của dự án Istio là nó cung cấp khả năng kiểm soát cần thiết để triển khai các dịch vụ canary. Ý tưởng đằng sau việc triển khai canary là giới thiệu một phiên bản mới của dịch vụ bằng cách thử nghiệm phiên bản đó mới bằng cách sử dụng một tỷ lệ nhỏ lưu lượng truy cập của người dùng và sau đó nếu dịch vụ không có lỗi phát sinh, có thể tăng tỷ lệ phần trăm lên, có thể dần dần trong khi đồng thời loại bỏ dần phiên bản cũ. Nếu xảy ra sự cố trong quá trình thực hiện, có thể cho tất cả lưu lượng truy cập của người dùng trở về phiên bản cũ.
+				\item Dark release: Khi nói đến việc triển khai phần mềm, bất cứ điều gì có thể làm để giảm thiểu rủi ro đều đáng được cân nhắc. Chạy song song nhiều phiên bản của một dịch là một cách rất hiệu quả và đã được chứng minh để kiểm tra phiên bản tiếp theo của bạn, đồng thời Istio cho phép bạn sử dụng các dịch vụ bí mật — một phiên bản chưa từng thấy của vi dịch vụ của bạn — mà không bị ảnh hưởng đến sản phẩm. Đó là tính năng dark release, tính năng này cho phép chỉ cố giới hạn một số người như các kĩ sư hoặc kiểm thử phần mềm có thể truy cập vào chức năng này.
+				\item Traffic mirroring: giả sử chúng ta muốn đánh giá hiệu suất của dịch vụ mới của chúng ta mới tạo ra mà không muốn khách hàng vào được dịch vụ mới này chúng ta có thể sử dụng tính năng này để tất các lưu lượng truy cập đang đi vào phiên bản hiện tại và sao chép các lưu lượng đó và đưa lưu lượng truy cập đó vào dịch vụ mới chúng ta muốn kiểm thử.
+			\end{itemize}
+			
+			
 		\subsection{Giải quyết các vấn đề về mạng trong Microservices}
 \hspace{0.6cm}Khi chúng ta có lưu lượng truy cập vào cụm của mình thông qua Istio gateway, chúng ta có thể điều khiển lưu lượng truy cập ở cấp độ yêu cầu và kiểm soát chính xác nơi định tuyến các yêu cầu. Trong chương trước, chúng ta đã đề cập đến kiểm soát lưu lượng cho định tuyến có trọng số, định tuyến dựa trên kết hợp yêu cầu và một số kiểu mẫu phát hành nhất định mà sau đó có thể được kích hoạt. Chúng ta cũng có thể sử dụng khả năng điều khiển lưu lượng này để định tuyến né tránh các sự cố trong trường hợp xảy ra lỗi ứng dụng, phân vùng mạng và các sự cố lớn khác.
 
@@ -1344,10 +984,204 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 			\end{enumerate}
 			
 	\section*{Kết luận chương 2}
+		{\hspace{0.6cm}Như vậy Istio đã giải quyết được }
+		
 \chapter{Triển khai Istio trên Kubernetes}
 	\section{Mô hình triển khai}
 	\section{Kịch bản triển khai}
 	\section{Thực nghiệm}
+		\subsection{Xác thực và mã hóa đường truyền giữa các microservice}
+			\subsubsection{a. Mục đích}
+				{\hspace{0.6cm}Hai microservice sẽ được xác thực với nhau qua cơ chế mTLS và đường truyền giữa hai microservice cũng được mã hóa nhằm chống kẻ tấn công bắt trộm gói tin và đọc thông tin của những gói tin chưa được mã hóa giữa các microservice}
+			\subsubsection{b. Kịch bản}
+				\begin{enumerate}
+					\item[$\blacksquare$] Tạo ra namespace sleep, sau đó tạo pod sleep trong namespace sleep.
+					\item[$\blacksquare$] Từ trong pod sleep sử dụng câu lệnh curl đến pod productpage-v1.
+					\item[$\blacksquare$] Áp dụng chính sách cấm tất các pod chưa được xác thực với các pod đã được xác thực.
+					\item[$\blacksquare$] Sử dụng lại câu lệnh curl từ pod sleep đến pod productpage-v1.
+					\item[$\blacksquare$] Sử dụng câu lệnh để bật tính năng tcpdump của proxy, sau đó xóa pod của productpage-v1 để proxy được tái tạo lại và có cơ chế tcpdump.
+					\item[$\blacksquare$] Sử dụng câu lệnh tcpdump từ proxy của productpage-v1 và truy cập trang productpage từ trình duyệt. Sau đó quan sát màn hình proxy đang tcpdump thấy đường truyền được mã hóa. 
+				\end{enumerate}
+			\subsubsection{c. Các bước thực hiện}
+				{\hspace{0.6cm}Bước 1: Tạo namspace sleep và pod sleep bằng câu lệnh sau:}
+				\begin{lstlisting}
+				$ kubectl create namespace sleep
+				namespace/sleep created
+				$ kubectl apply -f manifests/authentication/sleep.yaml -n sleep
+				serviceaccount/sleep created
+				service/sleep created
+				deployment.apps/sleep created
+				$ kubectl get pod -n sleep
+				NAME                     READY   STATUS    RESTARTS   AGE
+				sleep-787dbb8dd6-f25x2   1/1     Running   0          50s
+				\end{lstlisting}
+				
+				Bước 2: Sử dụng câu lệnh curl trong pod sleep để gọi đến dịch vụ productpage bằng câu lệnh sau:
+				\begin{lstlisting}
+				$ kubectl -n sleep exec deploy/sleep -c sleep --  curl -s productpage.default:9080/productpage -o /dev/null -w "%{http_code}"
+				200
+				\end{lstlisting}
+				
+				Bước 3: Tạo ra file chính sách cấm tất cả các pod chưa được xác thực với các pod đã được xác thực, trong đó phần name bắt buộc phải có giá trị default và phần namespace bắt buộc là namespace của istiod được cài đặt, và mode là STRICT để bắt buộc tất cả mọi pod đã được cài Istio phải xác thực với nhau mới được kết nối
+				\begin{lstlisting}
+				apiVersion: "security.istio.io/v1beta1"
+				kind: "PeerAuthentication"
+				metadata:
+				  name: "default"
+				  namespace: "istio-system"
+				spec:
+			 	  mtls:
+				    mode: STRICT 
+				\end{lstlisting}
+				
+				Bước 4: Áp dụng chính sách và từ pod sleep thử curl lại dịch vụ productpage bằng câu lệnh sau:
+				\begin{lstlisting}
+				$ kubectl apply -f manifests/authentication/meshwide-strict-peer-authn.yaml 
+				peerauthentication.security.istio.io/default configured
+				$ kubectl -n sleep exec deploy/sleep -c sleep --  curl -s productpage.default:9080/productpage
+				command terminated with exit code 56
+				\end{lstlisting}
+				
+				Bước 5: Bật tính năng tcpdump của proxy, xóa pod productpage  bằng các câu lệnh dưới sau đó đợi pod mới được khởi tạo lại:
+				\begin{lstlisting}
+				$ istioctl install -y --set profile=demo --set values.global.proxy.privileged=true
+				$ kubectl delete pod productpage-v1-979d4d9fc-87fdq
+				pod "productpage-v1-979d4d9fc-87fdq" deleted
+				\end{lstlisting}
+				
+				Bước 6: Sử dụng câu lệnh tcpdump trong proxy của pod productpage sau đó lên trên trình duyệt web truy cập vào địa chỉ http://localhost/productpage sau đó quay lại terminal đang thực hiện câu lệnh dump xem các request đang được mã hóa:
+				\begin{lstlisting}
+				$ kubectl  exec deploy/productpage-v1 -c istio-proxy -- sudo tcpdump -l --immediate-mode -vv -s 0  '(((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'
+				tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+				05:43:37.964166 IP (tos 0x0, ttl 64, id 4024, offset 0, flags [DF], proto TCP (6), length 168)
+				10.1.0.1.41546 > productpage-v1-979d4d9fc-55qgk.15021: Flags [P.], cksum 0x175a (incorrect -> 0x450f), seq 469286402:469286518, ack 2038184201, win 502, options [nop,nop,TS val 169039982 ecr 766623303], length 116
+				05:43:37.964960 IP (tos 0x0, ttl 64, id 62383, offset 0, flags [DF], proto TCP (6), length 195)
+				productpage-v1-979d4d9fc-55qgk.15021 > 10.1.0.1.41546: Flags [P.], cksum 0x1775 (incorrect -> 0x7159), seq 1:144, ack 116, win 509, options [nop,nop,TS val 766623304 ecr 169039982], length 143
+				05:43:37.965590 IP (tos 0x0, ttl 64, id 20122, offset 0, flags [DF], proto UDP (17), length 67)
+				productpage-v1-979d4d9fc-55qgk.35855 > kube-dns.kube-system.svc.cluster.local.domain: [bad udp cksum 0x1768 -> 0xf9ed!] 57182+ PTR? 1.0.1.10.in-addr.arpa. (39)
+				05:43:37.972419 IP (tos 0x0, ttl 64, id 12075, offset 0, flags [DF], proto UDP (17), length 67)
+				kube-dns.kube-system.svc.cluster.local.domain > productpage-v1-979d4d9fc-55qgk.35855: [bad udp cksum 0x1768 -> 0x796a!] 57182 NXDomain q: PTR? 1.0.1.10.in-addr.arpa. 0/0/0 (39)
+				\end{lstlisting}
+				
+				
+		\subsection{Ủy quyền giữa các microservice}
+			\subsubsection{a. Mục đích}
+			{\hspace{0.6cm}Istio không chỉ giúp quản trị viên xác thực các microservice, sau khi xác thực chúng ta có thể phân quyền cho các microservice, hạn chế microserivce chỉ có thể sử dụng một số tính năng cụ thể của microservice khác.}
+			\subsubsection{b. Kịch bản}
+			\begin{enumerate}
+				\item[$\blacksquare$] Áp dụng chính sách cấm tất cả các requests đến với tất cả các pod trọng Kubernetes.
+				\item[$\blacksquare$] Lên trình duyệt web truy cập đến dịch vụ thì thấy bị từ chối.
+				\item[$\blacksquare$] Áp dụng chính sách cho phép request đến productpage-v1.
+				\item[$\blacksquare$] Lên trình duyệt web truy cập đến dịch vụ productpage nhưng dịch vụ reviews, details, ratings bị lỗi.
+				\item[$\blacksquare$] Áp dụng chính sách cho phép productpage-v1 có thể lấy thông tin từ dịch vụ details.
+				\item[$\blacksquare$] Lên trình duyệt web truy cập đến dịch vụ productpage thấy dịch vụ details không bị lỗi nhưng dịch vụ reviews, ratings bị lỗi.
+				\item[$\blacksquare$] Áp dụng chính sách cho phép productpage-v1 có thể lấy thông tin từ dịch vụ reviews.
+				\item[$\blacksquare$] Lên trình duyệt web truy cập đến dịch vụ productpage thấy dịch vụ reviews không bị lỗi nhưng dịch vụ ratings bị lỗi.
+				\item[$\blacksquare$] Áp dụng chính sách cho phép productpage-v1 có thể lấy thông tin từ dịch vụ ratings.
+				\item[$\blacksquare$] Lên trình duyệt web truy cập đến dịch vụ productpage thấy các dịch vụ không bị lỗi. 
+			\end{enumerate}
+			\subsubsection{c. Các bước thực hiện}
+				Bước 1: Tạo file chính sách như dưới trong đó trường namespace sẽ để là default, và spec là {}, có nghĩa là từ chối tất cả các request trong namespace default:
+				\begin{lstlisting}
+				apiVersion: security.istio.io/v1beta1
+				kind: AuthorizationPolicy
+				metadata:
+				  name: allow-nothing
+				  namespace: default
+				spec:
+				  {}
+				\end{lstlisting}
+						
+				Bước 2: Sử dụng câu lệnh dưới để áp dụng file chính sách và truy cập lên trình duyệt web:
+				\begin{lstlisting}
+				$ kubectl apply -f manifests/authoriztion/deny-all.yaml 
+				authorizationpolicy.security.istio.io/allow-nothing created
+				\end{lstlisting}
+				\begin{figure}[h]
+					\centering
+					\includegraphics[width=1\linewidth]{Pics/3.3.2-p1}
+					\caption{Không thể truy cập vào dịch vụ}
+					\label{fig:3}
+				\end{figure}
+			
+				Bước 3: Tạo file chính sách cho phép vào dịch vụ productpage như hình dưới, trong đó chúng ta để matchLabels là app: productpage và trường action là ALLOW, và method có thể sử dụng là GET. Nghĩa là tất các các app được đánh nhãn app có giá trị là productpage thì sẽ cho phép tất cả mọi dịch vụ hay người dùng sử dụng phương thức GET đối với dịch vụ này:
+				\begin{lstlisting}
+				apiVersion: security.istio.io/v1beta1
+				kind: AuthorizationPolicy
+				metadata:
+				  name: "productpage-viewer"
+				  namespace: default
+				spec:
+				  selector:
+				    matchLabels:
+				      app: productpage
+				  action: ALLOW
+				  rules:
+				  - to:
+				    - operation:
+				        methods: ["GET"]
+				\end{lstlisting}
+				
+				Bước 4: Sử dụng câu lệnh dưới để áp dụng file chính sách và truy cập lên trình duyệt web:
+				\begin{lstlisting}
+				$ kubectl apply -f manifests/authoriztion/allow-product-page.yaml 
+				authorizationpolicy.security.istio.io/productpage-viewer created
+				\end{lstlisting}
+				\begin{figure}[h]
+					\centering
+					\includegraphics[width=0.7\linewidth]{Pics/3.3.2-p2}
+					\caption{Đã vào được productpage nhưng các dịch vụ khác đang bị lỗi}
+					\label{fig:3}
+				\end{figure}
+				
+				Bước 5: Tạo file chính sách cho phép vào dịch vụ productpage có thể sử dụng phương thức GET với dịch vụ details, trong đó chúng ta chỉ cần thêm phần source trỏ đến serviceaccount của dịch productpage:
+				\begin{lstlisting}
+				apiVersion: security.istio.io/v1beta1
+				kind: AuthorizationPolicy
+				metadata:
+				  name: "details-viewer"
+				  namespace: default
+				spec:
+				  selector:
+				    matchLabels:
+				      app: details
+				action: ALLOW
+				rules:
+				- from:
+				  - source:
+				      principals: ["cluster.local/ns/default/sa/bookinfo-productpage"]
+				  to:
+				  - operation:
+				      methods: ["GET"]
+				\end{lstlisting}
+			 	
+			 	Bước 6: Sử dụng câu lệnh dưới để áp dụng file chính sách và truy cập lên trình duyệt web:
+			 	\begin{lstlisting}
+			 	$ kubectl apply -f manifests/authoriztion/allow-details.yaml 
+			 	authorizationpolicy.security.istio.io/details-viewer created
+			 	\end{lstlisting}
+		 		\pagebreak
+				\begin{figure}[h]
+					\centering
+					\includegraphics[width=0.7\linewidth]{Pics/3.3.2-p3}
+					\caption{Dịch vụ details đã hoạt động như rating và reviews thì vẫn bị lỗi}
+					\label{fig:3}
+				\end{figure}
+				
+				Bước 6: Tạo file chính sách tương tự với dịch vụ rating và reviews xong đó dùng câu lệnh dưới để áp dụng file chính sách và vào lại trang dịch vụ trên trình duyệt:
+				\begin{lstlisting}
+				$ kubectl apply -f manifests/authoriztion/allow-rating.yaml 
+				authorizationpolicy.security.istio.io/ratings-viewer created
+				$ kubectl apply -f manifests/authoriztion/allow-reviews.yaml 
+				authorizationpolicy.security.istio.io/reviews-viewer created
+				\end{lstlisting}
+				\begin{figure}[h]
+					\centering
+					\includegraphics[width=0.7\linewidth]{Pics/3.3.2-p4}
+					\caption{Các dịch vụ đều hoạt động bình thường}
+					\label{fig:3}
+				\end{figure}
+				
 	\section{Kết luận}
 	
 \end{document}
