@@ -70,15 +70,14 @@
 	
 	
 	\begin{center}
-		{\Huge ĐỀ CƯƠNG\\}
 		{\large CHUYÊN ĐỀ AN TOÀN HỆ THỐNG THÔNG TIN\\}
-		\textbf{Nghiên cứu giải pháp đảm bảo an toàn cho Microservices trên Kubernetes}
+		\Huge{\textbf{Nghiên cứu giải pháp đảm bảo an toàn cho Microservices trên Kubernetes}}
 	\end{center}
 	\bigskip
 	\begin{flushright}
 		\large{Ngành: An toàn thông tin}
 	\end{flushright}
-	\vspace{30mm}
+	\vspace{15mm}
 	\begin{flushleft}
 		\textit{Sinh viên thực hiện:}\\
 		\textbf{Phương Văn Sơn}\\
@@ -988,8 +987,301 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 		
 \chapter{Triển khai Istio trên Kubernetes}
 	\section{Mô hình triển khai}
-	\section{Kịch bản triển khai}
+	\subsection{Mô hình hạ tầng triển khai}
+	Sử dụng máy tính hệ điều hành Windows, công cụ hỗ trợ ảo hóa cho hệ điều hành này là Hyper-V. Sau đó cài đặt Docker Desktop, trong Docker Desktop chúng ta sẽ cài đặt Docker Kubernetes. Cụm Docker Kubernetes sẽ có chỉ có một node làm Master Node và cũng đồng thời làm Worker Node, với địa chỉ IP của node là địa chỉ có máy Windows.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{Pics/3.1.1-1}
+		\caption{Mô hình hạ tầng triển khai}
+		\label{fig:3.1.1-1}
+	\end{figure}
+	\newpage
+	\subsection{Mô hình Microservices}
+	Mô hình ở đây là là một ứng dụng Bookinfo hiển thị thông tin về một cuốn sách, chứa mô tả về sách, chi tiết về sách (ISBN, số trang, v.v.) và một số bài đánh giá về sách.
+	Ứng dụng Bookinfo được chia thành bốn dịch vụ nhỏ riêng biệt:
+	\begin{itemize}
+		\item \textit{productpage}. Microservice của productpage gọi các microservice details và reviews để điền vào trang hiển thị.
+		\item \textit{details}.  Microservice details chứa thông tin sách.
+		\item \textit{reviews}. Microservice reviews chứa các bài đánh giá sách.
+		\item \textit{ratings}. Microservice ratings chứa thông tin xếp hạng và bài đánh giá về sách.
+	\end{itemize}
+	
+	Có 3 phiên bản của Microservice \textit{reviews}:
+	\begin{itemize}
+		\item \textbf{Version 1} không gọi dịch vụ \textit{ratings}
+		\item \textbf{Version 2} gọi dịch vụ \textit{ratings} và hiển thị các phần xếp hạng dưới dạng từ 1 đến 5 sao đen.
+		\item \textbf{Version 3} gọi dịch vụ \textit{ratings} và hiển thị các phần xếp hạng dưới dạng từ 1 đến 5 sao đỏ.
+	\end{itemize}
+	
+	Hình 3.2 diễn tả mô hình của dịch vụ trên.
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{Pics/3.1.2-1}
+		\caption{Mô hình Microservices}
+		\label{fig:3.1.2-1}
+	\end{figure}
+	\section{Cài đặt và thiết lập môi trường}
+	Thực hiện quá trình cài đặt theo các bước:\\
+	\textbf{Bước 1:} Cài đặt Docker Kubernetes\\
+	Docker Kubernetes là một cụm đặc biệt trong kubernetes, chỉ có duy nhất một node, ngoài ra còn giúp chúng ta học tập và nghiện cứu phát triển kubernetes dễ dàng hơn. Trong phạm vi đề tài này, chúng ta sử dụng Docker Kubernetes để thực hiện nghiên cứu và phát triển các chính sách an toàn bằng istio. Trong Docker Desktop chúng ta vào Settings, chọn vào Kubernetes, tích vào Kubernetes và chờ Docker Desktop  cài đặt Docker Kubernetes.
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.65\linewidth]{Pics/3.2-1}
+		\caption{Cài đặt Docker Kubernetes}
+		\label{fig:3.2-1}
+	\end{figure}
+	
+	\textbf{Bước 2:} Kiểm tra cụm Docker Kubernetes đã khởi động chưa
+	\begin{lstlisting}
+		$ kubectl get node
+		NAME             STATUS   ROLES           AGE     VERSION
+		docker-desktop   Ready    control-plane   2d14h   v1.25.2
+	\end{lstlisting}
+	\textbf{Bước 3:} Cài đặt Kubectl và Istioctl thông qua chocolatey
+	Cài đặt Chocolatey thông qua Powershell
+	\begin{lstlisting}
+		Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+	\end{lstlisting}
+	
+	Cài đặt Kubectl và Istioctl bằng Chocolatey
+	\begin{lstlisting}
+		$ choco install kubernetes-cli
+		
+		$ choco install istioctl
+	\end{lstlisting}
+	\textbf{Bước 4:} Cài đặt Istio
+	\begin{lstlisting}
+		$ istioctl install --set profile=demo -y
+		Istio core installed
+		Istiod installed
+		Ingress gateways installed
+		Egress gateways installed
+		Installation complete                                                        
+	\end{lstlisting}
+	\textbf{Bước 5:} Kiểm tra Istio đã được cài đặt trên cụm chưa
+	\begin{lstlisting}
+		$ kubectl get pod -n istio-system
+		NAME                                    READY   STATUS    RESTARTS      AGE
+		istio-egressgateway-79598956cf-4vc6k    1/1     Running   2 (18m ago)   2d14h
+		istio-ingressgateway-854c9d9c5f-h8xpl   1/1     Running   2 (18m ago)   2d14h
+		istiod-fd94754fb-46mdd                  1/1     Running   2 (18m ago)   2d14h
+	\end{lstlisting}
+	\textbf{Bước 6:} Cài đặt namespace istioinaction cho các service 
+	\begin{lstlisting}
+		kubectl create namespace istioinaction
+		namespace/istioinaction created
+	\end{lstlisting}
+	\textbf{Bước 7:} Inject istio vào namespace istioinaction
+	\begin{lstlisting}
+		$ kubectl label namespace istioinaction istio-injection=enabled
+		namespace/istioinaction labeled
+	\end{lstlisting}
+	\textbf{Bước 8:} Triển khai ứng dụng 
+	\begin{lstlisting}
+		$ kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+		service/details created
+		serviceaccount/bookinfo-details created
+		deployment.apps/details-v1 created
+		service/ratings created
+		serviceaccount/bookinfo-ratings created
+		deployment.apps/ratings-v1 created
+		service/reviews created
+		serviceaccount/bookinfo-reviews created
+		deployment.apps/reviews-v1 created
+		deployment.apps/reviews-v2 created
+		deployment.apps/reviews-v3 created
+		service/productpage created
+		serviceaccount/bookinfo-productpage created
+		deployment.apps/productpage-v1 created
+	\end{lstlisting}
+	\textbf{Bước 9:} Kiểm tra sự sẵn sàng cảu các pod cũng như Istio sidecar đã được đính kèm hay chưa
+	\begin{lstlisting}
+		$ kubectl get services
+		NAME          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+		details       ClusterIP   10.100.195.223   <none>        9080/TCP   2d20h
+		kubernetes    ClusterIP   10.96.0.1        <none>        443/TCP    2d20h
+		productpage   ClusterIP   10.108.125.43    <none>        9080/TCP   2d20h
+		ratings       ClusterIP   10.104.36.197    <none>        9080/TCP   2d20h
+		reviews       ClusterIP   10.102.245.160   <none>        9080/TCP   2d20h
+		
+		$ kubectl get pod
+		NAME                             READY   STATUS    RESTARTS      AGE
+		details-v1-5ffd6b64f7-tn8lc      2/2     Running   8 (12m ago)   2d20h
+		productpage-v1-979d4d9fc-d8hsl   2/2     Running   8 (12m ago)   2d20h
+		ratings-v1-5f9699cfdf-tsg85      2/2     Running   8 (12m ago)   2d20h
+		reviews-v1-569db879f5-q6v49      2/2     Running   8 (12m ago)   2d20h
+		reviews-v2-65c4dc6fdc-2w95m      2/2     Running   8 (12m ago)   2d20h
+		reviews-v3-c9c4fb987-x85tw       2/2     Running   8 (12m ago)   2d20h
+	\end{lstlisting}
+	\textbf{Bước 10:} Xác nhận ứng dụng Bookinfo đang chạy thông qua gửi các yêu cầu bằng lệnh {\color{red}curl} 
+	\begin{lstlisting}
+		$ kubectl exec "$(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" -c ratings -- curl -sS productpage:9080/productpage | grep -o "<title>.*</title>"
+		<title>Simple Bookstore App</title>
+	\end{lstlisting}
+	\textbf{Bước 11:} Đặt ingress IP và port
+	\begin{lstlisting}
+		$ kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+		gateway.networking.istio.io/bookinfo-gateway created
+		virtualservice.networking.istio.io/bookinfo created
+		
+		$ kubectl get gateway
+		NAME               AGE
+		bookinfo-gateway   2d20h
+	\end{lstlisting}
+	\textbf{Bước 12:} Kiểm tra xem ứng dụng đã được truy cập được từ ngoài Cluster hay chưa
+	\begin{lstlisting}
+		$ curl -s "http://localhost/productpage" | grep -o "<title>.*</title>"
+		<title>Simple Bookstore App</title>
+	\end{lstlisting}
 	\section{Thực nghiệm}
+			\subsection{Canary Release}
+		\subsubsection{a. Mục đích}
+		Có nhiều chiến lược triển khai (deployment strategy) được áp dụng khi đưa một phiên bản mới của ứng dụng lên môi trường thực tế (production). Các chiến lược triển khai phổ biến là recreate, ramped, blue/green, canary, A/B testing, shadow… Mỗi chiến lược triển khai đều có điểm mạnh và yếu riêng. Việc lựa chọn chiến lược nào sẽ tuỳ thuộc vào bài toán cụ thể của từng loại ứng dụng. Đối với một số services trong các Platform, mỗi rủi ro gặp phải khi triển khai ở môi trường Production sẽ có sự ảnh hưởng rất lớn đến toàn bộ hệ thống, cũng như trải nghiệm người dùng. Vậy nên, áp dụng các giải pháp an toàn cho các trường hợp này là ưu tiên hàng đầu và là điều quan trọng cần phải làm. Đảm bảo được zero downtime, giảm mức độ ảnh hưởng và có thể kịp thời rollback là tiêu chí hàng đầu trong việc chọn chiến lược triển khai.
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.7\linewidth]{Pics/3.3.1-1}
+			\caption{Mỗi chiến lược triển khai đều có điểm mạnh và yếu riêng. Việc lựa chọn chiến lược nào sẽ tuỳ thuộc vào tình hình và bài toán cụ thể của từng loại ứng dụng}
+			\label{fig:3.3-1}
+		\end{figure}
+		
+		Canary là chiến lược triển khai từng phần. Khi phiên bản mới được triển khai (v2), các traffic sẽ được chuyển dần từ phiên bản cũ (v1) qua v2. Các traffic này sẽ được phân chia theo tỷ trọng (weight), tăng dần theo mỗi bước (step). Sau mỗi bước sẽ đánh giá chất lượng của v2 so với v1, việc đánh giá này tuỳ thuộc vào ngữ cảnh sẽ là tỉ lệ lỗi, hiệu năng (performance), độ trễ (latency). Với chiến lược đó, canary sẽ giúp kiểm soát tốt chất lượng của phiên bản mới, kịp thời đánh giá chất lượng và đưa ra quyết định chính xác khi xác nhận phiên bản mới (promote new version).
+		
+		\subsubsection{b. Kịch bản}
+		Trong mô hình xây dựng một trang web "Bookinfo" đơn giản với chức năng "review" cùng với 3 phiên bản triển khai khác nhau. Với chiến lược triển khai từng phần của Canary, ta có thể chia làm 3 bước, giảm dần tỉ trọng các traffic, đồng thời tăng tỉ trọng các traffic vào v2/v3:
+		\begin{itemize}
+			\item \textbf{Bước 1:} 90\% request vào v1, 10\% request vào v2/v3
+			\item \textbf{Bước 2:} 80\% request vào v1, 20\% request vào v2/v3
+			\item \textbf{Bước 3:} 50\% request vào v1, 50\% request vào v2/v3
+		\end{itemize}
+		Sau mỗi bước sẽ kiểm tra số lượng các request bị lỗi (http code 5xx) và tốc độ phản hồi có đúng mục tiêu không (P99 dưới 500ms) bằng một số công cụ theo dõi sẽ trình bày trong phần tiếp theo. Nếu kết quả không như mong muốn sẽ đẩy các traffic vào v1 như cũ và loại bỏ v2. Nếu kết quả phù hợp thì sẽ quyết định sử dụng v2/v3 và loại bỏ v1.
+		\subsubsection{c. Các bước thực hiện}
+		Istio sử dụng các subset trong destination rules để xác định các phiên bản của dịch vụ. Vì thế trước hết ta phải tạo destination rule mặc định cho dịch vụ với việc triển khai toàn bộ các phiên bản.
+		\begin{lstlisting}
+			$ kubectl apply -f samples/bookinfo/networking/destination-rule-all.yaml
+			
+			$ for i in $(seq 1 10); do curl -s "http://localhost/productpage" | grep "review"; done
+			<u>reviews-v3-c9c4fb987-x85tw</u>
+			<u>reviews-v2-65c4dc6fdc-2w95m</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v2-65c4dc6fdc-2w95m</u>
+			<u>reviews-v2-65c4dc6fdc-2w95m</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v2-65c4dc6fdc-2w95m</u>
+			<u>reviews-v3-c9c4fb987-x85tw</u>
+			<u>reviews-v3-c9c4fb987-x85tw</u>
+		\end{lstlisting}
+		Như vậy qua việc dùng lệnh {\color{red}curl} ta có thể thấy được toàn bộ cả 3 phiên bản đều đã được triển khai thành công.
+		Lúc này ta có thể bắt đầu quá trình Canary release.
+		\textbf{Bước 1:} Ta định hướng với 90\% request vào v1, 10\% request vào v2
+		\begin{lstlisting}
+			$ kubectl apply -f .\samples\bookinfo\networking\virtual-service-reviews-90-10.yaml
+			virtualservice.networking.istio.io/reviews created
+			
+			$ for i in $(seq 1 10); do curl -s "http://localhost/productpage" | grep "review"; done
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v2-65c4dc6fdc-2w95m</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+		\end{lstlisting}
+		Ở đây ta có thể thấy hầu hết các yêu cầu đề trả về v1, một số trả về v2 và không có v3
+		Sau quá trình theo dõi và thu thập số liệu trong quá trình triển khai ta loại bỏ cấu hình trên để đến với các bước tiếp theo:
+		\begin{lstlisting}
+			$ kubectl delete -f .\samples\bookinfo\networking\virtual-service-reviews-90-10.yaml
+			virtualservice.networking.istio.io "reviews" deleted
+		\end{lstlisting}
+		Tiếp theo ta thực hiện các bước 2 và 3 với cách thực hiện tương tự như trên để có được kết quả trả về với các ti lệ khác nhau.
+		\begin{lstlisting}
+			$ kubectl apply -f .\samples\bookinfo\networking\virtual-service-reviews-80-20.yaml
+			virtualservice.networking.istio.io/reviews created
+			
+			$ for i in $(seq 1 10); do curl -s "http://localhost/productpage" | grep "review"; done
+			<u>reviews-v2-65c4dc6fdc-2w95m</u>
+			<u>reviews-v2-65c4dc6fdc-2w95m</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v2-65c4dc6fdc-2w95m</u>
+			<u>reviews-v2-65c4dc6fdc-2w95m</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v2-65c4dc6fdc-2w95m</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			
+			$ kubectl delete -f .\samples\bookinfo\networking\virtual-service-reviews-80-20.yaml
+			virtualservice.networking.istio.io "reviews" deleted
+			###
+			$ kubectl apply -f .\samples\bookinfo\networking\virtual-service-reviews-50-v3.yaml
+			virtualservice.networking.istio.io/reviews created
+			
+			$ for i in $(seq 1 10); do curl -s "http://localhost/productpage" | grep "review"; done
+			<u>reviews-v3-c9c4fb987-x85tw</u>
+			<u>reviews-v3-c9c4fb987-x85tw</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v3-c9c4fb987-x85tw</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v3-c9c4fb987-x85tw</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v3-c9c4fb987-x85tw</u>
+			<u>reviews-v1-569db879f5-q6v49</u>
+			<u>reviews-v3-c9c4fb987-x85tw</u>
+			
+			kubectl delete -f .\samples\bookinfo\networking\virtual-service-reviews-50-v3.yaml
+			virtualservice.networking.istio.io "reviews" deleted
+		\end{lstlisting}
+		Như vậy, qua các bước trên có thể thực hiện triển khai toàn bộ v2 hay tiếp tục kiểm tra v3; Từ quá trình triển khai các phiên bản khác nhau với lưu lượng được kiểm soát ta có thể thử nghiệm các phiên bản mới mà không phải đối mặt với việc gây ảnh hưởng tới toàn bộ hệ thống khi chỉ 1 phiên bản có lỗi.
+		\subsection{Kiali Dashboard}
+		\subsubsection{a. Mục đích}
+		Như có nói ở trên, để có thể kiểm tra giám sát quá trình triển khai thì chúng ta cần phải có một công cụ cung cấp khả năng theo dõi, giám sát, giúp chúng ta xem được network của ứng dụng microservice, kiểm tra request giữa từng service, response time,... Kiali là một công cụ giúp chúng ta thực hiện điều đó
+		\subsubsection{b. Kịch bản}
+		Ở đây ta dựng một Kiali Dashboard để có thể giám sát quá trình Canary release ở trên, kiểm soát các thông số đối với từng bản thử nghiệm để cho ra kết quả có triển khai phiên bản đó trên toàn bộ hệ thống hay không
+		\subsubsection{c. Các bước thực hiện}
+		Trước hết ta cài đặt Kiali cùng với add-on của nó
+		\begin{lstlisting}
+			$ kubectl apply -f .\samples\addons\kiali.yaml
+			serviceaccount/kiali created
+			configmap/kiali created
+			clusterrole.rbac.authorization.k8s.io/kiali-viewer created
+			clusterrole.rbac.authorization.k8s.io/kiali created
+			clusterrolebinding.rbac.authorization.k8s.io/kiali created
+			role.rbac.authorization.k8s.io/kiali-controlplane created
+			rolebinding.rbac.authorization.k8s.io/kiali-controlplane created
+			service/kiali created
+			deployment.apps/kiali created
+			
+			$ kubectl apply -f .\samples\addons\prometheus.yaml
+			serviceaccount/prometheus created
+			configmap/prometheus created
+			clusterrole.rbac.authorization.k8s.io/prometheus created
+			clusterrolebinding.rbac.authorization.k8s.io/prometheus created
+			service/prometheus created
+			deployment.apps/prometheus created
+		\end{lstlisting}
+		Sau đó ta dùng câu lệnh {\color{red}Istioctl dashboard kiali} để mở Kiali dashboard trên trình duyệt web.
+		\newpage
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.7\linewidth]{Pics/3.3.2-1}
+			\caption{Khởi động Kiali Dashboard}
+			\label{fig:3}
+		\end{figure}
+		Khi này ở tab Graph cùng với thuộc tính Namespace default ta có thể thấy được quá trình triển khai của ứng dụng Bookinfo ở trên một cách trực tiếp và giúp ta có thể hình dung một cách rõ ràng nhất về quá trình hoạt động của dịch vụ.
+		Thậm chí ta có thể theo dõi các chỉ số hoạt động chi tiết hơn nữa như Response time, Traffic rate,... 
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.7\linewidth]{Pics/3.3.2-2}
+			\caption{Theo dõi các thông tin chi tiết trong Kiali Dashboard}
+			\label{fig:3.4-2}
+		\end{figure}
+		
+		Như trong hình 3.6 ta có thể thấy được thông tin về Traffic Distribution của ứng dụng "reviews" đối với từng phiên bản của nó, chẳng hạn như 40,1\% với v1 và v2 hay 19,8\% với v3. Ta cũng có thể thấy thời gian phản hồi lớn nhất của 99\% gói tin gửi giữa các thành phần trong hệ thống như ta thấy được thời gian phản hồi giữa ứng dụng "reviews" v2 với dịch vụ "reviews" là 24ms cũng như Traffic Rate giữa chúng là 0.09 request-per-second 
 		\subsection{Xác thực và mã hóa đường truyền giữa các microservice}
 			\subsubsection{a. Mục đích}
 				{\hspace{0.6cm}Hai microservice sẽ được xác thực với nhau qua cơ chế mTLS và đường truyền giữa hai microservice cũng được mã hóa nhằm chống kẻ tấn công bắt trộm gói tin và đọc thông tin của những gói tin chưa được mã hóa giữa các microservice}
