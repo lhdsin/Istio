@@ -984,7 +984,13 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 			\end{enumerate}
 			
 	\section*{Kết luận chương 2}
-		{\hspace{0.6cm}Như vậy Istio đã giải quyết được }
+		{\hspace{0.6cm}Các ứng dụng hiện đại thường được kiến trúc dưới dạng tập hợp vi dịch vụ phân tán, với mỗi tập hợp microservice thực hiện một số chức năng riêng biệt. Service-mesh là lớp cơ sở hạ tầng chuyên dụng có thể thêm vào ứng dụng. Nó cho phép quản trị viên có thêm các khả năng như khả năng quan sát, quản lý lưu lượng và bảo mật một cách rõ ràng mà không cần phải sửa lại code của ứng dụng. }
+		
+		Khi việc triển khai các dịch vụ phân tán, chẳng hạn như trong hệ thống dựa trên Kubernetes, tăng về quy mô và độ phức tạp, việc hiểu và quản lý có thể trở nên khó khăn hơn. Các yêu cầu của nó có thể bao gồm phát hiện, cân bằng tải, khôi phục lỗi, số liệu và giám sát. Lưới dịch vụ cũng thường giải quyết các yêu cầu hoạt động phức tạp hơn, như thử nghiệm A/B, triển khai canary, giới hạn tốc độ, kiểm soát truy cập, mã hóa và xác thực đầu cuối.
+		
+		Giao tiếp giữa dịch vụ với dịch vụ là điều làm cho ứng dụng phân tán trở nên khả thi. Định tuyến giao tiếp cả bên trong và trên các cụm ứng dụng ngày càng trở nên phức tạp khi số lượng dịch vụ tăng lên.
+		
+		Istio có thể giải quyết các vấn để trên. Các tính năng mạnh mẽ của Istio cung cấp một cách thống nhất và hiệu quả hơn để bảo mật, kết nối và giám sát các dịch vụ. Istio là đường dẫn đến cân bằng tải, xác thực dịch vụ với dịch vụ và giám sát – với ít hoặc không có thay đổi mã dịch vụ.
 		
 \chapter{Triển khai Istio trên Kubernetes}
 	\section{Mô hình triển khai}
@@ -1181,7 +1187,12 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 					\caption{Các dịch vụ đều hoạt động bình thường}
 					\label{fig:3}
 				\end{figure}
-				
+		\section*{Kết luận chương 3}
+		{\hspace{0.6cm}Qua phần thực nghiệm trên, cho thấy việc triển khai Istio là cực kì hữu dụng và quan trọng đối với bất kì hệ thống nào có sử dụng Kubernetes. Có thể sử dụng nhiều chiến lược triển khai như canary deployment, dark release, ...để có thể kiểm thử khi dịch vụ mới được triển khai có thể cho phép một lượng ít người dùng sử dụng tính năng để xem tính năng có bị lỗi hay không, hoặc chỉ có một nhóm người có thể sử dụng tính năng như các kĩ sư phần mềm hoặc các tester khi kiểm tra các tính năng mới của dịch vụ, và có thể quay về bản cũ nếu như tính năng mới của dịch vụ bị lỗi mà không làm ảnh hưởng gì đến hệ thống.}
+		
+		Khi các dịch vụ ngày càng phức tạp, việc hiểu hành vi và hiệu suất của hệ thống trở nên ngày càng khó khăn. Istio tạo phép đo từ xa chi tiết cho tất cả các thông tin liên lạc trong các dịch vụ. Phép đo từ xa này cung cấp khả năng quan sát hành vi dịch vụ, làm cho việc khắc phục sự cố, bảo trì và tối ưu hóa ứng dụng trở nên dễ dàng. Ngoài ra Istio còn hỗ trợ các phần mềm khác như kiali, prometheus, jaeger, grafana, ... tạo ra các biểu đồ thể hiện hiệu suất của hệ thống làm cho người quản trị viên có thể dễ dàng quản lí tập trung các microservice.
+		
+		Microservices có các nhu cầu bảo mật cụ thể, bao gồm bảo vệ chống lại các cuộc tấn công trung gian, kiểm soát truy cập linh hoạt, công cụ kiểm toán và xác thực giữa các microservice(mTLS). Istio bao gồm các giải pháp bảo mật toàn diện để cung cấp cho người vận hành khả năng giải quyết tất cả các vấn đề này. Nó cung cấp tính năng xác thực, ủy quyền, kiếm toán.
 	\section{Kết luận}
 	
 \end{document}
