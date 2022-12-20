@@ -9,6 +9,8 @@
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{tikz}
+\usepackage{filecontents}
+\usepackage{blindtext}
 \usetikzlibrary{calc}
 
 \newcommand{\shellcmd}[1]{\\\indent\indent\texttt{\footnotesize\# #1}\\}
@@ -104,7 +106,7 @@
 
 Ngày nay các ứng dụng được xây dựng với kiến trúc lớn và phức tạp đang dần được chia thành các thành phần nhỏ hơn, có khả năng hoạt đông độc lập được gọi là microservices. Vì các Microservices tách biệt với nhau nên chúng có thể được phát triển, triển khai hay cập nhật và mở rộng quy mô một cách riêng lẻ. Nhờ khả năng này cho phép ta thay đổi các thành phần nhanh chóng và thường xuyên khi cần thiết để theo kịp với các yêu cầu thay đổi nhanh chóng thời nay.\\
 
-Nhưng với số lượng lớn các thành phần cũng như cơ sở dữ liệu việc cấu hình, quản lý và giữ hệ thống hoạt động trơn tru ngày càng trở nên khó khăn đặc biệt trong việc tối ưu hiệu quả sử dụng tài nguyên. Kubernetes ra đời ể đáp ứng nhu cầu tự động hoá như lập lịch tự động, cấu hình tự động hay giám sát và xử lý lỗi.\\
+Nhưng với số lượng lớn các thành phần cũng như cơ sở dữ liệu việc cấu hình, quản lý và giữ hệ thống hoạt động trơn tru ngày càng trở nên khó khăn đặc biệt trong việc tối ưu hiệu quả sử dụng tài nguyên. Kubernetes ra đời để đáp ứng nhu cầu tự động hoá như lập lịch tự động, cấu hình tự động hay giám sát và xử lý lỗi.\\
 
 Kubernetes cung cấp cho các nhà phát triển khả năng triển khai các ứng dụng một cách thường xuyên mà không cần thông qua nhóm vận hành. Không chỉ dừng lại ở đó Kuberbetes cũng giúp nhóm vận hành tự động theo dõi và khắc phục sự cố. \\
 
@@ -1475,6 +1477,33 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 		Microservices có các nhu cầu bảo mật cụ thể, bao gồm bảo vệ chống lại các cuộc tấn công trung gian, kiểm soát truy cập linh hoạt, công cụ kiểm toán và xác thực giữa các microservice(mTLS). Istio bao gồm các giải pháp bảo mật toàn diện để cung cấp cho người vận hành khả năng giải quyết tất cả các vấn đề này. Nó cung cấp tính năng xác thực, ủy quyền, kiếm toán.
 \chapter*{\centering Kết luận}
 \addcontentsline{toc}{chapter}{Kết luận}
+
+	Hầu hết các hệ thống hiện này đều sử dụng cấu trúc microservice, với cấu trúc này thì các nhà phát triển sẽ chỉ cần làm tốt phần công việc của họ, sau đó sẽ được liên kết với các tính năng hay ứng dụng khác thông qua API, các tính năng hay ứng dụng có thể nằm trong cùng một Pod hoặc khác Pod nhau nhưng với điều kiện các Pod này phải được giao tiếp với nhau, với việc các ứng dụng giao tiếp với bên ngoài nên việc bảo mật điều tất yếu. Thông qua báo cáo này, ta thấy rất rõ việc áp dụng các dịch vụ đảm bảo an toàn cho Pod là hiển nhiên và bắt buộc phải có, nếu muốn có một hệ thống an toàn hơn bằng cách hạn chế hoặc chặn quyền truy cập đến một số tài nguyên được xác định. Các dịch vụ này tương đối dễ tạo và triển khai và là thành phần hữu ích cho bất kỳ kế hoạch đảm bảo bảo mật cho Kubernetes.
+
+	\begin{description}
+		\item[Chương 1] đã nêu rõ được khái quát về cấu trúc các thành phần vận hành bên trong Container Kubernetes, Qua việc hiểu tổng quan của các công nghệ trênnhóm đã nhận ra một số vấn đề bảo mật của kiến trúc Microservices như nguy cơ bị tấn công cao khi mở rộng, việc ảnh hưởng đến hiệu suất khi triển khai bảo mật phân tán cũng như sự phức tạp, khó khăn khi triển khai các giải pháp an toàn cũng yêu cầu nhiều kiến thức đối với những nhà phát triển.
+		\item[Chương 2] đã đi sâu sâu vào chi tiết về các tập hợp vi dịch vụ phân tán, các lớp cơ sở hạ tầng chuyên dụng như Service-mesh, quá trình triển khia các dịch vụ phân tán cũng như giao tiếp giữa dịch vụ với dịch vụ. Từ đó cho thấy Istio như một cách để giải quyết các bài toán gặp phải khi sử dụng các dịch vụ trên.
+		\item[Chương 3] đã cho thấy việc triển khai Istio là cực kì hữu dụng và quan trọng đối với bất kì hệ thống nào có sử dụng Kubernetes. Có thể sử dụng nhiều chiến lược triển khai như canary deployment, dark release, ... Cung cấp khả năng quan sát hành vi dịch vụ, làm cho việc khắc phục sự cố, bảo trì và tối ưu hóa ứng dụng trở nên dễ dàng cũng như hỗ trợ các phần mềm theo dõi trực quan như kiali, jeager, grafane, v.v.. đồng thời bao gồm các giải pháp bảo mật toàn diện như các tính năng xác thực, ủy quyền, kiếm toán.
+	\end{description}
+
+
+\begin{thebibliography}{9}
+\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
+	\bibitem{Kubernetes in Action Second Edition}
+	Marko Luksa. Kubernetes in Action Second Edition MEAP V05 
+	
+	\bibitem{Istio in Action-Manning Publication}
+	Christian E. Posta and Rinor Maloku. Istio in Action-Manning Publication
+	
+	\bibitem{Kubernetes Documentation}
+	Kubernetes Documentation{https://kubernetes.io/docs/home/}
+	
+	\bibitem{Istio Documentation}
+	Istio Documentation{https://istio.io/latest/docs/}
+	
+	\bibitem{Envoy Proxy Documentation}
+	Envoy Proxy Documentation{https://www.envoyproxy.io/docs/}
+\end{thebibliography}
 
 \appendix 
 \addcontentsline{toc}{chapter}{Phụ Lục}
