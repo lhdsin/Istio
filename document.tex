@@ -352,7 +352,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 				
 				Các Pod có một vòng đời xác định. Ví dụ: khi một Pod đang chạy trong cụm thì một lỗi nghiêm trọng trên node nơi pod đó đang chạy có nghĩa là tất cả các pod trên node đó đều bị lỗi. Kubernetes coi mức độ thất bại đó là cuối cùng: bạn sẽ cần tạo một Pod mới để khôi phục, ngay cả khi node sau đó trở lại bình thường.\\
 				
-				Tuy nhiên, để làm cho công việc dễ dàng hơn, chúng ta không cần phải quản lý trực tiếp từng Pod. Thay vào đó, bạn có thể sử dụng các workload để quản lý một nhóm các Pod. Các tài nguyên này định cấu hình bộ điều khiển để đảm bảo số lượng phù hợp của loại Pod phù hợp đang chạy, phù hợp với trạng thái chúng ta đã cấu hình.\\
+				Tuy nhiên, để làm cho công việc dễ dàng hơn, các quản trị viên không cần phải quản lý trực tiếp từng Pod. Thay vào đó, bạn có thể sử dụng các workload để quản lý một nhóm các Pod. Các tài nguyên này định cấu hình bộ điều khiển để đảm bảo số lượng phù hợp của loại Pod phù hợp đang chạy, phù hợp với trạng thái các quản trị viên đã cấu hình.\\
 				
 				Kubernetes cung cấp một số workload tích hợp sẵn:
 				\begin{itemize}				
@@ -364,15 +364,15 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 	\section{Một số vấn đề bảo mật kiến trúc Microservices}
 			{\hspace{0.6cm}Trong hầu hết các ứng dụng được xây dựng trên cấu trúc monolith, bảo mật được thực thi tập trung và các thành phần riêng lẻ không cần phải lo lắng về việc thực hiện các kiểm tra bảo mật trừ khi có yêu cầu. Kết quả là, mô hình bảo mật của một ứng dụng dựa trên cấu trúc monolith là đơn giản hơn nhiều so với ứng dụng được xây dựng dựa trên cấu trúc microservices. Sau đây là một số vấn đề về bảo mật của kiến trúc Microservices gặp phải.\\}			
 		\subsection{Càng nhiều microservices thì nguy cơ bị tấn công càng cao}
-				{\hspace{0.6cm}Trong một ứng dụng được xây dựng trên cấu trúc monolith, giao tiếp giữa các thành phần bên trong xảy ra trong một tiến trình duy nhất — ví dụ: trong một ứng dụng Java, trong cùng một Máy ảo Java (JVM). Theo kiến trúc microservices, các thành phần bên trong đó được thiết kế dưới dạng các microservices riêng biệt, độc lập và các tiến trình phải gọi lẫn nhau để trao đổi các thông tin. Ngoài ra, mỗi microservice hiện chấp nhận các request một cách độc lập hoặc có các điểm truy cập riêng. Thay vì một vài điểm truy cập, như trong một ứng dụng xây dựng trên cấu trúc monolith, bây giờ chúng ta có số lượng lớn các điểm truy cập. Khi số lượng truy cập vào hệ thống tăng lên, chúng ta sẽ có nhiều điểm bị tấn công hơn. Vấn đề này là một trong những thách thức cơ bản trong việc xây dựng thiết kế bảo mật cho microservices.\\}
+				{\hspace{0.6cm}Trong một ứng dụng được xây dựng trên cấu trúc monolith, giao tiếp giữa các thành phần bên trong xảy ra trong một tiến trình duy nhất — ví dụ: trong một ứng dụng Java, trong cùng một Máy ảo Java (JVM). Theo kiến trúc microservices, các thành phần bên trong đó được thiết kế dưới dạng các microservices riêng biệt, độc lập và các tiến trình phải gọi lẫn nhau để trao đổi các thông tin. Ngoài ra, mỗi microservice hiện chấp nhận các request một cách độc lập hoặc có các điểm truy cập riêng. Thay vì một vài điểm truy cập, như trong một ứng dụng xây dựng trên cấu trúc monolith, bây giờ các quản trị viên có số lượng lớn các điểm truy cập. Khi số lượng truy cập vào hệ thống tăng lên, các quản trị viên sẽ có nhiều điểm bị tấn công hơn. Vấn đề này là một trong những thách thức cơ bản trong việc xây dựng thiết kế bảo mật cho microservices.\\}
 		\subsection{Kiểm tra bảo mật phân tán có thể dẫn đến hiệu suất giảm}
-				{\hspace{0.6cm}Không giống như trong một ứng dụng được xây dựng trên cấu trúc monolith, mỗi microservice trong triển khai microservices phải thực hiện kiểm tra an ninh độc lập. Từ quan điểm của một ứng dụng dựa trên cấu trúc monolith, trong đó việc kiểm tra bảo mật được thực hiện một lần và các request được gửi đến thành phần tương ứng, nhưng đối với các microservice chúng ta phải kiểm tra tất các các điểm truy cập của chúng. Ngoài ra, trong khi xác thực các yêu cầu tại mỗi microservice, bạn có thể cần kết nối với dịch vụ mã thông báo bảo mật từ xa (STS). Các kiểm tra bảo mật phân tán, lặp đi lặp lại và kết nối từ xa này có thể làm tăng độ trễ và làm giảm đáng kể hiệu suất của hệ thống.\\}
+				{\hspace{0.6cm}Không giống như trong một ứng dụng được xây dựng trên cấu trúc monolith, mỗi microservice trong triển khai microservices phải thực hiện kiểm tra an ninh độc lập. Từ quan điểm của một ứng dụng dựa trên cấu trúc monolith, trong đó việc kiểm tra bảo mật được thực hiện một lần và các request được gửi đến thành phần tương ứng, nhưng đối với các microservice các quản trị viên phải kiểm tra tất các các điểm truy cập của chúng. Ngoài ra, trong khi xác thực các yêu cầu tại mỗi microservice, bạn có thể cần kết nối với dịch vụ mã thông báo bảo mật từ xa (STS). Các kiểm tra bảo mật phân tán, lặp đi lặp lại và kết nối từ xa này có thể làm tăng độ trễ và làm giảm đáng kể hiệu suất của hệ thống.\\}
 				
-				Một số giải quyết vấn đề này bằng cách đơn giản là tin tưởng vào mạng và tránh kiểm tra bảo mật các microservice. Theo thời gian, mạng tin cậy đã trở thành lỗi thời và đang tiến tới các nguyên tắc mạng không tin cậy. Với nguyên tắc mạng không tin cậy, chúng ta thực hiện bảo mật với từng tài nguyên trong mạng. Mọi thiết kế bảo mật microservices phải có hiệu suất tổng thể có thể chấp nhận được.
+				Một số giải quyết vấn đề này bằng cách đơn giản là tin tưởng vào mạng và tránh kiểm tra bảo mật các microservice. Theo thời gian, mạng tin cậy đã trở thành lỗi thời và đang tiến tới các nguyên tắc mạng không tin cậy. Với nguyên tắc mạng không tin cậy, các quản trị viên thực hiện bảo mật với từng tài nguyên trong mạng. Mọi thiết kế bảo mật microservices phải có hiệu suất tổng thể có thể chấp nhận được.
 		\subsection{Sự phức tạp khi triển khai xác thực khởi động giữa các	microservices}
-				{\hspace{0.6cm}Giao tiếp dịch vụ với dịch vụ diễn ra giữa các microservice. Mỗi kênh liên lạc giữa các microservice phải được bảo vệ. Chúng có nhiều tùy chọn, nhưng giả sử rằng chúng ta sử dụng chứng chỉ (certificates).\\}
+				{\hspace{0.6cm}Giao tiếp dịch vụ với dịch vụ diễn ra giữa các microservice. Mỗi kênh liên lạc giữa các microservice phải được bảo vệ. Chúng có nhiều tùy chọn, nhưng giả sử rằng các quản trị viên sử dụng chứng chỉ (certificates).\\}
 				
-				Giờ đây, mỗi microservice phải được cấp chứng chỉ (và khóa bí mật tương ứng), chứng chỉ này sẽ sử dụng để xác thực chính nó với một microservice khác trong quá trình tương tác giữa dịch vụ với dịch vụ. Microservice của người nhận phải biết cách xác thực chứng chỉ được liên kết với microservice đang gọi. Do đó cần một cách để tin tưởng bootstrap giữa các microservices. Ngoài ra cần có khả năng thu hồi chứng chỉ (trong trường hợp khóa bí mật tương ứng bị xâm phạm) và cấp các chứng chỉ mới (thay đổi chứng chỉ định kỳ để giảm thiểu mọi rủi ro khi vô tình làm mất chìa khóa). Những tác vụ này rất cồng kềnh và trừ khi chúng ta tìm ra cách tự động hóa chúng.\\
+				Giờ đây, mỗi microservice phải được cấp chứng chỉ (và khóa bí mật tương ứng), chứng chỉ này sẽ sử dụng để xác thực chính nó với một microservice khác trong quá trình tương tác giữa dịch vụ với dịch vụ. Microservice của người nhận phải biết cách xác thực chứng chỉ được liên kết với microservice đang gọi. Do đó cần một cách để tin tưởng bootstrap giữa các microservices. Ngoài ra cần có khả năng thu hồi chứng chỉ (trong trường hợp khóa bí mật tương ứng bị xâm phạm) và cấp các chứng chỉ mới (thay đổi chứng chỉ định kỳ để giảm thiểu mọi rủi ro khi vô tình làm mất chìa khóa). Những tác vụ này rất cồng kềnh và trừ khi các quản trị viên tìm ra cách tự động hóa chúng.\\
 		\subsection{Khó theo dõi các request của các microservice}
 				{\hspace{0.6cm}Khả năng giám sát là thước đo những gì có thể suy ra về trạng thái bên trong của một hệ thống dựa trên kết quả đầu ra bên ngoài của nó. Nhật ký (logs), chỉ số (metrics) và dấu vết (traces) được coi là ba trụ cột của khả năng giám sát.\\}
 				
@@ -384,7 +384,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 		\subsection{Tính bất biến của container làm việc xác thực và chính sách kiểm soát truy cập của các dịch vụ khó khăn}
 				{\hspace{0.6cm}Máy chủ không thay đổi trạng thái sau khi quay được gọi là máy chủ bất biến. Các mô hình triển khai phổ biến nhất cho microservices là dựa trên container. Mỗi microservice chạy bằng container riêng của nó và tất nhiên, container phải là một máy chủ bất biến. Nói cách khác, sau khi container khởi động, nó sẽ không thay đổi bất kỳ tệp nào trong hệ thống tệp của nó hoặc duy trì bất kỳ trạng thái của nó không thay đổi lúc nó đang chạy.\\}
 				
-				Tính bất biến có tác động gì đến bảo mật và tại sao khái niệm máy chủ bất biến lại được coi là thách thức bảo mật microservices? Trong kiến trúc bảo mật microservices, mỗi microservice trở thành một điểm cần được bảo mật. Do đó, cần duy trì danh sách các máy khách được phép (có thể là các microservice khác) có thể truy cập vào microservice này và cần một bộ chính sách kiểm soát truy cập. Những danh sách này không tĩnh; chúng ta cần được phép cập nhật các danh sách này. Nhưng với tính chất bất biến của container, chúng ta không thể update hệ thống tệp trong các container của các microservice.
+				Tính bất biến có tác động gì đến bảo mật và tại sao khái niệm máy chủ bất biến lại được coi là thách thức bảo mật microservices? Trong kiến trúc bảo mật microservices, mỗi microservice trở thành một điểm cần được bảo mật. Do đó, cần duy trì danh sách các máy khách được phép (có thể là các microservice khác) có thể truy cập vào microservice này và cần một bộ chính sách kiểm soát truy cập. Những danh sách này không tĩnh; các quản trị viên cần được phép cập nhật các danh sách này. Nhưng với tính chất bất biến của container, các quản trị viên không thể update hệ thống tệp trong các container của các microservice.
 		\subsection{Kiến trúc đa ngôn ngữ đòi hỏi các developer phải có thêm nhiều kiến thức bảo mật hơn}
 				{\hspace{0.6cm}Trong triển khai microservices, các dịch vụ nói chuyện với nhau qua mạng. Họ không phụ thuộc vào việc triển khai từng dịch vụ, mà phụ thuộc vào giao diện dịch vụ. Tình huống này cho phép mỗi microservice chọn ngôn ngữ lập trình của riêng mình và nền tảng công nghệ để triển khai. Trong một môi trường, trong đó mỗi đội development triển khai các mircoservice của riêng mình, mỗi nhóm có thể linh hoạt để chọn các stack công nghệ để phù hợp với sản phẩm. Kiến trúc này, cho phép các các thành phần trong hệ thống để chọn công nghệ tốt nhất cho chúng, được gọi là một kiến trúc đa ngôn ngữ.\\}
 				
@@ -398,7 +398,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 		\subsection{Tổng quan về Service Mesh}
 			\hspace{0.6cm}Kiến trúc Microservice ngày càng trở nên phổ biến và trở thành lựa chọn hàng đầu trong quá trình phát triển phần mềm. Trong kiến trúc microservice, ứng dụng monolithic truyền thống được chia nhỏ ra thành các thành phần có thể deploy độc lập. Một ứng dụng dần trở thành một nhóm các service, khi bạn có hàng trăm, hàng ngàn các service nhỏ cùng hoạt động, một bài toán mới về vấn đề giao tiếp giữa các service cần được giải quyết.\\
 			
-			Giả sử chúng ta có website bán hàng online được triển khai theo kiến trúc microservice, chúng ta sẽ có:
+			Giả sử các quản trị viên có website bán hàng online được triển khai theo kiến trúc microservice, các quản trị viên sẽ có:
 			\begin{itemize}
 				\item Web server service: xử lý các request về UI
 				\item Payment service: xử lý các request về thanh toán
@@ -408,7 +408,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 				\item ..., rất nhiều các microservice xử lý các vấn đề khác nữa
 			\end{itemize}
 		
-		Khi chúng ta deploy website trong Kubernetes cluster, để website hoạt động ổn định, trước tiên các service cần hoạt động chính xác, web server cần xử lý chính xác business logic, database cần lưu đầy đủ thông tin,... hơn hết các service cần giao tiếp thông suốt với nhau. Khi user gửi 1 request thêm sản phẩm vào giỏ hàng lên web server, web server cần thông báo sang cho shopping cart service, rồi lưu thông tin đó vào database. Vì vậy, các service cần phải biết làm thế nào để giao tiếp với các service khác, đâu là đích đến tiếp theo của request, địa chỉ endpoint của từng service, để web server biết phải giao tiếp với endpoint nào chúng ta cần cấu hình cho nó. Khi ta scale ứng dụng lên và có nhiều thêm các microservice, chúng ta lại config endpoint cho tất cả các service đã hoạt động trước đó. Cấu hình địa chỉ endpoint trở thành 1 phần không thể tách rời của các service.
+		Khi các quản trị viên deploy website trong Kubernetes cluster, để website hoạt động ổn định, trước tiên các service cần hoạt động chính xác, web server cần xử lý chính xác business logic, database cần lưu đầy đủ thông tin,... hơn hết các service cần giao tiếp thông suốt với nhau. Khi user gửi 1 request thêm sản phẩm vào giỏ hàng lên web server, web server cần thông báo sang cho shopping cart service, rồi lưu thông tin đó vào database. Vì vậy, các service cần phải biết làm thế nào để giao tiếp với các service khác, đâu là đích đến tiếp theo của request, địa chỉ endpoint của từng service, để web server biết phải giao tiếp với endpoint nào các quản trị viên cần cấu hình cho nó. Khi ta scale ứng dụng lên và có nhiều thêm các microservice, các quản trị viên lại config endpoint cho tất cả các service đã hoạt động trước đó. Cấu hình địa chỉ endpoint trở thành 1 phần không thể tách rời của các service.
 		
 		\newpage Nói về vấn đề security, ứng dụng dùng kiến trúc microservice trông sẽ như này:
 		\begin{figure}[h]
@@ -418,7 +418,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 			\label{fig:2.1.1-1}
 		\end{figure}
 		
-		Chúng ta có firewall hoặc proxy để tránh Kubernetes cluster được truy cập trực tiếp, bảo vệ cho các dịch vụ bên trong cluster. Tuy nhiên ngay khi yêu cầu đi vào bên trong cluster, các dịch vụ giao tiếp với nhau 1 cách kém bảo mật, chúng giao tiếp với nhau thông qua http hoặc protocol kém bảo mật hơn, các dịch vụ giao tiếp tự do với nhau bên trong cluster - nơi không được bảo mật nữa. Khi ai đó tấn công vào ứng dụng, vượt qua firewall/proxy để vào bên trong cluster, họ thoải mái làm mọi thứ, có thể lấy các thông tin nhạy cảm của người dùng. Vì vậy chúng ta bổ sung thêm các security logic cho dịch vụ để đảm bảo việc giao tiếp giữa các dịch vụ bên trong cluster được an toàn.
+		các quản trị viên có firewall hoặc proxy để tránh Kubernetes cluster được truy cập trực tiếp, bảo vệ cho các dịch vụ bên trong cluster. Tuy nhiên ngay khi yêu cầu đi vào bên trong cluster, các dịch vụ giao tiếp với nhau 1 cách kém bảo mật, chúng giao tiếp với nhau thông qua http hoặc protocol kém bảo mật hơn, các dịch vụ giao tiếp tự do với nhau bên trong cluster - nơi không được bảo mật nữa. Khi ai đó tấn công vào ứng dụng, vượt qua firewall/proxy để vào bên trong cluster, họ thoải mái làm mọi thứ, có thể lấy các thông tin nhạy cảm của người dùng. Vì vậy các quản trị viên bổ sung thêm các security logic cho dịch vụ để đảm bảo việc giao tiếp giữa các dịch vụ bên trong cluster được an toàn.
 		
 		Mỗi dịch vụ cũng cần được bổ sung khả năng khởi động lại để khi dịch vụ không thể truy cập, hoặc các dịch vụ khác mất kết nối, tự nó có thể khởi động lại, để đảm bảo giao tiếp thông suốt.
 		
@@ -430,7 +430,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 			\label{fig:2.1.1-2}
 		\end{figure}
 		
-		Để giải quyết vấn đề này, chúng ta cần tách biệt các non-business logic với business logic khỏi service bằng solution được gọi là Service Mesh.
+		Để giải quyết vấn đề này, các quản trị viên cần tách biệt các non-business logic với business logic khỏi service bằng solution được gọi là Service Mesh.
 		
 		Service Mesh là lớp cơ sở hạ tầng chuyên dụng kiểm soát giao tiếp qua mạng giữa dịch vụ với dịch vụ. Service Mesh cho phép các phần riêng biệt của ứng dụng giao tiếp với nhau. Service Mesh xuất hiện phổ biến cùng với các ứng dụng, bộ chứa và vi dịch vụ dựa trên đám mây.
 		
@@ -513,7 +513,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 		Ở phiên bản 1.5 trở về trước, control plane của Istio được gồm nhiều thành phần như Pilot, Citadel, Galley, Mixer,... mỗi thành phần thì lại được deploy trên Kubernetes như 1 pod riêng biệt. Tuy nhiên từ những version sau, chúng đươc gộp thành một thành phần duy nhất là Istiod, điều này làm cho việc cấu hình và vận hành Istio trở nên dễ dàng hơn.
 		
 			\subsubsection{Ưu điểm khi sử Istio}
-		\hspace{0.6cm}Istio là 1 implementation của Service Mesh, nên tính độc lập của application là một trong những ưu tiên hàng đầu vì thế để đưa các chức năng của Istio vào trong ứng dụng microservice của thì chúng ta không cần thiết phải thay đổi các file cấu hình yaml của các Deployment hay Service, mọi thứ đã được đóng gói trong chính file cấu hình của Istio. Việc cài đặt Istio cũng tách rời với logic của ứng dụng, không làm thay đổi các business logic.
+		\hspace{0.6cm}Istio là 1 implementation của Service Mesh, nên tính độc lập của application là một trong những ưu tiên hàng đầu vì thế để đưa các chức năng của Istio vào trong ứng dụng microservice của thì các quản trị viên không cần thiết phải thay đổi các file cấu hình yaml của các Deployment hay Service, mọi thứ đã được đóng gói trong chính file cấu hình của Istio. Việc cài đặt Istio cũng tách rời với logic của ứng dụng, không làm thay đổi các business logic.
 		
 		Các component của Istio được kế thừa từ Kubernetes API, dưới dạng CRD, giúp ta dễ dàng cấu hình chúng như cấu hình 1 deployment, service luôn. Istio hỗ trợ cấu hình:
 		\begin{itemize}
@@ -522,9 +522,9 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 			\item Retry rule, timeout
 		\end{itemize}
 		
-		Hai CRD chính của Istio là VirtualService định tuyến traffic tới 1 service, khi lưu lượng đã được định tuyến tới dịch vụ, chúng ta có thể sử dụng DestinationRule để cấu hình các chính sách lên nó.
+		Hai CRD chính của Istio là VirtualService định tuyến traffic tới 1 service, khi lưu lượng đã được định tuyến tới dịch vụ, các quản trị viên có thể sử dụng DestinationRule để cấu hình các chính sách lên nó.
 		
-		Khi chúng ta tạo các CRD trên Kubernetes, istiod - control plane của Istio, sẽ chuyển đổi chúng thành cấu hình của Envoy và gửi tất cả các cấu hình đó tới các Envoy Proxy sidecar. Khi các Envoy Proxy đã có được cấu hình, chúng sẽ giao tiếp với nhau (không thông qua istiod) dưới các rule mà chúng ta đã dinh nghĩa.
+		Khi các quản trị viên tạo các CRD trên Kubernetes, istiod - control plane của Istio, sẽ chuyển đổi chúng thành cấu hình của Envoy và gửi tất cả các cấu hình đó tới các Envoy Proxy sidecar. Khi các Envoy Proxy đã có được cấu hình, chúng sẽ giao tiếp với nhau (không thông qua istiod) dưới các rule mà các quản trị viên đã dinh nghĩa.
 		
 		Ngoài việc rất dễ dàng cấu hình Istio, nó còn mang tới những ưu điểm như:
 		\begin{itemize}
@@ -551,11 +551,11 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 		\end{figure}
 		
 		\subsection{Tổng quan về Envoy Proxy}
-		\hspace{0.6cm}Một dịch vụ proxy khi chạy được sắp xếp nằm ngoài quy trình với ứng dụng, ứng dụng sẽ nói chuyện thông qua dịch vụ proxy cứ khi nào nó muốn giao tiếp với các dịch vụ khác. Với Istio, các Envoy proxy được triển khai cùng với tất cả các ứng dụng trong một mạng lưới serves mesh, được quản lý bở services data plane. Vì Envoy là một thành phần quan trọng trong data plane và trong kiến trúc services mesh tổng thể, nên chúng ta cần phải làm quen với nó. Điều này sẽ giúp bạn hiểu rõ hơn về Istio và cách gỡ lỗi hoặc khắc phục sự cố trong quá trình triển khai của bạn.
+		\hspace{0.6cm}Một dịch vụ proxy khi chạy được sắp xếp nằm ngoài quy trình với ứng dụng, ứng dụng sẽ nói chuyện thông qua dịch vụ proxy cứ khi nào nó muốn giao tiếp với các dịch vụ khác. Với Istio, các Envoy proxy được triển khai cùng với tất cả các ứng dụng trong một mạng lưới serves mesh, được quản lý bở services data plane. Vì Envoy là một thành phần quan trọng trong data plane và trong kiến trúc services mesh tổng thể, nên các quản trị viên cần phải làm quen với nó. Điều này sẽ giúp bạn hiểu rõ hơn về Istio và cách gỡ lỗi hoặc khắc phục sự cố trong quá trình triển khai của bạn.
 			\subsubsection{Định nghĩa về Envoy proxy}
 		\hspace{0.6cm}Envoy được phát triển bởi Lyft để giải quyết một số vấn đề khó khăn về mạng ứng dụng nảy sinh khi xây dựng các hệ thống phân tán. Nó đã được xây dựng như một dự án nguồn mở vào tháng 9 năm 2016 và một năm sau (tháng 9 năm 2017) nó đã tham gia Nền tảng điện toán  đám mây (CNCF). Envoy được viết bằng C++ với nỗ lực tăng hiệu suất và quan trọng hơn là làm cho nó ổn định hơn và mang tính quyết định hơn ở các mức tải cao hơn.
 		
-		Envoy là một proxy, vì vậy trước khi đi xa hơn chúng ta nên làm rõ proxy là gì. Proxy là một thành phần mạng trung gian trong kiến trúc mạng được đặt trong giao tiếp giữa máy khách và máy chủ, cho phép nó cung cấp các tính năng bổ sung như các chính sách, bảo mật và quyền riêng tư.
+		Envoy là một proxy, vì vậy trước khi đi xa hơn các quản trị viên nên làm rõ proxy là gì. Proxy là một thành phần mạng trung gian trong kiến trúc mạng được đặt trong giao tiếp giữa máy khách và máy chủ, cho phép nó cung cấp các tính năng bổ sung như các chính sách, bảo mật và quyền riêng tư.
 		
 		\begin{figure}[h]
 			\centering
@@ -573,13 +573,13 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 			\label{fig:2.1.3-2}
 		\end{figure}
 		
-		Proxy Envoy cụ thể là một proxy tầng ứng dụng mà chúng ta có thể chèn vào đường dẫn của yêu cầu ứng dụng để cung cấp những thứ như tìm kiếm dịch vụ, cân bằng tải và kiểm tra tình trạng, nhưng Envoy có thể làm được nhiều hơn thế. Envoy có thể hiểu các giao thức lớp 7 mà một ứng dụng có thể nói khi giao tiếp với các dịch vụ khác. Ví dụ: Envoy hiểu HTTP 1.1, HTTP 2, gRPC và các giao thức khác và có thể thêm hành vi như request-level timeouts, retries, perretry timeouts, circuit breaking, và các tính năng phục hồi khác. Những thứ như thế này không thể thực hiện được với các proxy cấp kết nối cơ bản (L3/L4) chỉ hiểu các kết nối.
+		Proxy Envoy cụ thể là một proxy tầng ứng dụng mà các quản trị viên có thể chèn vào đường dẫn của yêu cầu ứng dụng để cung cấp những thứ như tìm kiếm dịch vụ, cân bằng tải và kiểm tra tình trạng, nhưng Envoy có thể làm được nhiều hơn thế. Envoy có thể hiểu các giao thức lớp 7 mà một ứng dụng có thể nói khi giao tiếp với các dịch vụ khác. Ví dụ: Envoy hiểu HTTP 1.1, HTTP 2, gRPC và các giao thức khác và có thể thêm hành vi như request-level timeouts, retries, perretry timeouts, circuit breaking, và các tính năng phục hồi khác. Những thứ như thế này không thể thực hiện được với các proxy cấp kết nối cơ bản (L3/L4) chỉ hiểu các kết nối.
 		
 		Envoy có thể được mở rộng để hiểu các giao thức ngoài các giao thức mặc định sẵn có. Các bộ lọc đã được viết cho các cơ sở dữ liệu như MongoDB, DynamoDB và thậm chí cả các giao thức không đồng bộ như Giao thức xếp hàng tin nhắn nâng cao (AMQP). Độ tin cậy và mục tiêu minh bạch mạng cho các ứng dụng là những nỗ lực đáng kể, nhưng điều quan trọng không kém là khả năng hiểu nhanh những gì đang xảy ra trong một kiến trúc phân tán, đặc biệt là khi mọi thứ không hoạt động như mong đợi. Vì Envoy hiểu các giao thức cấp ứng dụng và lưu lượng ứng dụng đi qua Envoy, nên proxy có thể thu thập nhiều dữ liệu từ xa về các yêu cầu truyền qua hệ thống, chẳng hạn như thời gian thực hiện các yêu cầu đó, số lượng yêu cầu mà một số dịch vụ nhất định đang xem (thông qua put) và tỷ lệ lỗi mà các dịch vụ đang gặp phải.
 		
 		\newpage Là một proxy, Envoy được thiết kế để bảo vệ các nhà phát triển khỏi các mối lo ngại về mạng bằng cách chạy các ứng dụng không mang tính quy trình. Điều này có nghĩa là bất kỳ ứng dụng nào được viết bằng bất kỳ ngôn ngữ lập trình nào hoặc với bất kỳ khuôn khổ nào đều có thể tận dụng các tính năng này. Hơn nữa, mặc dù các kiến trúc dịch vụ (SOA, microservice, v.v.) là kiến trúc tất yếu, nhưng Envoy không quan tâm liệu bạn có đang thực hiện các dịch vụ siêu nhỏ hay bạn có các ứng dụng nguyên khối và kế thừa được viết bằng bất kỳ ngôn ngữ nào hay không. Miễn là họ trao đổi bằng các giao thức mà Envoy có thể hiểu (như HTTP), Envoy đều có thể được sử dụng.
 		
-		Envoy là một proxy rất linh hoạt và có thể được sử dụng trong các vai trò khác nhau: như một proxy ở rìa cụm (như một điểm vào), như một proxy được chia sẻ cho một máy chủ hoặc một nhóm dịch vụ và thậm chí là một proxy cho mỗi dịch vụ như chúng ta thấy với Istio. Với Istio, một proxy Envoy duy nhất được triển khai cho mỗi phiên bản dịch vụ để đạt được sự linh hoạt, hiệu suất và khả năng kiểm soát cao nhất. Chỉ vì ta sử dụng một loại mẫu triển khai (proxy dịch vụ sidecar) không có nghĩa là ta cũng không thể có lợi thế được phân phối với Envoy. Trên thực tế, việc có proxy được triển khai giống nhau ở rìa cũng như được đặt trong lưu lượng ứng dụng có thể giúp cơ sở hạ tầng của ta dễ vận hành và suy luận hơn. Như chúng ta thấy, Envoy có thể được sử dụng ở biên để xâm nhập và liên kết với lưới dịch vụ để cung cấp toàn quyền kiểm soát và quan sát lưu lượng từ điểm nó đi vào cụm cho đến các dịch vụ riêng lẻ trong biểu đồ lời gọi cho một yêu cầu cụ thể.
+		Envoy là một proxy rất linh hoạt và có thể được sử dụng trong các vai trò khác nhau: như một proxy ở rìa cụm (như một điểm vào), như một proxy được chia sẻ cho một máy chủ hoặc một nhóm dịch vụ và thậm chí là một proxy cho mỗi dịch vụ như các quản trị viên thấy với Istio. Với Istio, một proxy Envoy duy nhất được triển khai cho mỗi phiên bản dịch vụ để đạt được sự linh hoạt, hiệu suất và khả năng kiểm soát cao nhất. Chỉ vì ta sử dụng một loại mẫu triển khai (proxy dịch vụ sidecar) không có nghĩa là ta cũng không thể có lợi thế được phân phối với Envoy. Trên thực tế, việc có proxy được triển khai giống nhau ở rìa cũng như được đặt trong lưu lượng ứng dụng có thể giúp cơ sở hạ tầng của ta dễ vận hành và suy luận hơn. Như các quản trị viên thấy, Envoy có thể được sử dụng ở biên để xâm nhập và liên kết với lưới dịch vụ để cung cấp toàn quyền kiểm soát và quan sát lưu lượng từ điểm nó đi vào cụm cho đến các dịch vụ riêng lẻ trong biểu đồ lời gọi cho một yêu cầu cụ thể.
 		
 			\subsubsection{Các chức năng chính của Envoy}
 		\hspace{0.6cm}Envoy có nhiều tính năng hữu ích cho giao tiếp giữa các dịch vụ. Để giúp hiểu các tính năng và khả năng này, bạn nên nắm rõ các khái niệm Envoy sau đây:
@@ -603,9 +603,9 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 		
 		Thay vì sử dụng các thư viện runtime đặc thù để tìm kiếm dịch vụ phía máy khách, Envoy có thể tự động thực hiện việc này cho một ứng dụng. Bằng cách định cấu hình Envoy để tìm kiếm các điểm cuối dịch vụ từ một API tìm kiếm đơn giản, các ứng dụng có thể không biết cách tìm thấy các điểm cuối dịch vụ. API tìm kiếm là một API REST đơn giản có thể được sử dụng để bọc các API tìm kiếm dịch vụ phổ biến khác (như HashiCorp Consul, Apache ZooKeeper, Netflix Eureka, v.v.). Control plane của Istio triển khai API này ngay lập tức.
 		
-		Envoy được xây dựng đặc biệt để dựa vào các bản cập nhật nhất quán cuối cùng cho danh mục tìm kiếm dịch vụ. Điều này có nghĩa là trong một hệ thống phân tán, ta không thể biết chính xác trạng thái của tất cả các dịch vụ mà chúng ta có thể liên lạc và liệu chúng có khả dụng hay không. Điều tốt nhất chúng ta có thể làm là sử dụng kiến thức có sẵn, sử dụng kiểm tra chủ động và thụ động.
+		Envoy được xây dựng đặc biệt để dựa vào các bản cập nhật nhất quán cuối cùng cho danh mục tìm kiếm dịch vụ. Điều này có nghĩa là trong một hệ thống phân tán, ta không thể biết chính xác trạng thái của tất cả các dịch vụ mà các quản trị viên có thể liên lạc và liệu chúng có khả dụng hay không. Điều tốt nhất các quản trị viên có thể làm là sử dụng kiến thức có sẵn, sử dụng kiểm tra chủ động và thụ động.
 		
-		Istio đơn giản hoá rất nhiều chi tiết này bằng cách cung cấp một bộ tài nguyên cấp cao hơn giúp điều khiển cấu hình cơ chế tìm kiếm dịch vụ của Envoy. Chúng ta sẽ xem xét kỹ hơn vấn đề này trong suốt cuốn sách.
+		Istio đơn giản hoá rất nhiều chi tiết này bằng cách cung cấp một bộ tài nguyên cấp cao hơn giúp điều khiển cấu hình cơ chế tìm kiếm dịch vụ của Envoy. các quản trị viên sẽ xem xét kỹ hơn vấn đề này trong suốt cuốn sách.
 		
 		\textbf{Cân bằng tải}\\
 		\hspace{0.6cm}Envoy thực hiện một vài thuật toán cân bằng tải nâng cao mà các ứng dụng có thể tận dụng. Một trong những khả năng thú vị hơn của các thuật toán cân bằng tải của Envoy là cân bằng tải nhận biết cục bộ. Trong tình huống này, Envoy đủ thông minh để ngăn lưu lượng truy cập vượt qua bất kỳ ranh giới nào trừ khi nó đáp ứng các tiêu chí nhất định và sẽ mang lại sự cân bằng lưu lượng tốt hơn. Ví dụ: Envoy đảm bảo rằng lưu lượng dịch vụ đến dịch vụ được định tuyến đến các phiên bản trong cùng một địa điểm trừ khi làm như vậy sẽ tạo ra tình huống lỗi. Envoy cung cấp các thuật toán cân bằng tải vượt trội cho các chiến lược sau:
@@ -622,7 +622,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 		\textbf{Dịch chuyển và tạo bóng lưu lượng}\\
 		Envoy hỗ trợ phân tách/chuyển dịch lưu lượng dựa trên tỷ lệ phần trăm (nghĩa là có trọng số). Điều này cho phép các nhóm nhanh chóng sử dụng các kỹ thuật phân phối liên tục để giảm thiểu rủi ro, chẳng hạn như phát hành canary. Mặc dù chúng giảm thiểu rủi ro cho nhóm người dùng nhỏ hơn, các bản phát hành canary vẫn xử lý lưu lượng người dùng trực tiếp.
 		
-		Envoy cũng có thể tạo các bản sao của lưu lượng truy cập và tạo bóng cho lưu lượng truy cập đó trong chế độ chạy và quên thành một cụm Envoy. Bạn có thể coi khả năng tạo bóng này giống như phân tách lưu lượng, nhưng các yêu cầu mà cụm cấp trên nhìn thấy là một bản sao của lưu lượng trực tiếp; do đó, chúng ta có thể định tuyến lưu lượng truy cập ẩn đến phiên bản mới của dịch vụ mà không thực sự tác động đến lưu lượng truy cập sản xuất trực tiếp. Đây là một khả năng rất mạnh mẽ để thử nghiệm các thay đổi dịch vụ với lưu lượng khác mà không ảnh hưởng đến khách hàng.
+		Envoy cũng có thể tạo các bản sao của lưu lượng truy cập và tạo bóng cho lưu lượng truy cập đó trong chế độ chạy và quên thành một cụm Envoy. Bạn có thể coi khả năng tạo bóng này giống như phân tách lưu lượng, nhưng các yêu cầu mà cụm cấp trên nhìn thấy là một bản sao của lưu lượng trực tiếp; do đó, các quản trị viên có thể định tuyến lưu lượng truy cập ẩn đến phiên bản mới của dịch vụ mà không thực sự tác động đến lưu lượng truy cập sản xuất trực tiếp. Đây là một khả năng rất mạnh mẽ để thử nghiệm các thay đổi dịch vụ với lưu lượng khác mà không ảnh hưởng đến khách hàng.
 		
 		\textbf{Khả năng phục hồi mạng}\\
 		Envoy có thể được sử dụng để giảm tải một số loại vấn đề về khả năng phục hồi, nhưng lưu ý rằng trách nhiệm của ứng dụng là tinh chỉnh và định cấu hình các tham số này. Envoy có thể tự động thực hiện hết thời gian chờ yêu cầu cũng như thử lại ở cấp độ yêu cầu (với thời gian chờ cho mỗi lần thử lại). Loại hành vi thử lại này rất hữu ích khi một yêu cầu gặp phải tình trạng mạng không ổn định liên tục. Mặt khác, thử lại khuếch đại có thể dẫn đến lỗi xếp tầng; Envoy cho phép bạn giới hạn hành vi thử lại. Cũng lưu ý rằng vẫn có thể cần thử lại ở cấp độ ứng dụng và không thể giảm tải hoàn toàn cho Envoy. Ngoài ra, khi Envoy gọi các cụm ngược dòng, nó có thể được định cấu hình với các đặc điểm phân vùng như giới hạn số lượng kết nối hoặc yêu cầu chưa xử lý trong chuyến bay và nhanh chóng thất bại bất kỳ kết nối nào vượt quá các ngưỡng đó (với một số rung pha trên các ngưỡng đó). Cuối cùng, Envoy có thể thực hiện phát hiện ngoại lệ, hoạt động giống như một bộ ngắt mạch và loại bỏ các điểm cuối khỏi nhóm cân bằng tải khi chúng hoạt động sai.
@@ -631,7 +631,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 		HTTP/2 là một cải tiến đáng kể đối với giao thức HTTP, cho phép ghép các yêu cầu qua một kết nối duy nhất, tương tác đẩy máy chủ, tương tác truyền trực tuyến và áp lực ngược yêu cầu. Envoy được xây dựng ngay từ đầu để trở thành proxy HTTP/1.1 và HTTP/2 với khả năng ủy quyền cho từng giao thức cả hạ lưu và ngược dòng. Ví dụ, điều này có nghĩa là Envoy có thể chấp nhận các kết nối HTTP/1.1 và ủy quyền cho HTTP/2 hoặc ngược lại hoặc ủy quyền HTTP/2 đến cho các cụm HTTP/2 cấp trên. gRPC là một giao thức RPC sử dụng Google Protocol Buffers (Protobuf) nằm trên HTTP/2 và cũng được hỗ trợ bởi Envoy. Đây là những tính năng mạnh mẽ (và khó sửa sai khi triển khai) và phân biệt Envoy với các proxy dịch vụ khác.
 		
 		\textbf{Khả năng giám sát với Metric Collection}\\
-		Như chúng ta đã thấy trong thông báo của Envoy từ Lyft vào tháng 9 năm 2016, một trong những mục tiêu của Envoy là giúp mạng trở nên dễ hiểu. Envoy thu thập một tập hợp lớn các số liệu để giúp đạt được mục tiêu này. Nó theo dõi nhiều chiều xung quanh các hệ thống cấp trên gọi nó, chính máy chủ và các cụm cấp dưới mà nó gửi yêu cầu. Số liệu thống kê của Envoy được theo dõi dưới dạng bộ đếm, đồng hồ đo hoặc biểu đồ. Bảng 3.1 liệt kê một số ví dụ về các loại thống kê được theo dõi cho một cụm cấp dưới.
+		Như các quản trị viên đã thấy trong thông báo của Envoy từ Lyft vào tháng 9 năm 2016, một trong những mục tiêu của Envoy là giúp mạng trở nên dễ hiểu. Envoy thu thập một tập hợp lớn các số liệu để giúp đạt được mục tiêu này. Nó theo dõi nhiều chiều xung quanh các hệ thống cấp trên gọi nó, chính máy chủ và các cụm cấp dưới mà nó gửi yêu cầu. Số liệu thống kê của Envoy được theo dõi dưới dạng bộ đếm, đồng hồ đo hoặc biểu đồ. Bảng 3.1 liệt kê một số ví dụ về các loại thống kê được theo dõi cho một cụm cấp dưới.
 		\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.7\linewidth]{Pics/2.1.3-p4}
@@ -659,7 +659,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 		\end{itemize}
 		
 		\textbf{mTLS}\\
-		Envoy có thể dừng lưu lượng Transport Level Security (TLS) dành cho một dịch vụ cụ thể ở cả rìa của cụm và sâu bên trong mạng lưới proxy dịch vụ. Một khả năng thú vị hơn là Envoy có thể được sử dụng để tạo lưu lượng truy cập TLS đến cụm cấp trên thay mặt cho ứng dụng. Đối với các nhà phát triển và nhà điều hành doanh nghiệp, điều này có nghĩa là ta không phải loay hoay với các cài đặt dành riêng cho ngôn ngữ và keystores hay truststores. Bằng cách có Envoy trong đường dẫn yêu cầu, chúng ta có thể tự động nhận TLS và thậm chí cả TLS lẫn nhau.
+		Envoy có thể dừng lưu lượng Transport Level Security (TLS) dành cho một dịch vụ cụ thể ở cả rìa của cụm và sâu bên trong mạng lưới proxy dịch vụ. Một khả năng thú vị hơn là Envoy có thể được sử dụng để tạo lưu lượng truy cập TLS đến cụm cấp trên thay mặt cho ứng dụng. Đối với các nhà phát triển và nhà điều hành doanh nghiệp, điều này có nghĩa là ta không phải loay hoay với các cài đặt dành riêng cho ngôn ngữ và keystores hay truststores. Bằng cách có Envoy trong đường dẫn yêu cầu, các quản trị viên có thể tự động nhận TLS và thậm chí cả TLS lẫn nhau.
 		
 		\textbf{Rate Limit}\\
 		Một khía cạnh quan trọng của khả năng phục hồi là khả năng hạn chế hoặc giới hạn quyền truy cập vào các tài nguyên được bảo vệ. Các tài nguyên như cơ sở dữ liệu hoặc bộ đệm hoặc dịch vụ dùng chung có thể được bảo vệ vì nhiều lý do:
@@ -669,7 +669,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 			\item Fairness algorithms needed to protect against starvation
 		\end{itemize}
 		
-		Đặc biệt là khi các dịch vụ được định cấu hình để thử lại, chúng ta không muốn phóng đại tác động của một số lỗi nhất định trong hệ thống. Để giúp điều tiết các yêu cầu trong các tình huống này, chúng ta có thể sử dụng dịch vụ giới hạn tốc độ toàn bộ. Envoy có thể tích hợp với dịch vụ giới hạn tốc độ ở cả cấp độ mạng (trên mỗi kết nối) và HTTP (theo yêu cầu).
+		Đặc biệt là khi các dịch vụ được định cấu hình để thử lại, các quản trị viên không muốn phóng đại tác động của một số lỗi nhất định trong hệ thống. Để giúp điều tiết các yêu cầu trong các tình huống này, các quản trị viên có thể sử dụng dịch vụ giới hạn tốc độ toàn bộ. Envoy có thể tích hợp với dịch vụ giới hạn tốc độ ở cả cấp độ mạng (trên mỗi kết nối) và HTTP (theo yêu cầu).
 		
 		\textbf{Envoy mở rộng}\\
 		Về cốt lõi, Envoy là một công cụ xử lý byte trên đó có thể xây dựng các codec giao thức (lớp 7) (được gọi là bộ lọc). Envoy làm cho việc xây dựng các bộ lọc bổ sung trở thành trường hợp sử dụng cụ thể và là một cách thú vị để mở rộng Envoy cho các trường hợp sử dụng cụ thể. Bộ lọc Envoy được viết bằng C++ và được biên dịch thành mã nhị phân Envoy. Ngoài ra, Envoy hỗ trợ tập lệnh Lua(www.lua.org) và WebAssugging (Wasm) để có cách tiếp cận ít xâm lấn hơn nhằm mở rộng chức năng của Envoy.
@@ -688,18 +688,18 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 	
 		\textbf{Cấu hình Envoy}\\
 		
-		Envoy được điều khiển bởi một tệp cấu hình ở định dạng JSON hoặc YAML. Tệp cấu hình chỉ định listener, route và cluster cũng như các cài đặt dành riêng cho máy chủ như có bật API quản trị hay không, vị trí nhật ký truy cập, theo dõi cấu hình công cụ, v.v. Nếu bạn đã quen thuộc với Envoy hoặc cấu hình Envoy, bạn có thể biết rằng có nhiều phiên bản khác nhau của cấu hình Envoy. Các phiên bản ban đầu, v1 và v2, không được dùng nữa để chuyển sang phiên bản v3. Chúng tôi chỉ xem xét cấu hình v3 trong cuốn sách này, vì đó là phiên bản tiếp theo và là những gì Istio sử dụng.
+		Envoy được điều khiển bởi một tệp cấu hình ở định dạng JSON hoặc YAML. Tệp cấu hình chỉ định listener, route và cluster cũng như các cài đặt dành riêng cho máy chủ như có bật API quản trị hay không, vị trí nhật ký truy cập, theo dõi cấu hình công cụ, v.v. Nếu bạn đã quen thuộc với Envoy hoặc cấu hình Envoy, bạn có thể biết rằng có nhiều phiên bản khác nhau của cấu hình Envoy. Các phiên bản ban đầu, v1 và v2, không được dùng nữa để chuyển sang phiên bản v3.
 		
-		API cấu hình v3 của Envoy được xây dựng trên gRPC. Envoy và những người triển khai API v3 có thể tận dụng các khả năng phát trực tuyến khi gọi API và giảm thời gian cần thiết để các proxy của Envoy hội tụ về cấu hình chính xác. Trên thực tế, điều này giúp loại bỏ nhu cầu thăm dò API và cho phép máy chủ đẩy các bản cập nhật lên Envoys thay vì thăm dò proxy theo các khoảng thời gian định kỳ.
+		API cấu hình v3 của Envoy được xây dựng trên gRPC. Envoy triển khai API v3 có thể tận dụng các khả năng phát trực tuyến khi gọi API và giảm thời gian cần thiết để các proxy của Envoy hội tụ về cấu hình chính xác. Trên thực tế, điều này giúp loại bỏ nhu cầu thăm dò API và cho phép máy chủ đẩy các bản cập nhật lên Envoys thay vì thăm dò proxy theo các khoảng thời gian định kỳ.
 	\section{Quản lý mạng giữa các Microservices với Istio}
 		\subsection{Tổng quan về Istio Ingress Gateway}
 		\hspace{0.6cm}Istio có một gateway vào đóng vai trò là điểm vào mạng và chịu trách nhiệm bảo vệ và kiểm soát quyền truy cập vào cụm bởi lưu lượng truy cập bắt nguồn từ bên ngoài cụm. Ngoài ra, gateway của Istio xử lý cân bằng tải và định tuyến máy chủ ảo.
 		
-		Hình 2.10 cho thấy thành phần cổng vào của Istio cho phép lưu lượng truy cập vào cụm và thực hiện chức năng proxy ngược. Istio sử dụng một proxy Envoy duy nhất làm gateway. Chúng ta đã thấy ở trên rằng Envoy là một proxy có khả năng kết nối dịch vụ đến dịch vụ, nhưng nó cũng có thể được sử dụng để cân bằng tải và định tuyến lưu lượng từ bên ngoài lưới dịch vụ đến các dịch vụ chạy bên trong nó. Tất cả các tính năng của Envoy mà chúng ta đã thảo luận trong chương trước cũng có sẵn ở đây.
+		Hình 2.10 cho thấy thành phần cổng vào của Istio cho phép lưu lượng truy cập vào cụm và thực hiện chức năng proxy ngược. Istio sử dụng một proxy Envoy duy nhất làm gateway. Envoy là một proxy có khả năng kết nối dịch vụ đến dịch vụ, nhưng nó cũng có thể được sử dụng để cân bằng tải và định tuyến lưu lượng từ bên ngoài lưới dịch vụ đến các dịch vụ chạy bên trong nó. Tất cả các tính năng của Envoy mà các quản trị viên đã thảo luận trong chương trước cũng có sẵn ở đây.
 		
-		Chúng ta hãy xem xét kỹ hơn cách Istio sử dụng Envoy để triển khai thành phần gateway của nó. Khi cài đặt Istio, hình 2.11 hiển thị danh sách các thành phần tạo nên control plane và các thành phần bổ sung hỗ trợ cho nó.
+		Khi cài đặt Istio, hình 2.11 hiển thị danh sách các thành phần tạo nên control plane và các thành phần bổ sung hỗ trợ cho nó.
 		
-		Trong hình 2.11, bên cạnh Pod istio-ingressgateway, hãy lưu ý thành phần istio-egressgateway. Thành phần này chịu trách nhiệm định tuyến lưu lượng ra khỏi cụm. Cổng ra được cấu hình với cùng tài nguyên như cổng vào mà chúng ta sẽ thấy trong chương này.
+		Trong hình 2.11, bên cạnh Pod istio-ingressgateway, hãy lưu ý thành phần istio-egressgateway. Thành phần này chịu trách nhiệm định tuyến lưu lượng ra khỏi cụm. Cổng ra được cấu hình với cùng tài nguyên như cổng vào mà các quản trị viên sẽ thấy trong chương này.
 		
 		\begin{figure}[h!]
 			\centering
@@ -716,7 +716,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 		\end{figure}
 		
 		\subsection{Định tuyến đường đi các Microservices trong Kubernetes sử dụng Istio}
-			\hspace{0.6cm} Trong kiến trúc monolith, chúng ta có một dịch vụ khổng lồ duy nhất với tất cả logic nghiệp vụ để xử lý tất cả các yêu cầu từ người dùng, nhưng trong kiến trúc microservices, chúng ta có nhiều dịch vụ tập trung vào logic nghiệp vụ cụ thể. Một yêu cầu của người dùng duy nhất có thể trờ thành nhiều yêu cầu cho các dịch vụ phụ thuộc.
+			\hspace{0.6cm} Trong kiến trúc monolith, có một dịch vụ khổng lồ duy nhất với tất cả logic nghiệp vụ để xử lý tất cả các yêu cầu từ người dùng, nhưng trong kiến trúc microservices, các quản trị viên có nhiều dịch vụ tập trung vào logic nghiệp vụ cụ thể. Một yêu cầu của người dùng duy nhất có thể trờ thành nhiều yêu cầu cho các dịch vụ phụ thuộc.
 			
 			\begin{figure}[h!]
 				\centering
@@ -730,18 +730,18 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 			\begin{itemize}
 				\item Canary deployment: Một trong những lợi ích của dự án Istio là nó cung cấp khả năng kiểm soát cần thiết để triển khai các dịch vụ canary. Ý tưởng đằng sau việc triển khai canary là giới thiệu một phiên bản mới của dịch vụ bằng cách thử nghiệm phiên bản đó mới bằng cách sử dụng một tỷ lệ nhỏ lưu lượng truy cập của người dùng và sau đó nếu dịch vụ không có lỗi phát sinh, có thể tăng tỷ lệ phần trăm lên, có thể dần dần trong khi đồng thời loại bỏ dần phiên bản cũ. Nếu xảy ra sự cố trong quá trình thực hiện, có thể cho tất cả lưu lượng truy cập của người dùng trở về phiên bản cũ.
 				\item Dark release: Khi nói đến việc triển khai phần mềm, bất cứ điều gì có thể làm để giảm thiểu rủi ro đều đáng được cân nhắc. Chạy song song nhiều phiên bản của một dịch là một cách rất hiệu quả và đã được chứng minh để kiểm tra phiên bản tiếp theo của bạn, đồng thời Istio cho phép bạn sử dụng các dịch vụ bí mật — một phiên bản chưa từng thấy của vi dịch vụ của bạn — mà không bị ảnh hưởng đến sản phẩm. Đó là tính năng dark release, tính năng này cho phép chỉ cố giới hạn một số người như các kĩ sư hoặc kiểm thử phần mềm có thể truy cập vào chức năng này.
-				\item Traffic mirroring: giả sử chúng ta muốn đánh giá hiệu suất của dịch vụ mới của chúng ta mới tạo ra mà không muốn khách hàng vào được dịch vụ mới này chúng ta có thể sử dụng tính năng này để tất các lưu lượng truy cập đang đi vào phiên bản hiện tại và sao chép các lưu lượng đó và đưa lưu lượng truy cập đó vào dịch vụ mới chúng ta muốn kiểm thử.
+				\item Traffic mirroring: giả sử các quản trị viên muốn đánh giá hiệu suất của dịch vụ mới của các quản trị viên mới tạo ra mà không muốn khách hàng vào được dịch vụ mới này các quản trị viên có thể sử dụng tính năng này để tất các lưu lượng truy cập đang đi vào phiên bản hiện tại và sao chép các lưu lượng đó và đưa lưu lượng truy cập đó vào dịch vụ mới các quản trị viên muốn kiểm thử.
 			\end{itemize}
 			
 			
 		\subsection{Giải quyết các vấn đề về mạng trong Microservices}
-\hspace{0.6cm}Khi chúng ta có lưu lượng truy cập vào cụm của mình thông qua Istio gateway, chúng ta có thể điều khiển lưu lượng truy cập ở cấp độ yêu cầu và kiểm soát chính xác nơi định tuyến các yêu cầu. Trong chương trước, chúng ta đã đề cập đến kiểm soát lưu lượng cho định tuyến có trọng số, định tuyến dựa trên kết hợp yêu cầu và một số kiểu mẫu phát hành nhất định mà sau đó có thể được kích hoạt. Chúng ta cũng có thể sử dụng khả năng điều khiển lưu lượng này để định tuyến né tránh các sự cố trong trường hợp xảy ra lỗi ứng dụng, phân vùng mạng và các sự cố lớn khác.
+\hspace{0.6cm}Khi có lưu lượng truy cập vào cụm của mình thông qua Istio gateway, các quản trị viên có thể điều khiển lưu lượng truy cập ở cấp độ yêu cầu và kiểm soát chính xác nơi định tuyến các yêu cầu. Trong chương trước, đã đề cập đến kiểm soát lưu lượng cho định tuyến có trọng số, định tuyến dựa trên kết hợp yêu cầu và một số kiểu mẫu phát hành nhất định mà sau đó có thể được kích hoạt. Các quản trị viên cũng có thể sử dụng khả năng điều khiển lưu lượng này để định tuyến né tránh các sự cố trong trường hợp xảy ra lỗi ứng dụng, phân vùng mạng và các sự cố lớn khác.
 
-Vấn đề với các hệ thống phân tán là chúng thường bị lỗi theo những cách không thể lường trước và chúng ta không thể thực hiện các hành động thay đổi lưu lượng theo cách thủ công. Chúng ta cần một cách để xây dựng các hành động hợp lý tác động vào ứng dụng để chúng có thể tự phản hồi khi gặp sự cố. Chúng ta có thể làm điều đó với Istio, bao gồm thêm timeouts, retries, and circuit breaking mà không phải thay đổi mã nguồn ứng dụng. Trong chương này, chúng ta xem xét cách thực hiện điều này và những tác động đối với phần còn lại của hệ thống.
+Vấn đề với các hệ thống phân tán là chúng thường bị lỗi theo những cách không thể lường trước và các không thể thực hiện các hành động thay đổi lưu lượng theo cách thủ công. Cần một cách để xây dựng các hành động hợp lý tác động vào ứng dụng để chúng có thể tự phản hồi khi gặp sự cố. Các quản trị viên có thể làm điều đó với Istio, bao gồm thêm timeouts, retries, and circuit breaking mà không phải thay đổi mã nguồn ứng dụng. Trong chương này, các quản trị viên xem xét cách thực hiện điều này và những tác động đối với phần còn lại của hệ thống.
 			\subsubsection{Xây dựng khả năng phục hồi cho ứng dụng}
-\hspace{0.6cm}Microservices phải được xây dựng với khả năng phục hồi là mối quan tâm hàng đầu. Thế giới nơi mà mọi thứ “just build it so it won’t fail” là không có thật; và khi xảy ra sự cố, chúng ta có nguy cơ bị mất truy cập tất cả các dịch vụ của mình. Khi chúng ta xây dựng các hệ thống phân tán với các dịch vụ giao tiếp qua mạng, chúng ta có nguy cơ tạo ra nhiều điểm lỗi hơn và đối mặt với khả năng xảy ra lỗi nghiêm trọng. Chủ sở hữu dịch vụ nên áp dụng một vài chức năng khôi phục nhất quán trên các ứng dụng và dịch vụ của họ.
+\hspace{0.6cm}Microservices phải được xây dựng với khả năng phục hồi là mối quan tâm hàng đầu. Thế giới nơi mà mọi thứ “just build it so it won’t fail” là không có thật; và khi xảy ra sự cố, có nguy cơ bị mất truy cập tất cả các dịch vụ của mình. Khin xây dựng các hệ thống phân tán với các dịch vụ giao tiếp qua mạng, có nguy cơ tạo ra nhiều điểm lỗi hơn và đối mặt với khả năng xảy ra lỗi nghiêm trọng. Chủ sở hữu dịch vụ nên áp dụng một vài chức năng khôi phục nhất quán trên các ứng dụng và dịch vụ của họ.
 
-Nếu dịch vụ A gọi dịch vụ B, như được mô tả trong hình 2.18 và gặp phải độ trễ trong các yêu cầu được gửi đến các điểm đầu cuối cụ thể của dịch vụ B, thì chúng ta muốn dịch vụ đó chủ động xác định điều này và định tuyến đến các điểm đầu cuối khác, các nơi khả dụng khác hoặc thậm chí các khu vực khác. Nếu dịch vụ B gặp lỗi không liên tục, chúng ta có thể gửi lại một yêu cầu không thành công. Tương tự, nếu chúng ta gặp sự cố khi gọi dịch vụ B, chúng ta có thể tạm dừng lại cho đến khi dịch vụ này có thể khôi phục sau bất kỳ sự cố nào mà nó có thể gặp phải. Nếu chúng tôi tiếp tục sử dụng dịch vụ B (và trong một số trường hợp, tăng tải khi chúng ta gửi lại các yêu cầu), thì chúng ta có nguy cơ làm quá tải dịch vụ. Tình trạng quá tải này có thể ảnh hưởng đến dịch vụ A và bất kỳ điều gì phụ thuộc vào các dịch vụ này và gây ra các lỗi chồng lỗi đáng kể.
+Nếu dịch vụ A gọi dịch vụ B, như được mô tả trong hình 2.18 và gặp phải độ trễ trong các yêu cầu được gửi đến các điểm đầu cuối cụ thể của dịch vụ B, muốn dịch vụ đó chủ động xác định điều này và định tuyến đến các điểm đầu cuối khác, các nơi khả dụng khác hoặc thậm chí các khu vực khác. Nếu dịch vụ B gặp lỗi không liên tục, có thể gửi lại một yêu cầu không thành công. Tương tự, nếu gặp sự cố khi gọi dịch vụ B, có thể tạm dừng lại cho đến khi dịch vụ này có thể khôi phục sau bất kỳ sự cố nào mà nó có thể gặp phải. Nếu tiếp tục sử dụng dịch vụ B (và trong một số trường hợp, tăng tải khi gửi lại các yêu cầu), thì có nguy cơ làm quá tải dịch vụ. Tình trạng quá tải này có thể ảnh hưởng đến dịch vụ A và bất kỳ điều gì phụ thuộc vào các dịch vụ này và gây ra các lỗi chồng lỗi.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{Pics/2.2.3-p1}
@@ -749,10 +749,10 @@ Nếu dịch vụ A gọi dịch vụ B, như được mô tả trong hình 2.18
 	\label{fig:2.2.3-1}
 \end{figure}
 
-Giải pháp là xây dựng các ứng dụng của chúng tôi để dự kiến các lỗi và có cách để chúng tự động cố gắng khắc phục hoặc quay lại các đường dẫn thay thế khi phục vụ một yêu cầu. Ví dụ: khi dịch vụ A gọi dịch vụ B và bắt đầu gặp sự cố, chúng ta có thể thử gửi lại một yêu cầu, giới hạn thời gian của các yêu cầu hoặc hủy bất kỳ yêu cầu gửi đi nào khác bằng cách sử dụng circuit-breaking. Istio có thể được sử dụng để giải quyết các vấn đề này một cách dễ dàng để các ứng dụng có cách triển khai chính xác và nhất quán cho các vấn đề về khả năng phục hồi bất kể ứng dụng được viết bằng ngôn ngữ lập trình nào.
+Giải pháp là xây dựng các ứng dụng để đoán trước các lỗi và có cách để chúng tự động cố gắng khắc phục hoặc sử đường dẫn thay thế khi phục vụ một yêu cầu. Ví dụ: khi dịch vụ A gọi dịch vụ B và bắt đầu gặp sự cố, có thể thử gửi lại một yêu cầu, giới hạn thời gian của các yêu cầu hoặc hủy bất kỳ yêu cầu gửi đi nào khác bằng cách sử dụng circuit-breaking. Istio có thể được sử dụng để giải quyết các vấn đề này một cách dễ dàng để các ứng dụng có cách triển khai chính xác và nhất quán cho các vấn đề về khả năng phục hồi bất kể ứng dụng được viết bằng ngôn ngữ lập trình nào.
 
 			\subsubsection{Cân bằng tải phía máy khách}
-\hspace{0.6cm}Cân bằng tải phía máy khách là hoạt động thông báo cho khách hàng về các điểm đầu cuối khác nhau có sẵn cho một dịch vụ và cho phép khách hàng chọn các thuật toán cân bằng tải cụ thể để phân phối yêu cầu tốt nhất trên các điểm đầu cuối. Điều này làm giảm nhu cầu dựa vào cân bằng tải tập trung, vốn có thể tạo ra các nút cổ chai và điểm gây lỗi, đồng thời cho phép khách hàng thực hiện các yêu cầu trực tiếp đến các điểm đầu cuối cụ thể mà không cần phải thực hiện thêm các bước không cần thiết. Do đó, khách hàng và dịch vụ của chúng ta có thể mở rộng quy mô tốt hơn và đối phó với cấu trúc liên kết đang thay đổi hằng ngày.
+\hspace{0.6cm}Cân bằng tải phía máy khách là hoạt động thông báo cho khách hàng về các điểm đầu cuối khác nhau có sẵn cho một dịch vụ và cho phép khách hàng chọn các thuật toán cân bằng tải cụ thể để phân phối yêu cầu tốt nhất trên các điểm đầu cuối. Điều này làm giảm nhu cầu dựa vào cân bằng tải tập trung, vốn có thể tạo ra các nút cổ chai và điểm gây lỗi, đồng thời cho phép khách hàng thực hiện các yêu cầu trực tiếp đến các điểm đầu cuối cụ thể mà không cần phải thực hiện thêm các bước không cần thiết. Do đó, dịch vụ có thể mở rộng quy mô tốt hơn và đối phó với cấu trúc ứng dụng đang thay đổi hằng ngày.
 
 Istio sử dụng khả năng tìm kiếm dịch vụ và điểm đầu cuối để trang bị cho proxy phía máy khách trong giao tiếp giữa dịch vụ với dịch vụ thông tin chính xác và cập nhật nhất, như minh họa trong hình 2.19. Sau đó, nhà phát triển và nhà điều hành dịch vụ có thể cấu hình hành vi cân bằng tải phía máy khách này thông qua cấu hình Istio.
 \begin{figure}[h]
@@ -762,16 +762,16 @@ Istio sử dụng khả năng tìm kiếm dịch vụ và điểm đầu cuối 
 	\label{fig:2.2.3-2}
 \end{figure}
 
-Nhà khai thác và nhà phát triển dịch vụ có thể cấu hình thuật toán cân bằng tải mà máy khách sử dụng bằng cách xác định tài nguyên DestinationRule. Dịch vụ Proxy của Istio dựa trên Envoy và hỗ trợ các thuật toán cân bằng tải của Envoy, một số thuật toán bao gồm:
+Các quản trị viên có thể cấu hình thuật toán cân bằng tải mà máy khách sử dụng bằng cách xác định tài nguyên DestinationRule. Dịch vụ Proxy của Istio dựa trên Envoy và hỗ trợ các thuật toán cân bằng tải của Envoy, một số thuật toán bao gồm:
 \begin{itemize}
 	\item Round robin (Mặc định)
 	\item Random
 	\item Weighted least request
 \end{itemize}
 			\subsubsection{Cân bằng tải nhận biết cục bộ}
-\hspace{0.6cm}Một vai trò của control plane như với Istio là nắm được cấu trúc liên kết của dịch vụ và cách cấu trúc liên kết đó có thể phát triển. Một lợi thế của việc nắm được1 cấu trúc liên kết tổng thể của các dịch vụ trong lưới dịch vụ là tự động đưa ra các quyết định định tuyến và cân bằng tải dựa trên kinh nghiệm như vị trí của dịch vụ và dịch vụ ngang hàng.
+\hspace{0.6cm}Một vai trò của control plane như với Istio là nắm được cấu trúc liên kết của dịch vụ và cách cấu trúc liên kết đó có thể phát triển. Một lợi thế của việc nắm được cấu trúc liên kết tổng thể của các dịch vụ trong lưới dịch vụ là tự động đưa ra các quyết định định tuyến và cân bằng tải dựa trên kinh nghiệm như vị trí của dịch vụ và dịch vụ ngang hàng.
 
-Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các tuyến và đưa ra các quyết định định tuyến dựa trên vị trí của một khối lượng công việc cụ thể. Ví dụ: Istio có thể xác định khu vực và vùng khả dụng trong đó một dịch vụ cụ thể được triển khai và ưu tiên cho các dịch vụ gần hơn. Nếu các dịch vụ phụ trợ được triển khai trên nhiều khu vực (tây Mỹ, đông Mỹ, tây Âu), thì có nhiều tùy chọn để gọi dịch vụ đó. Nếu một dịch vụ web được triển khai ở khu vực phía tây của chúng ta, chúng tôi muốn các cuộc gọi từ dịch vụ web đến dịch vụ phụ trợ để duy trì cục bộ ở phía tây của chúng ta (xem hình 2.20). Nếu chúng ta đối xử bình đẳng với tất cả các điểm đầu cuối, chúng ta có thể sẽ phải chịu độ trễ cao cũng như chi phí khi chúng ta thực hiện chuyển vùng hoặc khu vực.
+Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các tuyến và đưa ra các quyết định định tuyến dựa trên vị trí của dịch vụ cụ thể. Ví dụ: Istio có thể xác định khu vực và vùng khả dụng trong đó một dịch vụ cụ thể được triển khai và ưu tiên cho các dịch vụ gần hơn.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{Pics/2.2.3-p3}
@@ -782,18 +782,18 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 \section{Giám sát các Microservices với Istio}
 	{\hspace{0.6cm}Hệ thống giám sát dùng để thu thập thông tin về phần cứng và phần mềm của một hệ thống. Hệ thống giám sát có thể thu thập từ trạng thái của của server (CPU, memory, network, …) cho đến những thông tin chi tiết về cách server xử lý request đến từ người dùng (số lượng requests/s, thời gian server xử lý requests, …), hoặc là cái file nhật kí của hệ thống hoặc ứng dụng.\\
 	
-	Một hệ thống giám sẽ giúp các quản có một cái nhìn dễ dàng về chất lượng và những vấn đề xảy ra với sản phẩm. Nó sẽ tự động cảnh báo cho chúng ta ngay khi phát hiện ra điều bất thường. Bây giờ, thay vì được người dùng thông báo rằng server gặp trục trặc, chúng ta sẽ sớm phát hiện và giải quyết trước khi người dùng nhận ra. Hơn nữa, đối với các hệ thống đủ lớn và phức tạp, hệ thống giám sát còn giúp chúng ta biết được những thành phần nào hay gặp sự cố để có thể tập trung cải thiện chất lượng.
+	Một hệ thống giám sẽ giúp các quản có một cái nhìn dễ dàng về chất lượng và những vấn đề xảy ra với sản phẩm. Nó sẽ tự động cảnh báo cho các quản trị viên ngay khi phát hiện ra điều bất thường. Bây giờ, thay vì được người dùng thông báo rằng server gặp trục trặc, các quản trị viên sẽ sớm phát hiện và giải quyết trước khi người dùng nhận ra. Hơn nữa, đối với các hệ thống đủ lớn và phức tạp, hệ thống giám sát còn giúp các quản trị viên biết được những thành phần nào hay gặp sự cố để có thể tập trung cải thiện chất lượng.
 		\subsection{Cách Istio Giám sát các lưu lượng mạng}
 	{\hspace{0.6cm}Istio ở một vị trí đặc biệt để giúp một hệ thống giám sát có thể lấy dữ liệu của Istio proxy là Envoy, và Envoy proxy đứng giữa đường truyền của các service. Thông qua proxy dịch vụ Envoy, Istio có thể nắm bắt các chỉ số quan trọng liên quan đến xử lý yêu cầu và tương tác dịch vụ, chẳng hạn như số lượng request mỗi giây, thời gian thực hiện request, số lượng requests không thành công mà và nhiều thông tin khác.\\		
 	
-	Istio đi kèm với một số công cụ mẫu sẵn dùng như Prometheus, Grafana và Kiali, có thể giúp các quản trị viên dễ dàng giám sát các microservice một cách tập trung và có thể vẽ các biểu đồ cho các chỉ số của microserivces và làm quản trị viên dễ dàng đánh giá trạng thái của các microservice.
+	Istio đi kèm với một số công cụ mẫu sẵn dùng như Prometheus, Grafana và Kiali, có thể giúp các quản trị viên dễ dàng giám sát các microservice một cách tập trung và có thể vẽ các biểu đồ cho các chỉ số của microserivces và giúp dễ dàng đánh giá trạng thái của các microservice.
 	
-	Envoy có thể giữ một tập hợp lớn các số liệu về kết nối, yêu cầu và thời gian chạy mà chúng ta có thể sử dụng để tạo thành một bức tranh về tình trạng mạng và giao tiếp của dịch vụ. Chúng ta có thể sử dụng câu lệnh:
+	Envoy có thể giữ một tập hợp lớn các số liệu về kết nối, yêu cầu và thời gian chạy mà các quản trị viên có thể sử dụng để tạo thành một bức tranh về tình trạng mạng và giao tiếp của dịch vụ. Có thể sử dụng câu lệnh dưới để xem các metric của proxy:
 	\begin{lstlisting}
 		$ kubectl exec -it deploy/webapp -c istio-proxy \
 		-- curl localhost:15000/stats
 	\end{lstlisting}
-	Và chúng ta có thể thấy rất nhiều các chỉ số mà envoy proxy cung cấp.Đối với lưu lượng HTTP, HTTP/2 và GRPC, Istio tạo các chỉ số sau:
+	Và có thể thấy rất nhiều các chỉ số mà envoy proxy cung cấp.Đối với lưu lượng HTTP, HTTP/2 và GRPC, Istio tạo các chỉ số sau:
 	\begin{itemize}				
 		\item istio\_requests\_total: Đây là bộ đếm được tăng lên cho mọi yêu cầu được xử lý bởi proxy Istio.
 		\item istio\_request\_duratio\_milliseconds: Là thời gian Istio proxy xử lý một request.
@@ -819,7 +819,7 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 	
 \end{figure}
 	\subsection{Theo dõi phân tán với Istio}
-		{\hspace{0.6cm}Khi xây dựng một ứng dụng theo kiến trúc microservice, chúng ta tạo ra một mạng lưới phân tán của các microserivce để chúng hoạt động như một ứng dụng bình thường, như được minh họa hình 2.3.2. Khi có sự cố bắt đầu xảy ra khi các mircrosevice gọi nhau, điều quan trọng là phải hiểu điều gì đang xảy ra để có thể chẩn đoán và khắc phục nhanh chóng. Trong các phần trước, chúng ta đã thấy cách Istio có thể giúp thu thập các số liệu và phép đo từ xa liên quan đến kết nối mạng thay mặt cho ứng dụng. Theo dõi phân tán giúp các quản trị viên có thể chẩn đoán microservice nào đang bị lỗi.}\\
+		{\hspace{0.6cm}Khi xây dựng một ứng dụng theo kiến trúc microservice, tạo ra một mạng lưới phân tán của các microserivce để chúng hoạt động như một ứng dụng bình thường, như được minh họa hình 2.3.2. Khi có sự cố bắt đầu xảy ra khi các mircrosevice gọi nhau, điều quan trọng là phải hiểu điều gì đang xảy ra để có thể chẩn đoán và khắc phục nhanh chóng. Trong các phần trước cho thấy cách Istio có thể giúp thu thập các số liệu và phép đo từ xa liên quan đến kết nối mạng thay mặt cho ứng dụng. Theo dõi phân tán giúp các quản trị viên có thể chẩn đoán microservice nào đang bị lỗi.}\\
 			
 		\begin{figure}[h]
 			\centering
@@ -984,7 +984,7 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 \chapter{Triển khai Istio trên Kubernetes}
 	\section{Mô hình triển khai}
 	\subsection{Mô hình hạ tầng triển khai}
-	Sử dụng máy tính hệ điều hành Windows, công cụ hỗ trợ ảo hóa cho hệ điều hành này là Hyper-V. Sau đó cài đặt Docker Desktop, trong Docker Desktop chúng ta sẽ cài đặt Docker Kubernetes. Cụm Docker Kubernetes sẽ có chỉ có một node làm Master Node và cũng đồng thời làm Worker Node, với địa chỉ IP của node là địa chỉ có máy Windows.
+	Sử dụng máy tính hệ điều hành Windows, công cụ hỗ trợ ảo hóa cho hệ điều hành này là Hyper-V. Sau đó cài đặt Docker Desktop, trong Docker Desktop  cài đặt Docker Kubernetes. Cụm Docker Kubernetes sẽ có chỉ có một node làm Master Node và cũng đồng thời làm Worker Node, với địa chỉ IP của node là địa chỉ có máy Windows.
 	
 	\begin{figure}[h]
 		\centering
@@ -1020,7 +1020,7 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 	\section{Cài đặt và thiết lập môi trường}
 	Thực hiện quá trình cài đặt theo các bước:\\
 	\textbf{Bước 1:} Cài đặt Docker Kubernetes\\
-	Docker Kubernetes là một cụm đặc biệt trong kubernetes, chỉ có duy nhất một node, ngoài ra còn giúp chúng ta học tập và nghiện cứu phát triển kubernetes dễ dàng hơn. Trong phạm vi đề tài này, chúng ta sử dụng Docker Kubernetes để thực hiện nghiên cứu và phát triển các chính sách an toàn bằng istio. Trong Docker Desktop chúng ta vào Settings, chọn vào Kubernetes, tích vào Kubernetes và chờ Docker Desktop  cài đặt Docker Kubernetes.
+	Docker Kubernetes là một cụm đặc biệt trong kubernetes, chỉ có duy nhất một node, ngoài ra còn giúp quá học tập và nghiên cứu phát triển kubernetes dễ dàng hơn. Trong phạm vi đề tài này, sử dụng Docker Kubernetes để thực hiện nghiên cứu và phát triển các chính sách an toàn bằng istio. Trong Docker Desktop vào Settings, chọn vào Kubernetes, tích vào Kubernetes và chờ Docker Desktop  cài đặt Docker Kubernetes.
 	
 	\begin{figure}[h!]
 		\centering
@@ -1235,11 +1235,11 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 		Như vậy, qua các bước trên có thể thực hiện triển khai toàn bộ v2 hay tiếp tục kiểm tra v3; Từ quá trình triển khai các phiên bản khác nhau với lưu lượng được kiểm soát ta có thể thử nghiệm các phiên bản mới mà không phải đối mặt với việc gây ảnh hưởng tới toàn bộ hệ thống khi chỉ 1 phiên bản có lỗi.
 		\subsection{Kiali Dashboard}
 		\subsubsection{a. Mục đích}
-		Như có nói ở trên, để có thể kiểm tra giám sát quá trình triển khai thì chúng ta cần phải có một công cụ cung cấp khả năng theo dõi, giám sát, giúp chúng ta xem được network của ứng dụng microservice, kiểm tra request giữa từng service, response time,... Kiali là một công cụ giúp chúng ta thực hiện điều đó
+		Như có nói ở trên, để có thể kiểm tra giám sát quá trình triển khai thì các quản trị viên cần phải có một công cụ cung cấp khả năng theo dõi, giám sát, giúp các quản trị viên xem được network của ứng dụng microservice, kiểm tra request giữa từng service, response time,... Kiali là một công cụ giúp các quản trị viên thực hiện điều đó
 		\subsubsection{b. Kịch bản}
-		Ở đây ta dựng một Kiali Dashboard để có thể giám sát quá trình Canary release ở trên, kiểm soát các thông số đối với từng bản thử nghiệm để cho ra kết quả có triển khai phiên bản đó trên toàn bộ hệ thống hay không
+		Kiali có thể giám sát quá trình Canary release ở trên, kiểm soát các thông số đối với từng bản thử nghiệm để cho ra kết quả có triển khai phiên bản đó trên toàn bộ hệ thống hay không.
 		\subsubsection{c. Các bước thực hiện}
-		Trước hết ta cài đặt Kiali cùng với add-on của nó
+		Trước hết ta cài đặt Kiali và Promethues:
 		\begin{lstlisting}
 			$ kubectl apply -f .\samples\addons\kiali.yaml
 			serviceaccount/kiali created
@@ -1353,7 +1353,7 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 				
 		\subsection{Ủy quyền giữa các microservice}
 			\subsubsection{a. Mục đích}
-			{\hspace{0.6cm}Istio không chỉ giúp quản trị viên xác thực các microservice, sau khi xác thực chúng ta có thể phân quyền cho các microservice, hạn chế microserivce chỉ có thể sử dụng một số tính năng cụ thể của microservice khác.}
+			{\hspace{0.6cm}Istio không chỉ xác thực các microservice, sau khi xác thực các quản trị viên có thể phân quyền cho các microservice, hạn chế microserivce chỉ có thể sử dụng một số tính năng cụ thể của microservice khác.}
 			\subsubsection{b. Kịch bản}
 			\begin{enumerate}
 				\item[$\blacksquare$] Áp dụng chính sách cấm tất cả các requests đến với tất cả các pod trọng Kubernetes.
@@ -1391,7 +1391,7 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 					\label{fig:3}
 				\end{figure}
 			
-				Bước 3: Tạo file chính sách cho phép vào dịch vụ productpage như hình dưới, trong đó chúng ta để matchLabels là app: productpage và trường action là ALLOW, và method có thể sử dụng là GET. Nghĩa là tất các các app được đánh nhãn app có giá trị là productpage thì sẽ cho phép tất cả mọi dịch vụ hay người dùng sử dụng phương thức GET đối với dịch vụ này:
+				Bước 3: Tạo file chính sách cho phép vào dịch vụ productpage như hình dưới, trong đó matchLabels là app có giá trị là productpage và trường action là ALLOW, và method có thể sử dụng là GET. Nghĩa là tất các các app được đánh nhãn app có giá trị là productpage thì sẽ cho phép tất cả mọi dịch vụ hay người dùng sử dụng phương thức GET đối với dịch vụ này:
 				\begin{lstlisting}
 				apiVersion: security.istio.io/v1beta1
 				kind: AuthorizationPolicy
@@ -1421,7 +1421,7 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 					\label{fig:3}
 				\end{figure}
 				
-				Bước 5: Tạo file chính sách cho phép vào dịch vụ productpage có thể sử dụng phương thức GET với dịch vụ details, trong đó chúng ta chỉ cần thêm phần source trỏ đến serviceaccount của dịch productpage:
+				Bước 5: Tạo file chính sách cho phép vào dịch vụ productpage có thể sử dụng phương thức GET với dịch vụ details, phần source trỏ đến serviceaccount của dịch productpage:
 				\begin{lstlisting}
 				apiVersion: security.istio.io/v1beta1
 				kind: AuthorizationPolicy
