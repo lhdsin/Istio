@@ -388,7 +388,7 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 				
 				Một kiến trúc đa ngôn ngữ làm cho vấn đề bảo mật trở nên khó khăn. Bởi vì các đội khác nhau sử dụng các stack công nghệ khác nhau để phát triển, mỗi nhóm phải có các chuyên gia bảo mật riêng. Các chuyên gia này phải chịu trách nhiệm xác định các phương pháp bảo mật tốt nhất và hướng dẫn, nghiên cứu các công cụ bảo mật cho mỗi stack công nghệ để phân tích mã nguồn tĩnh và thử nghiệm động và tích hợp các công cụ đó vào quá trình xây dựng. Trách nhiệm của một nhóm bảo mật tập trung, nhưng bây giờ chia vào các đội development. Điều này làm cho các đội development không chú tâm vào việc phát triển sản phẩm mà phải lo một phần về bảo mật nữa làm cho chất lượng sản phẩm giảm do phải viết các module bảo mật làm cho mã nguồn bị rối và khó đọc.
 				
-				
+	\newpage				
 	\section*{Kết luận Chương 1}
 			\hspace{0.6cm}Như vậy trong chương một nhóm đã nêu ra những thông tin cơ về những công nghệ cũng như kiến trúc của tương lai - Container và Microservices. Đưa ra những ưu điểm cũng như thách thức trong việc triển khai, sử dụng những công nghệ này trong thực tế. Đồng thời nhóm cũng nêu ra một hệ thống tự động hoá triển khai, mở rộng và quản lý của công nghệ Container là Kubernetes. Qua việc hiểu tổng quan của các công nghệ trên nhóm đã nhận ra một số vấn đề bảo mật của kiến trúc Microservices như nguy cơ bị tấn công cao khi mở rộng, việc ảnh hưởng đến hiệu suất khi triển khai bảo mật phân tán cũng như sự phức tạp, khó khăn khi triển khai các giải pháp an toàn cũng yêu cầu nhiều kiến thức đối với những nhà phát triển. Sau đây nhóm sẽ trình bày một giải pháp để có thể giải quyết những vấn đề nói trên.
 \chapter{Tổng quan về Istio}
@@ -699,41 +699,30 @@ Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi nhữn
 		
 		Trong hình 2.11, bên cạnh Pod istio-ingressgateway, hãy lưu ý thành phần istio-egressgateway. Thành phần này chịu trách nhiệm định tuyến lưu lượng ra khỏi cụm. Cổng ra được cấu hình với cùng tài nguyên như cổng vào mà chúng ta sẽ thấy trong chương này.
 		
-		\begin{figure}[h]
+		\begin{figure}[h!]
 			\centering
-			\includegraphics[width=0.7\linewidth]{Pics/2.2.1-p1}
+			\includegraphics[width=0.6\linewidth]{Pics/2.2.1-p1}
 			\caption{Istio Gateway đóng vai trò là điểm vào mạng và sử dụng proxy Envoy để thực hiện định tuyến và cân bằng tải.}
 			\label{fig:2.2.1-1}
 		\end{figure}
 		
-		\begin{figure}[h]
+		\begin{figure}[h!]
 			\centering
 			\includegraphics[width=0.7\linewidth]{Pics/2.2.1-p2}
 			\caption{Cấu trúc một control plane và các thành phần phụ trợ}
 			\label{fig:2.2.1-2}
 		\end{figure}
 		
-	
-		Ta sẽ thấy đầu ra dưới dạng đầu ra một danh sách, hiển thị dòng lệnh dịch vụ proxy Istio với các pilot-agent và envoy dưới dạng các tiến trình đang chạy. Tiến trình pilot- agent ban đầu định cấu hình và khởi động proxy Envoy và nó cũng triển khai proxy DNS.
-		
-		Để cấu hình gateway của Istio nhằm cho phép lưu lượng truy cập vào cụm và thông qua lưới dịch vụ, chúng ta sẽ bắt đầu bằng cách khám phá hai tài nguyên của Istio: Cổng và Dịch vụ ảo. Cả hai đều là nền tảng để có được lưu lượng truy cập trong Istio, nhưng chúng ta sẽ chỉ xem xét chúng trong bối cảnh cho phép lưu lượng truy cập vào cụm.
-		
-		
-		\break
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.7\linewidth]{Pics/2.2.1-p5}
-	\caption{Luồng lưu lượng từ máy khách bên ngoài lưới/cụm dịch vụ đến các dịch vụ bên trong lưới dịch vụ thông qua gateway}
-	\label{fig:2.2.1-5}
-\end{figure}
 		\subsection{Định tuyến đường đi các Microservices trong Kubernetes sử dụng Istio}
-			\hspace{0.6cm} Trong kiến trúc monolith, chúng ta có một dịch vụ khổng lồ duy nhất với tất cả logic nghiệp vụ để xử lý tất cả các yêu cầu từ người dùng, nhưng trong kiến trúc microservices, chúng ta có nhiều dịch vụ tập trung vào logic nghiệp vụ cụ thể. Một yêu cầu của người dùng duy nhất có thể trờ thành nhiều yêu cầu cho các dịch vụ phụ thuộc
-			\begin{figure}[h]
+			\hspace{0.6cm} Trong kiến trúc monolith, chúng ta có một dịch vụ khổng lồ duy nhất với tất cả logic nghiệp vụ để xử lý tất cả các yêu cầu từ người dùng, nhưng trong kiến trúc microservices, chúng ta có nhiều dịch vụ tập trung vào logic nghiệp vụ cụ thể. Một yêu cầu của người dùng duy nhất có thể trờ thành nhiều yêu cầu cho các dịch vụ phụ thuộc.
+			
+			\begin{figure}[h!]
 				\centering
-				\includegraphics[width=0.7\linewidth]{Pics/2.2.2-p4}
+				\includegraphics[width=0.9\linewidth]{Pics/2.2.2-p4}
 				\caption{Ví dụ về mô hình microservices}
 				\label{fig:2}
 			\end{figure}
+		
 			Như thể hiện trong sơ đồ trên, một yêu cầu của người dùng tới microservice-A được gửi đến microservice-B, microservice-C, và microservice-D. Cuối cùng, một phản hồi được gửi đến người dùng. Bây giờ, giả sử microservice-B có một tính năng mới, cần được phát triển và thử nghiệm trên một nhóm user được chọn cụ thể ở đây là User1, hoặc cho tỉ lệ 10\% người dùng có thể dụng tính năng mới này. 
 			Để giải quyết bài toán trên Istio đã cung cấp một số cơ chế định tuyến sau:
 			\begin{itemize}
@@ -827,7 +816,6 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 		\label{fig:2}
 	
 \end{figure}
-\pagebreak
 	\subsection{Theo dõi phân tán với Istio}
 		{\hspace{0.6cm}Khi xây dựng một ứng dụng theo kiến trúc microservice, chúng ta tạo ra một mạng lưới phân tán của các microserivce để chúng hoạt động như một ứng dụng bình thường, như được minh họa hình 2.3.2. Khi có sự cố bắt đầu xảy ra khi các mircrosevice gọi nhau, điều quan trọng là phải hiểu điều gì đang xảy ra để có thể chẩn đoán và khắc phục nhanh chóng. Trong các phần trước, chúng ta đã thấy cách Istio có thể giúp thu thập các số liệu và phép đo từ xa liên quan đến kết nối mạng thay mặt cho ứng dụng. Theo dõi phân tán giúp các quản trị viên có thể chẩn đoán microservice nào đang bị lỗi.}\\
 			
@@ -981,7 +969,7 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 					\end{enumerate}
 				\end{itemize}
 			\end{enumerate}
-			
+	\newpage		
 	\section*{Kết luận chương 2}
 		{\hspace{0.6cm}Các ứng dụng hiện đại thường được kiến trúc dưới dạng tập hợp vi dịch vụ phân tán, với mỗi tập hợp microservice thực hiện một số chức năng riêng biệt. Service-mesh là lớp cơ sở hạ tầng chuyên dụng có thể thêm vào ứng dụng. Nó cho phép quản trị viên có thêm các khả năng như khả năng quan sát, quản lý lưu lượng và bảo mật một cách rõ ràng mà không cần phải sửa lại code của ứng dụng. }
 		
@@ -1271,7 +1259,6 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 			deployment.apps/prometheus created
 		\end{lstlisting}
 		Sau đó ta dùng câu lệnh {\color{red}Istioctl dashboard kiali} để mở Kiali dashboard trên trình duyệt web.
-		\newpage
 		\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.7\linewidth]{Pics/3.3.2-1}
@@ -1452,21 +1439,21 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 				  - operation:
 				      methods: ["GET"]
 				\end{lstlisting}
-			 	
+	
 			 	Bước 6: Sử dụng câu lệnh dưới để áp dụng file chính sách và truy cập lên trình duyệt web:
 			 	\begin{lstlisting}
 			 	$ kubectl apply -f manifests/authoriztion/allow-details.yaml 
 			 	authorizationpolicy.security.istio.io/details-viewer created
 			 	\end{lstlisting}
-		 		\pagebreak
+
 				\begin{figure}[h]
 					\centering
 					\includegraphics[width=0.7\linewidth]{Pics/3.3.2-p3}
 					\caption{Dịch vụ details đã hoạt động như rating và reviews thì vẫn bị lỗi}
 					\label{fig:3}
 				\end{figure}
-				
-				Bước 6: Tạo file chính sách tương tự với dịch vụ rating và reviews xong đó dùng câu lệnh dưới để áp dụng file chính sách và vào lại trang dịch vụ trên trình duyệt:
+
+				Bước 7: Tạo file chính sách tương tự với dịch vụ rating và reviews xong đó dùng câu lệnh dưới để áp dụng file chính sách và vào lại trang dịch vụ trên trình duyệt:
 				\begin{lstlisting}
 				$ kubectl apply -f manifests/authoriztion/allow-rating.yaml 
 				authorizationpolicy.security.istio.io/ratings-viewer created
@@ -1479,6 +1466,7 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 					\caption{Các dịch vụ đều hoạt động bình thường}
 					\label{fig:3}
 				\end{figure}
+		\pagebreak
 		\section*{Kết luận chương 3}
 		{\hspace{0.6cm}Qua phần thực nghiệm trên, cho thấy việc triển khai Istio là cực kì hữu dụng và quan trọng đối với bất kì hệ thống nào có sử dụng Kubernetes. Có thể sử dụng nhiều chiến lược triển khai như canary deployment, dark release, ...để có thể kiểm thử khi dịch vụ mới được triển khai có thể cho phép một lượng ít người dùng sử dụng tính năng để xem tính năng có bị lỗi hay không, hoặc chỉ có một nhóm người có thể sử dụng tính năng như các kĩ sư phần mềm hoặc các tester khi kiểm tra các tính năng mới của dịch vụ, và có thể quay về bản cũ nếu như tính năng mới của dịch vụ bị lỗi mà không làm ảnh hưởng gì đến hệ thống.}
 		
