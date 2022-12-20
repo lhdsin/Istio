@@ -1478,5 +1478,1808 @@ Istio hỗ trợ một loại cân bằng tải cung cấp trọng số cho các
 
 \appendix 
 \addcontentsline{toc}{chapter}{Phụ Lục}
-\chapter{ABC}
+\chapter{Các file cấu hình}
+1. File cấu hình cấu hình bookinfo.yaml
+\begin{lstlisting}
+	# Copyright Istio Authors
+	#
+	#   Licensed under the Apache License, Version 2.0 (the "License");
+	#   you may not use this file except in compliance with the License.
+	#   You may obtain a copy of the License at
+	#
+	#       http://www.apache.org/licenses/LICENSE-2.0
+	#
+	#   Unless required by applicable law or agreed to in writing, software
+	#   distributed under the License is distributed on an "AS IS" BASIS,
+	#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	#   See the License for the specific language governing permissions and
+	#   limitations under the License.
+	
+	####################################################
+	# This file defines the services, service accounts, and deployments for the Bookinfo sample.
+	#
+	# To apply all 4 Bookinfo services, their corresponding service accounts, and deployments:
+	#
+	#   kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+	#
+	# Alternatively, you can deploy any resource separately:
+	#
+	#   kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml -l service=reviews # reviews Service
+	#   kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml -l account=reviews # reviews ServiceAccount
+	#   kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml -l app=reviews,version=v3 # reviews-v3 Deployment
+	####################################################
+	
+	#################################
+	# Details service
+	#################################
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: details
+	  labels:
+		app: details
+		service: details
+	spec:
+	  ports:
+	  - port: 9080
+		name: http
+	  selector:
+		app: details
+	---
+	apiVersion: v1
+	kind: ServiceAccount
+	metadata:
+	  name: bookinfo-details
+	  labels:
+		account: details
+	---
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: details-v1
+	  labels:
+		app: details
+		version: v1
+	spec:
+	  replicas: 1
+	  selector:
+		matchLabels:
+		  app: details
+		  version: v1
+	  template:
+		metadata:
+		  labels:
+			app: details
+			version: v1
+		spec:
+		  serviceAccountName: bookinfo-details
+		  containers:
+		  - name: details
+			image: docker.io/istio/examples-bookinfo-details-v1:1.17.0
+			imagePullPolicy: IfNotPresent
+			ports:
+			- containerPort: 9080
+			securityContext:
+			  runAsUser: 1000
+	---
+	##################################################
+	# Ratings service
+	##################################################
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: ratings
+	  labels:
+		app: ratings
+		service: ratings
+	spec:
+	  ports:
+	  - port: 9080
+		name: http
+	  selector:
+		app: ratings
+	---
+	apiVersion: v1
+	kind: ServiceAccount
+	metadata:
+	  name: bookinfo-ratings
+	  labels:
+		account: ratings
+	---
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: ratings-v1
+	  labels:
+		app: ratings
+		version: v1
+	spec:
+	  replicas: 1
+	  selector:
+		matchLabels:
+		  app: ratings
+		  version: v1
+	  template:
+		metadata:
+		  labels:
+			app: ratings
+			version: v1
+		spec:
+		  serviceAccountName: bookinfo-ratings
+		  containers:
+		  - name: ratings
+			image: docker.io/istio/examples-bookinfo-ratings-v1:1.17.0
+			imagePullPolicy: IfNotPresent
+			ports:
+			- containerPort: 9080
+			securityContext:
+			  runAsUser: 1000
+	---
+	##########################################
+	# Reviews service
+	##########################################
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: reviews
+	  labels:
+		app: reviews
+		service: reviews
+	spec:
+	  ports:
+	  - port: 9080
+		name: http
+	  selector:
+		app: reviews
+	---
+	apiVersion: v1
+	kind: ServiceAccount
+	metadata:
+	  name: bookinfo-reviews
+	  labels:
+		account: reviews
+	---
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: reviews-v1
+	  labels:
+		app: reviews
+		version: v1
+	spec:
+	  replicas: 1
+	  selector:
+		matchLabels:
+		  app: reviews
+		  version: v1
+	  template:
+		metadata:
+		  labels:
+			app: reviews
+			version: v1
+		spec:
+		  serviceAccountName: bookinfo-reviews
+		  containers:
+		  - name: reviews
+			image: docker.io/istio/examples-bookinfo-reviews-v1:1.17.0
+			imagePullPolicy: IfNotPresent
+			env:
+			- name: LOG_DIR
+			  value: "/tmp/logs"
+			ports:
+			- containerPort: 9080
+			volumeMounts:
+			- name: tmp
+			  mountPath: /tmp
+			- name: wlp-output
+			  mountPath: /opt/ibm/wlp/output
+			securityContext:
+			  runAsUser: 1000
+		  volumes:
+		  - name: wlp-output
+			emptyDir: {}
+		  - name: tmp
+			emptyDir: {}
+	---
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: reviews-v2
+	  labels:
+		app: reviews
+		version: v2
+	spec:
+	  replicas: 1
+	  selector:
+		matchLabels:
+		  app: reviews
+		  version: v2
+	  template:
+		metadata:
+		  labels:
+			app: reviews
+			version: v2
+		spec:
+		  serviceAccountName: bookinfo-reviews
+		  containers:
+		  - name: reviews
+			image: docker.io/istio/examples-bookinfo-reviews-v2:1.17.0
+			imagePullPolicy: IfNotPresent
+			env:
+			- name: LOG_DIR
+			  value: "/tmp/logs"
+			ports:
+			- containerPort: 9080
+			volumeMounts:
+			- name: tmp
+			  mountPath: /tmp
+			- name: wlp-output
+			  mountPath: /opt/ibm/wlp/output
+			securityContext:
+			  runAsUser: 1000
+		  volumes:
+		  - name: wlp-output
+			emptyDir: {}
+		  - name: tmp
+			emptyDir: {}
+	---
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: reviews-v3
+	  labels:
+		app: reviews
+		version: v3
+	spec:
+	  replicas: 1
+	  selector:
+		matchLabels:
+		  app: reviews
+		  version: v3
+	  template:
+		metadata:
+		  labels:
+			app: reviews
+			version: v3
+		spec:
+		  serviceAccountName: bookinfo-reviews
+		  containers:
+		  - name: reviews
+			image: docker.io/istio/examples-bookinfo-reviews-v3:1.17.0
+			imagePullPolicy: IfNotPresent
+			env:
+			- name: LOG_DIR
+			  value: "/tmp/logs"
+			ports:
+			- containerPort: 9080
+			volumeMounts:
+			- name: tmp
+			  mountPath: /tmp
+			- name: wlp-output
+			  mountPath: /opt/ibm/wlp/output
+			securityContext:
+			  runAsUser: 1000
+		  volumes:
+		  - name: wlp-output
+			emptyDir: {}
+		  - name: tmp
+			emptyDir: {}
+	---
+	################################
+	# Productpage services
+	################################
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: productpage
+	  labels:
+		app: productpage
+		service: productpage
+	spec:
+	  ports:
+	  - port: 9080
+		name: http
+	  selector:
+		app: productpage
+	---
+	apiVersion: v1
+	kind: ServiceAccount
+	metadata:
+	  name: bookinfo-productpage
+	  labels:
+		account: productpage
+	---
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: productpage-v1
+	  labels:
+		app: productpage
+		version: v1
+	spec:
+	  replicas: 1
+	  selector:
+		matchLabels:
+		  app: productpage
+		  version: v1
+	  template:
+		metadata:
+		  labels:
+			app: productpage
+			version: v1
+		spec:
+		  serviceAccountName: bookinfo-productpage
+		  containers:
+		  - name: productpage
+			image: docker.io/istio/examples-bookinfo-productpage-v1:1.17.0
+			imagePullPolicy: IfNotPresent
+			ports:
+			- containerPort: 9080
+			volumeMounts:
+			- name: tmp
+			  mountPath: /tmp
+			securityContext:
+			  runAsUser: 1000
+		  volumes:
+		  - name: tmp
+			emptyDir: {}
+	---
+\end{lstlisting}
+
+2. File cấu hình bookinfo-gateway.yaml
+\begin{lstlisting}
+	apiVersion: networking.istio.io/v1alpha3
+	kind: Gateway
+	metadata:
+	  name: bookinfo-gateway
+	spec:
+	  selector:
+		istio: ingressgateway # use istio default controller
+	  servers:
+	  - port:
+		  number: 80
+		  name: http
+		  protocol: HTTP
+		hosts:
+		- "*"
+	---
+	apiVersion: networking.istio.io/v1alpha3
+	kind: VirtualService
+	metadata:
+	  name: bookinfo
+	spec:
+	  hosts:
+	  - "*"
+	  gateways:
+	  - bookinfo-gateway
+	  http:
+	  - match:
+		- uri:
+			exact: /productpage
+		- uri:
+			prefix: /static
+		- uri:
+			exact: /login
+		- uri:
+			exact: /logout
+		- uri:
+			prefix: /api/v1/products
+		route:
+		- destination:
+			host: productpage
+			port:
+			  number: 9080
+	
+\end{lstlisting}
+
+3. File cấu hình destination-rule-all.yaml
+\begin{lstlisting}
+	apiVersion: networking.istio.io/v1alpha3
+	kind: DestinationRule
+	metadata:
+	  name: productpage
+	spec:
+	  host: productpage
+	  subsets:
+	  - name: v1
+		labels:
+		  version: v1
+	---
+	apiVersion: networking.istio.io/v1alpha3
+	kind: DestinationRule
+	metadata:
+	  name: reviews
+	spec:
+	  host: reviews
+	  subsets:
+	  - name: v1
+		labels:
+		  version: v1
+	  - name: v2
+		labels:
+		  version: v2
+	  - name: v3
+		labels:
+		  version: v3
+	---
+	apiVersion: networking.istio.io/v1alpha3
+	kind: DestinationRule
+	metadata:
+	  name: ratings
+	spec:
+	  host: ratings
+	  subsets:
+	  - name: v1
+		labels:
+		  version: v1
+	  - name: v2
+		labels:
+		  version: v2
+	  - name: v2-mysql
+		labels:
+		  version: v2-mysql
+	  - name: v2-mysql-vm
+		labels:
+		  version: v2-mysql-vm
+	---
+	apiVersion: networking.istio.io/v1alpha3
+	kind: DestinationRule
+	metadata:
+	  name: details
+	spec:
+	  host: details
+	  subsets:
+	  - name: v1
+		labels:
+		  version: v1
+	  - name: v2
+		labels:
+		  version: v2
+	---
+	
+\end{lstlisting}
+
+4. File cấu hình virtual-service-all-v1.yaml
+\begin{lstlisting}
+	apiVersion: networking.istio.io/v1alpha3
+	kind: VirtualService
+	metadata:
+	  name: productpage
+	spec:
+	  hosts:
+	  - productpage
+	  http:
+	  - route:
+		- destination:
+			host: productpage
+			subset: v1
+	---
+	apiVersion: networking.istio.io/v1alpha3
+	kind: VirtualService
+	metadata:
+	  name: reviews
+	spec:
+	  hosts:
+	  - reviews
+	  http:
+	  - route:
+		- destination:
+			host: reviews
+			subset: v1
+	---
+	apiVersion: networking.istio.io/v1alpha3
+	kind: VirtualService
+	metadata:
+	  name: ratings
+	spec:
+	  hosts:
+	  - ratings
+	  http:
+	  - route:
+		- destination:
+			host: ratings
+			subset: v1
+	---
+	apiVersion: networking.istio.io/v1alpha3
+	kind: VirtualService
+	metadata:
+	  name: details
+	spec:
+	  hosts:
+	  - details
+	  http:
+	  - route:
+		- destination:
+			host: details
+			subset: v1
+	---
+	
+\end{lstlisting}
+
+5. File cấu hình virtual-service-reviews-50-v3.yaml
+\begin{lstlisting}
+	apiVersion: networking.istio.io/v1alpha3
+	kind: VirtualService
+	metadata:
+	  name: reviews
+	spec:
+	  hosts:
+		- reviews
+	  http:
+	  - route:
+		- destination:
+			host: reviews
+			subset: v1
+		  weight: 50
+		- destination:
+			host: reviews
+			subset: v3
+		  weight: 50
+	
+\end{lstlisting}
+
+6. File cấu hình virtual-service-reviews-80-20.yaml
+\begin{lstlisting}
+	apiVersion: networking.istio.io/v1alpha3
+	kind: VirtualService
+	metadata:
+	  name: reviews
+	spec:
+	  hosts:
+		- reviews
+	  http:
+	  - route:
+		- destination:
+			host: reviews
+			subset: v1
+		  weight: 80
+		- destination:
+			host: reviews
+			subset: v2
+		  weight: 20
+	
+\end{lstlisting}
+
+7. File cấu hình virtual-service-reviews-90-10.yaml
+\begin{lstlisting}
+	apiVersion: networking.istio.io/v1alpha3
+	kind: VirtualService
+	metadata:
+	  name: reviews
+	spec:
+	  hosts:
+		- reviews
+	  http:
+	  - route:
+		- destination:
+			host: reviews
+			subset: v1
+		  weight: 90
+		- destination:
+			host: reviews
+			subset: v2
+		  weight: 10
+	
+\end{lstlisting}
+
+8. File cấu hình kiali.yaml
+\begin{lstlisting}
+	---
+	# Source: kiali-server/templates/serviceaccount.yaml
+	apiVersion: v1
+	kind: ServiceAccount
+	metadata:
+	  name: kiali
+	  namespace: istio-system
+	  labels:
+		helm.sh/chart: kiali-server-1.55.1
+		app: kiali
+		app.kubernetes.io/name: kiali
+		app.kubernetes.io/instance: kiali
+		version: "v1.55.1"
+		app.kubernetes.io/version: "v1.55.1"
+		app.kubernetes.io/managed-by: Helm
+		app.kubernetes.io/part-of: "kiali"
+	...
+	---
+	# Source: kiali-server/templates/configmap.yaml
+	apiVersion: v1
+	kind: ConfigMap
+	metadata:
+	  name: kiali
+	  namespace: istio-system
+	  labels:
+		helm.sh/chart: kiali-server-1.55.1
+		app: kiali
+		app.kubernetes.io/name: kiali
+		app.kubernetes.io/instance: kiali
+		version: "v1.55.1"
+		app.kubernetes.io/version: "v1.55.1"
+		app.kubernetes.io/managed-by: Helm
+		app.kubernetes.io/part-of: "kiali"
+	data:
+	  config.yaml: |
+		auth:
+		  openid: {}
+		  openshift:
+			client_id_prefix: kiali
+		  strategy: anonymous
+		deployment:
+		  accessible_namespaces:
+		  - '**'
+		  additional_service_yaml: {}
+		  affinity:
+			node: {}
+			pod: {}
+			pod_anti: {}
+		  configmap_annotations: {}
+		  custom_secrets: []
+		  host_aliases: []
+		  hpa:
+			api_version: autoscaling/v2beta2
+			spec: {}
+		  image_digest: ""
+		  image_name: quay.io/kiali/kiali
+		  image_pull_policy: Always
+		  image_pull_secrets: []
+		  image_version: v1.55
+		  ingress:
+			additional_labels: {}
+			class_name: nginx
+			override_yaml:
+			  metadata: {}
+		  ingress_enabled: false
+		  instance_name: kiali
+		  logger:
+			log_format: text
+			log_level: info
+			sampler_rate: "1"
+			time_field_format: 2006-01-02T15:04:05Z07:00
+		  namespace: istio-system
+		  node_selector: {}
+		  pod_annotations: {}
+		  pod_labels:
+			sidecar.istio.io/inject: "false"
+		  priority_class_name: ""
+		  replicas: 1
+		  resources:
+			limits:
+			  memory: 1Gi
+			requests:
+			  cpu: 10m
+			  memory: 64Mi
+		  secret_name: kiali
+		  service_annotations: {}
+		  service_type: ""
+		  tolerations: []
+		  version_label: v1.55.1
+		  view_only_mode: false
+		external_services:
+		  custom_dashboards:
+			enabled: true
+		  istio:
+			root_namespace: istio-system
+		identity:
+		  cert_file: ""
+		  private_key_file: ""
+		istio_namespace: istio-system
+		kiali_feature_flags:
+		  certificates_information_indicators:
+			enabled: true
+			secrets:
+			- cacerts
+			- istio-ca-secret
+		  clustering:
+			enabled: true
+		  disabled_features: []
+		  validations:
+			ignore:
+			- KIA1201
+		login_token:
+		  signing_key: CHANGEME00000000
+		server:
+		  metrics_enabled: true
+		  metrics_port: 9090
+		  port: 20001
+		  web_root: /kiali
+	...
+	---
+	# Source: kiali-server/templates/role-viewer.yaml
+	apiVersion: rbac.authorization.k8s.io/v1
+	kind: ClusterRole
+	metadata:
+	  name: kiali-viewer
+	  labels:
+		helm.sh/chart: kiali-server-1.55.1
+		app: kiali
+		app.kubernetes.io/name: kiali
+		app.kubernetes.io/instance: kiali
+		version: "v1.55.1"
+		app.kubernetes.io/version: "v1.55.1"
+		app.kubernetes.io/managed-by: Helm
+		app.kubernetes.io/part-of: "kiali"
+	rules:
+	- apiGroups: [""]
+	  resources:
+	  - configmaps
+	  - endpoints
+	  - pods/log
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	- apiGroups: [""]
+	  resources:
+	  - namespaces
+	  - pods
+	  - replicationcontrollers
+	  - services
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	- apiGroups: [""]
+	  resources:
+	  - pods/portforward
+	  verbs:
+	  - create
+	  - post
+	- apiGroups: ["extensions", "apps"]
+	  resources:
+	  - daemonsets
+	  - deployments
+	  - replicasets
+	  - statefulsets
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	- apiGroups: ["batch"]
+	  resources:
+	  - cronjobs
+	  - jobs
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	- apiGroups:
+	  - networking.istio.io
+	  - security.istio.io
+	  resources: ["*"]
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	- apiGroups: ["apps.openshift.io"]
+	  resources:
+	  - deploymentconfigs
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	- apiGroups: ["project.openshift.io"]
+	  resources:
+	  - projects
+	  verbs:
+	  - get
+	- apiGroups: ["route.openshift.io"]
+	  resources:
+	  - routes
+	  verbs:
+	  - get
+	- apiGroups: ["authentication.k8s.io"]
+	  resources:
+	  - tokenreviews
+	  verbs:
+	  - create
+	...
+	---
+	# Source: kiali-server/templates/role.yaml
+	apiVersion: rbac.authorization.k8s.io/v1
+	kind: ClusterRole
+	metadata:
+	  name: kiali
+	  labels:
+		helm.sh/chart: kiali-server-1.55.1
+		app: kiali
+		app.kubernetes.io/name: kiali
+		app.kubernetes.io/instance: kiali
+		version: "v1.55.1"
+		app.kubernetes.io/version: "v1.55.1"
+		app.kubernetes.io/managed-by: Helm
+		app.kubernetes.io/part-of: "kiali"
+	rules:
+	- apiGroups: [""]
+	  resources:
+	  - configmaps
+	  - endpoints
+	  - pods/log
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	- apiGroups: [""]
+	  resources:
+	  - namespaces
+	  - pods
+	  - replicationcontrollers
+	  - services
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	  - patch
+	- apiGroups: [""]
+	  resources:
+	  - pods/portforward
+	  verbs:
+	  - create
+	  - post
+	- apiGroups: ["extensions", "apps"]
+	  resources:
+	  - daemonsets
+	  - deployments
+	  - replicasets
+	  - statefulsets
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	  - patch
+	- apiGroups: ["batch"]
+	  resources:
+	  - cronjobs
+	  - jobs
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	  - patch
+	- apiGroups:
+	  - networking.istio.io
+	  - security.istio.io
+	  resources: ["*"]
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	  - create
+	  - delete
+	  - patch
+	- apiGroups: ["apps.openshift.io"]
+	  resources:
+	  - deploymentconfigs
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	  - patch
+	- apiGroups: ["project.openshift.io"]
+	  resources:
+	  - projects
+	  verbs:
+	  - get
+	- apiGroups: ["route.openshift.io"]
+	  resources:
+	  - routes
+	  verbs:
+	  - get
+	- apiGroups: ["authentication.k8s.io"]
+	  resources:
+	  - tokenreviews
+	  verbs:
+	  - create
+	...
+	---
+	# Source: kiali-server/templates/rolebinding.yaml
+	apiVersion: rbac.authorization.k8s.io/v1
+	kind: ClusterRoleBinding
+	metadata:
+	  name: kiali
+	  labels:
+		helm.sh/chart: kiali-server-1.55.1
+		app: kiali
+		app.kubernetes.io/name: kiali
+		app.kubernetes.io/instance: kiali
+		version: "v1.55.1"
+		app.kubernetes.io/version: "v1.55.1"
+		app.kubernetes.io/managed-by: Helm
+		app.kubernetes.io/part-of: "kiali"
+	roleRef:
+	  apiGroup: rbac.authorization.k8s.io
+	  kind: ClusterRole
+	  name: kiali
+	subjects:
+	- kind: ServiceAccount
+	  name: kiali
+	  namespace: istio-system
+	...
+	---
+	# Source: kiali-server/templates/role-controlplane.yaml
+	apiVersion: rbac.authorization.k8s.io/v1
+	kind: Role
+	metadata:
+	  name: kiali-controlplane
+	  namespace: istio-system
+	  labels:
+		helm.sh/chart: kiali-server-1.55.1
+		app: kiali
+		app.kubernetes.io/name: kiali
+		app.kubernetes.io/instance: kiali
+		version: "v1.55.1"
+		app.kubernetes.io/version: "v1.55.1"
+		app.kubernetes.io/managed-by: Helm
+		app.kubernetes.io/part-of: "kiali"
+	rules:
+	- apiGroups: [""]
+	  resources:
+	  - secrets
+	  verbs:
+	  - list
+	- apiGroups: [""]
+	  resourceNames:
+	  - cacerts
+	  - istio-ca-secret
+	  resources:
+	  - secrets
+	  verbs:
+	  - get
+	  - list
+	  - watch
+	...
+	---
+	# Source: kiali-server/templates/rolebinding-controlplane.yaml
+	apiVersion: rbac.authorization.k8s.io/v1
+	kind: RoleBinding
+	metadata:
+	  name: kiali-controlplane
+	  namespace: istio-system
+	  labels:
+		helm.sh/chart: kiali-server-1.55.1
+		app: kiali
+		app.kubernetes.io/name: kiali
+		app.kubernetes.io/instance: kiali
+		version: "v1.55.1"
+		app.kubernetes.io/version: "v1.55.1"
+		app.kubernetes.io/managed-by: Helm
+		app.kubernetes.io/part-of: "kiali"
+	roleRef:
+	  apiGroup: rbac.authorization.k8s.io
+	  kind: Role
+	  name: kiali-controlplane
+	subjects:
+	- kind: ServiceAccount
+	  name: kiali
+	  namespace: istio-system
+	...
+	---
+	# Source: kiali-server/templates/service.yaml
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: kiali
+	  namespace: istio-system
+	  labels:
+		helm.sh/chart: kiali-server-1.55.1
+		app: kiali
+		app.kubernetes.io/name: kiali
+		app.kubernetes.io/instance: kiali
+		version: "v1.55.1"
+		app.kubernetes.io/version: "v1.55.1"
+		app.kubernetes.io/managed-by: Helm
+		app.kubernetes.io/part-of: "kiali"
+	  annotations:
+	spec:
+	  ports:
+	  - name: http
+		protocol: TCP
+		port: 20001
+	  - name: http-metrics
+		protocol: TCP
+		port: 9090
+	  selector:
+		app.kubernetes.io/name: kiali
+		app.kubernetes.io/instance: kiali
+	...
+	---
+	# Source: kiali-server/templates/deployment.yaml
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: kiali
+	  namespace: istio-system
+	  labels:
+		helm.sh/chart: kiali-server-1.55.1
+		app: kiali
+		app.kubernetes.io/name: kiali
+		app.kubernetes.io/instance: kiali
+		version: "v1.55.1"
+		app.kubernetes.io/version: "v1.55.1"
+		app.kubernetes.io/managed-by: Helm
+		app.kubernetes.io/part-of: "kiali"
+	spec:
+	  replicas: 1
+	  selector:
+		matchLabels:
+		  app.kubernetes.io/name: kiali
+		  app.kubernetes.io/instance: kiali
+	  strategy:
+		rollingUpdate:
+		  maxSurge: 1
+		  maxUnavailable: 1
+		type: RollingUpdate
+	  template:
+		metadata:
+		  name: kiali
+		  labels:
+			helm.sh/chart: kiali-server-1.55.1
+			app: kiali
+			app.kubernetes.io/name: kiali
+			app.kubernetes.io/instance: kiali
+			version: "v1.55.1"
+			app.kubernetes.io/version: "v1.55.1"
+			app.kubernetes.io/managed-by: Helm
+			app.kubernetes.io/part-of: "kiali"
+			sidecar.istio.io/inject: "false"
+		  annotations:
+			checksum/config: 39233dc06d242510c3d3371750a5e0aa9075ebee63db3d00790ec59ef1f55ee8
+			prometheus.io/scrape: "true"
+			prometheus.io/port: "9090"
+			kiali.io/dashboards: go,kiali
+		spec:
+		  serviceAccountName: kiali
+		  containers:
+		  - image: "quay.io/kiali/kiali:v1.55"
+			imagePullPolicy: Always
+			name: kiali
+			command:
+			- "/opt/kiali/kiali"
+			- "-config"
+			- "/kiali-configuration/config.yaml"
+			securityContext:
+			  allowPrivilegeEscalation: false
+			  privileged: false
+			  readOnlyRootFilesystem: true
+			  runAsNonRoot: true
+			ports:
+			- name: api-port
+			  containerPort: 20001
+			- name: http-metrics
+			  containerPort: 9090
+			readinessProbe:
+			  httpGet:
+				path: /kiali/healthz
+				port: api-port
+				scheme: HTTP
+			  initialDelaySeconds: 5
+			  periodSeconds: 30
+			livenessProbe:
+			  httpGet:
+				path: /kiali/healthz
+				port: api-port
+				scheme: HTTP
+			  initialDelaySeconds: 5
+			  periodSeconds: 30
+			env:
+			- name: ACTIVE_NAMESPACE
+			  valueFrom:
+				fieldRef:
+				  fieldPath: metadata.namespace
+			- name: LOG_LEVEL
+			  value: "info"
+			- name: LOG_FORMAT
+			  value: "text"
+			- name: LOG_TIME_FIELD_FORMAT
+			  value: "2006-01-02T15:04:05Z07:00"
+			- name: LOG_SAMPLER_RATE
+			  value: "1"
+			volumeMounts:
+			- name: kiali-configuration
+			  mountPath: "/kiali-configuration"
+			- name: kiali-cert
+			  mountPath: "/kiali-cert"
+			- name: kiali-secret
+			  mountPath: "/kiali-secret"
+			- name: kiali-cabundle
+			  mountPath: "/kiali-cabundle"
+			resources:
+			  limits:
+				memory: 1Gi
+			  requests:
+				cpu: 10m
+				memory: 64Mi
+		  volumes:
+		  - name: kiali-configuration
+			configMap:
+			  name: kiali
+		  - name: kiali-cert
+			secret:
+			  secretName: istio.kiali-service-account
+			  optional: true
+		  - name: kiali-secret
+			secret:
+			  secretName: kiali
+			  optional: true
+		  - name: kiali-cabundle
+			configMap:
+			  name: kiali-cabundle
+			  optional: true
+	...
+	
+\end{lstlisting}
+
+9. File cấu hình prometheus.yaml
+\begin{lstlisting}
+	---
+	# Source: prometheus/templates/server/serviceaccount.yaml
+	apiVersion: v1
+	kind: ServiceAccount
+	metadata:
+	  labels:
+		component: "server"
+		app: prometheus
+		release: prometheus
+		chart: prometheus-15.9.0
+		heritage: Helm
+	  name: prometheus
+	  namespace: istio-system
+	  annotations:
+		{}
+	---
+	# Source: prometheus/templates/server/cm.yaml
+	apiVersion: v1
+	kind: ConfigMap
+	metadata:
+	  labels:
+		component: "server"
+		app: prometheus
+		release: prometheus
+		chart: prometheus-15.9.0
+		heritage: Helm
+	  name: prometheus
+	  namespace: istio-system
+	data:
+	  alerting_rules.yml: |
+		{}
+	  alerts: |
+		{}
+	  prometheus.yml: |
+		global:
+		  evaluation_interval: 1m
+		  scrape_interval: 15s
+		  scrape_timeout: 10s
+		rule_files:
+		- /etc/config/recording_rules.yml
+		- /etc/config/alerting_rules.yml
+		- /etc/config/rules
+		- /etc/config/alerts
+		scrape_configs:
+		- job_name: prometheus
+		  static_configs:
+		  - targets:
+			- localhost:9090
+		- bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+		  job_name: kubernetes-apiservers
+		  kubernetes_sd_configs:
+		  - role: endpoints
+		  relabel_configs:
+		  - action: keep
+			regex: default;kubernetes;https
+			source_labels:
+			- __meta_kubernetes_namespace
+			- __meta_kubernetes_service_name
+			- __meta_kubernetes_endpoint_port_name
+		  scheme: https
+		  tls_config:
+			ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+			insecure_skip_verify: true
+		- bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+		  job_name: kubernetes-nodes
+		  kubernetes_sd_configs:
+		  - role: node
+		  relabel_configs:
+		  - action: labelmap
+			regex: __meta_kubernetes_node_label_(.+)
+		  - replacement: kubernetes.default.svc:443
+			target_label: __address__
+		  - regex: (.+)
+			replacement: /api/v1/nodes/$1/proxy/metrics
+			source_labels:
+			- __meta_kubernetes_node_name
+			target_label: __metrics_path__
+		  scheme: https
+		  tls_config:
+			ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+			insecure_skip_verify: true
+		- bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+		  job_name: kubernetes-nodes-cadvisor
+		  kubernetes_sd_configs:
+		  - role: node
+		  relabel_configs:
+		  - action: labelmap
+			regex: __meta_kubernetes_node_label_(.+)
+		  - replacement: kubernetes.default.svc:443
+			target_label: __address__
+		  - regex: (.+)
+			replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+			source_labels:
+			- __meta_kubernetes_node_name
+			target_label: __metrics_path__
+		  scheme: https
+		  tls_config:
+			ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+			insecure_skip_verify: true
+		- honor_labels: true
+		  job_name: kubernetes-service-endpoints
+		  kubernetes_sd_configs:
+		  - role: endpoints
+		  relabel_configs:
+		  - action: keep
+			regex: true
+			source_labels:
+			- __meta_kubernetes_service_annotation_prometheus_io_scrape
+		  - action: drop
+			regex: true
+			source_labels:
+			- __meta_kubernetes_service_annotation_prometheus_io_scrape_slow
+		  - action: replace
+			regex: (https?)
+			source_labels:
+			- __meta_kubernetes_service_annotation_prometheus_io_scheme
+			target_label: __scheme__
+		  - action: replace
+			regex: (.+)
+			source_labels:
+			- __meta_kubernetes_service_annotation_prometheus_io_path
+			target_label: __metrics_path__
+		  - action: replace
+			regex: ([^:]+)(?::\d+)?;(\d+)
+			replacement: $1:$2
+			source_labels:
+			- __address__
+			- __meta_kubernetes_service_annotation_prometheus_io_port
+			target_label: __address__
+		  - action: labelmap
+			regex: __meta_kubernetes_service_annotation_prometheus_io_param_(.+)
+			replacement: __param_$1
+		  - action: labelmap
+			regex: __meta_kubernetes_service_label_(.+)
+		  - action: replace
+			source_labels:
+			- __meta_kubernetes_namespace
+			target_label: namespace
+		  - action: replace
+			source_labels:
+			- __meta_kubernetes_service_name
+			target_label: service
+		  - action: replace
+			source_labels:
+			- __meta_kubernetes_pod_node_name
+			target_label: node
+		- honor_labels: true
+		  job_name: kubernetes-service-endpoints-slow
+		  kubernetes_sd_configs:
+		  - role: endpoints
+		  relabel_configs:
+		  - action: keep
+			regex: true
+			source_labels:
+			- __meta_kubernetes_service_annotation_prometheus_io_scrape_slow
+		  - action: replace
+			regex: (https?)
+			source_labels:
+			- __meta_kubernetes_service_annotation_prometheus_io_scheme
+			target_label: __scheme__
+		  - action: replace
+			regex: (.+)
+			source_labels:
+			- __meta_kubernetes_service_annotation_prometheus_io_path
+			target_label: __metrics_path__
+		  - action: replace
+			regex: ([^:]+)(?::\d+)?;(\d+)
+			replacement: $1:$2
+			source_labels:
+			- __address__
+			- __meta_kubernetes_service_annotation_prometheus_io_port
+			target_label: __address__
+		  - action: labelmap
+			regex: __meta_kubernetes_service_annotation_prometheus_io_param_(.+)
+			replacement: __param_$1
+		  - action: labelmap
+			regex: __meta_kubernetes_service_label_(.+)
+		  - action: replace
+			source_labels:
+			- __meta_kubernetes_namespace
+			target_label: namespace
+		  - action: replace
+			source_labels:
+			- __meta_kubernetes_service_name
+			target_label: service
+		  - action: replace
+			source_labels:
+			- __meta_kubernetes_pod_node_name
+			target_label: node
+		  scrape_interval: 5m
+		  scrape_timeout: 30s
+		- honor_labels: true
+		  job_name: prometheus-pushgateway
+		  kubernetes_sd_configs:
+		  - role: service
+		  relabel_configs:
+		  - action: keep
+			regex: pushgateway
+			source_labels:
+			- __meta_kubernetes_service_annotation_prometheus_io_probe
+		- honor_labels: true
+		  job_name: kubernetes-services
+		  kubernetes_sd_configs:
+		  - role: service
+		  metrics_path: /probe
+		  params:
+			module:
+			- http_2xx
+		  relabel_configs:
+		  - action: keep
+			regex: true
+			source_labels:
+			- __meta_kubernetes_service_annotation_prometheus_io_probe
+		  - source_labels:
+			- __address__
+			target_label: __param_target
+		  - replacement: blackbox
+			target_label: __address__
+		  - source_labels:
+			- __param_target
+			target_label: instance
+		  - action: labelmap
+			regex: __meta_kubernetes_service_label_(.+)
+		  - source_labels:
+			- __meta_kubernetes_namespace
+			target_label: namespace
+		  - source_labels:
+			- __meta_kubernetes_service_name
+			target_label: service
+		- honor_labels: true
+		  job_name: kubernetes-pods
+		  kubernetes_sd_configs:
+		  - role: pod
+		  relabel_configs:
+		  - action: keep
+			regex: true
+			source_labels:
+			- __meta_kubernetes_pod_annotation_prometheus_io_scrape
+		  - action: drop
+			regex: true
+			source_labels:
+			- __meta_kubernetes_pod_annotation_prometheus_io_scrape_slow
+		  - action: replace
+			regex: (https?)
+			source_labels:
+			- __meta_kubernetes_pod_annotation_prometheus_io_scheme
+			target_label: __scheme__
+		  - action: replace
+			regex: (.+)
+			source_labels:
+			- __meta_kubernetes_pod_annotation_prometheus_io_path
+			target_label: __metrics_path__
+		  - action: replace
+			regex: ([^:]+)(?::\d+)?;(\d+)
+			replacement: $1:$2
+			source_labels:
+			- __address__
+			- __meta_kubernetes_pod_annotation_prometheus_io_port
+			target_label: __address__
+		  - action: labelmap
+			regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
+			replacement: __param_$1
+		  - action: labelmap
+			regex: __meta_kubernetes_pod_label_(.+)
+		  - action: replace
+			source_labels:
+			- __meta_kubernetes_namespace
+			target_label: namespace
+		  - action: replace
+			source_labels:
+			- __meta_kubernetes_pod_name
+			target_label: pod
+		  - action: drop
+			regex: Pending|Succeeded|Failed|Completed
+			source_labels:
+			- __meta_kubernetes_pod_phase
+		- honor_labels: true
+		  job_name: kubernetes-pods-slow
+		  kubernetes_sd_configs:
+		  - role: pod
+		  relabel_configs:
+		  - action: keep
+			regex: true
+			source_labels:
+			- __meta_kubernetes_pod_annotation_prometheus_io_scrape_slow
+		  - action: replace
+			regex: (https?)
+			source_labels:
+			- __meta_kubernetes_pod_annotation_prometheus_io_scheme
+			target_label: __scheme__
+		  - action: replace
+			regex: (.+)
+			source_labels:
+			- __meta_kubernetes_pod_annotation_prometheus_io_path
+			target_label: __metrics_path__
+		  - action: replace
+			regex: ([^:]+)(?::\d+)?;(\d+)
+			replacement: $1:$2
+			source_labels:
+			- __address__
+			- __meta_kubernetes_pod_annotation_prometheus_io_port
+			target_label: __address__
+		  - action: labelmap
+			regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
+			replacement: __param_$1
+		  - action: labelmap
+			regex: __meta_kubernetes_pod_label_(.+)
+		  - action: replace
+			source_labels:
+			- __meta_kubernetes_namespace
+			target_label: namespace
+		  - action: replace
+			source_labels:
+			- __meta_kubernetes_pod_name
+			target_label: pod
+		  - action: drop
+			regex: Pending|Succeeded|Failed|Completed
+			source_labels:
+			- __meta_kubernetes_pod_phase
+		  scrape_interval: 5m
+		  scrape_timeout: 30s
+	  recording_rules.yml: |
+		{}
+	  rules: |
+		{}
+	---
+	# Source: prometheus/templates/server/clusterrole.yaml
+	apiVersion: rbac.authorization.k8s.io/v1
+	kind: ClusterRole
+	metadata:
+	  labels:
+		component: "server"
+		app: prometheus
+		release: prometheus
+		chart: prometheus-15.9.0
+		heritage: Helm
+	  name: prometheus
+	rules:
+	  - apiGroups:
+		  - ""
+		resources:
+		  - nodes
+		  - nodes/proxy
+		  - nodes/metrics
+		  - services
+		  - endpoints
+		  - pods
+		  - ingresses
+		  - configmaps
+		verbs:
+		  - get
+		  - list
+		  - watch
+	  - apiGroups:
+		  - "extensions"
+		  - "networking.k8s.io"
+		resources:
+		  - ingresses/status
+		  - ingresses
+		verbs:
+		  - get
+		  - list
+		  - watch
+	  - nonResourceURLs:
+		  - "/metrics"
+		verbs:
+		  - get
+	---
+	# Source: prometheus/templates/server/clusterrolebinding.yaml
+	apiVersion: rbac.authorization.k8s.io/v1
+	kind: ClusterRoleBinding
+	metadata:
+	  labels:
+		component: "server"
+		app: prometheus
+		release: prometheus
+		chart: prometheus-15.9.0
+		heritage: Helm
+	  name: prometheus
+	subjects:
+	  - kind: ServiceAccount
+		name: prometheus
+		namespace: istio-system
+	roleRef:
+	  apiGroup: rbac.authorization.k8s.io
+	  kind: ClusterRole
+	  name: prometheus
+	---
+	# Source: prometheus/templates/server/service.yaml
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  labels:
+		component: "server"
+		app: prometheus
+		release: prometheus
+		chart: prometheus-15.9.0
+		heritage: Helm
+	  name: prometheus
+	  namespace: istio-system
+	spec:
+	  ports:
+		- name: http
+		  port: 9090
+		  protocol: TCP
+		  targetPort: 9090
+	  selector:
+		component: "server"
+		app: prometheus
+		release: prometheus
+	  sessionAffinity: None
+	  type: "ClusterIP"
+	---
+	# Source: prometheus/templates/server/deploy.yaml
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  labels:
+		component: "server"
+		app: prometheus
+		release: prometheus
+		chart: prometheus-15.9.0
+		heritage: Helm
+	  name: prometheus
+	  namespace: istio-system
+	spec:
+	  selector:
+		matchLabels:
+		  component: "server"
+		  app: prometheus
+		  release: prometheus
+	  replicas: 1
+	  template:
+		metadata:
+		  labels:
+			component: "server"
+			app: prometheus
+			release: prometheus
+			chart: prometheus-15.9.0
+			heritage: Helm
+			
+			sidecar.istio.io/inject: "false"
+		spec:
+		  enableServiceLinks: true
+		  serviceAccountName: prometheus
+		  containers:
+			- name: prometheus-server-configmap-reload
+			  image: "jimmidyson/configmap-reload:v0.5.0"
+			  imagePullPolicy: "IfNotPresent"
+			  args:
+				- --volume-dir=/etc/config
+				- --webhook-url=http://127.0.0.1:9090/-/reload
+			  resources:
+				{}
+			  volumeMounts:
+				- name: config-volume
+				  mountPath: /etc/config
+				  readOnly: true
+	
+			- name: prometheus-server
+			  image: "prom/prometheus:v2.34.0"
+			  imagePullPolicy: "IfNotPresent"
+			  args:
+				- --storage.tsdb.retention.time=15d
+				- --config.file=/etc/config/prometheus.yml
+				- --storage.tsdb.path=/data
+				- --web.console.libraries=/etc/prometheus/console_libraries
+				- --web.console.templates=/etc/prometheus/consoles
+				- --web.enable-lifecycle
+			  ports:
+				- containerPort: 9090
+			  readinessProbe:
+				httpGet:
+				  path: /-/ready
+				  port: 9090
+				  scheme: HTTP
+				initialDelaySeconds: 0
+				periodSeconds: 5
+				timeoutSeconds: 4
+				failureThreshold: 3
+				successThreshold: 1
+			  livenessProbe:
+				httpGet:
+				  path: /-/healthy
+				  port: 9090
+				  scheme: HTTP
+				initialDelaySeconds: 30
+				periodSeconds: 15
+				timeoutSeconds: 10
+				failureThreshold: 3
+				successThreshold: 1
+			  resources:
+				{}
+			  volumeMounts:
+				- name: config-volume
+				  mountPath: /etc/config
+				- name: storage-volume
+				  mountPath: /data
+				  subPath: ""
+		  hostNetwork: false
+		  dnsPolicy: ClusterFirst
+		  securityContext:
+			fsGroup: 65534
+			runAsGroup: 65534
+			runAsNonRoot: true
+			runAsUser: 65534
+		  terminationGracePeriodSeconds: 300
+		  volumes:
+			- name: config-volume
+			  configMap:
+				name: prometheus
+			- name: storage-volume
+			  emptyDir:
+				{}
+	
+\end{lstlisting}
+
+10. File cấu hình allow-details.yaml
+\begin{lstlisting}
+	apiVersion: security.istio.io/v1beta1
+	kind: AuthorizationPolicy
+	metadata:
+	  name: "details-viewer"
+	  namespace: default
+	spec:
+	  selector:
+		matchLabels:
+		  app: details
+	  action: ALLOW
+	  rules:
+	  - from:
+		- source:
+			principals: ["cluster.local/ns/default/sa/bookinfo-productpage"]
+		to:
+		- operation:
+			methods: ["GET"]
+\end{lstlisting}
+
+11. File cấu hình allow-product-page.yaml
+\begin{lstlisting}
+	apiVersion: security.istio.io/v1beta1
+	kind: AuthorizationPolicy
+	metadata:
+	  name: "productpage-viewer"
+	  namespace: default
+	spec:
+	  selector:
+		matchLabels:
+		  app: productpage
+	  action: ALLOW
+	  rules:
+	  - to:
+		- operation:
+			methods: ["GET"]
+\end{lstlisting}
+
+12. File cấu hình allow-rating.yaml
+\begin{lstlisting}
+	apiVersion: security.istio.io/v1beta1
+	kind: AuthorizationPolicy
+	metadata:
+	  name: "ratings-viewer"
+	  namespace: default
+	spec:
+	  selector:
+		matchLabels:
+		  app: ratings
+	  action: ALLOW
+	  rules:
+	  - from:
+		- source:
+			principals: ["cluster.local/ns/default/sa/bookinfo-reviews"]
+		to:
+		- operation:
+			methods: ["GET"]
+\end{lstlisting}
+
+13. File cấu hình allow-reviews.yaml
+\begin{lstlisting}
+	apiVersion: security.istio.io/v1beta1
+	kind: AuthorizationPolicy
+	metadata:
+	  name: "reviews-viewer"
+	  namespace: default
+	spec:
+	  selector:
+		matchLabels:
+		  app: reviews
+	  action: ALLOW
+	  rules:
+	  - from:
+		- source:
+			principals: ["cluster.local/ns/default/sa/bookinfo-productpage"]
+		to:
+		- operation:
+			methods: ["GET"]
+\end{lstlisting}
+
+14. File cấu hình deny-all.yaml
+\begin{lstlisting}
+	apiVersion: security.istio.io/v1beta1
+	kind: AuthorizationPolicy
+	metadata:
+	  name: allow-nothing
+	  namespace: default
+	spec:
+	  {}
+\end{lstlisting}
+
+15. File cấu hình meshwide-strict-peer-authn.yaml
+\begin{lstlisting}
+	apiVersion: "security.istio.io/v1beta1"
+	kind: "PeerAuthentication"
+	metadata:
+	  name: "default"
+	  namespace: "istio-system"
+	spec:
+	  mtls:
+		mode: STRICT 
+	
+\end{lstlisting}
+
+16. File cấu hình sleep.yaml
+\begin{lstlisting}
+	apiVersion: v1
+	kind: ServiceAccount
+	metadata:
+	  name: sleep
+	---
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: sleep
+	  labels:
+		app: sleep
+	spec:
+	  ports:
+	  - port: 80
+		name: http
+	  selector:
+		app: sleep
+	---
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: sleep
+	spec:
+	  replicas: 1
+	  selector:
+		matchLabels:
+		  app: sleep
+	  template:
+		metadata:
+		  labels:
+			app: sleep
+		spec:
+		  serviceAccountName: sleep
+		  containers:
+		  - name: sleep
+			image: governmentpaas/curl-ssl
+			command: ["/bin/sleep", "3650d"]
+			imagePullPolicy: IfNotPresent
+			volumeMounts:
+			- mountPath: /etc/sleep/tls
+			  name: secret-volume
+		  volumes:
+		  - name: secret-volume
+			secret:
+			  secretName: sleep-secret
+			  optional: true
+	---
+\end{lstlisting}
 \end{document}
