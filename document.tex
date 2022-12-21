@@ -1,6 +1,7 @@
-\documentclass[12pt,a4paper]{report}
+\documentclass[14pt,a4paper]{book}
 \usepackage[left=3.00cm, right=2.00cm, top=2.00cm, bottom=2.00cm]{geometry}
 \usepackage{vntex}
+\usepackage{extsizes}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -10,6 +11,19 @@
 \usepackage{hyperref}
 \usepackage{tikz}
 \usetikzlibrary{calc}
+\usepackage{fancyhdr} 
+
+\fancypagestyle{plain}{%
+	\fancyhf{} % clear all header and footer fields
+	\fancyfoot[C]{\sffamily\fontsize{14pt}{14pt}\selectfont\thepage} % except the center
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}}
+\pagestyle{plain}
+
+%\fancyhf{}
+%\cfoot{\thepage}
+%\pagestyle{fancy} 
+
 
 \newcommand{\shellcmd}[1]{\\\indent\indent\texttt{\footnotesize\# #1}\\}
 \newcommand{\nocontentsline}[3]{}
@@ -43,62 +57,19 @@
 
 \author{PVS}
 \author{LHD}
-\title{Đề cương Ver 1}
+\title{Final Ver 2}
 
 \begin{document}
-\begin{titlepage}
-	\begin{tikzpicture}[remember picture,overlay,inner sep=0,outer sep=0]
-		\draw[blue!70!black,line width=4pt] ([xshift=-1.5cm,yshift=-2cm]current page.north east) coordinate (A)--([xshift=1.5cm,yshift=-2cm]current page.north west) coordinate(B)--([xshift=1.5cm,yshift=2cm]current page.south west) coordinate (C)--([xshift=-1.5cm,yshift=2cm]current page.south east) coordinate(D)--cycle;
-		
-		\draw ([yshift=0.5cm,xshift=-0.5cm]A)-- ([yshift=0.5cm,xshift=0.5cm]B)--
-		([yshift=-0.5cm,xshift=0.5cm]B) --([yshift=-0.5cm,xshift=-0.5cm]B)--([yshift=0.5cm,xshift=-0.5cm]C)--([yshift=0.5cm,xshift=0.5cm]C)--([yshift=-0.5cm,xshift=0.5cm]C)-- ([yshift=-0.5cm,xshift=-0.5cm]D)--([yshift=0.5cm,xshift=-0.5cm]D)--([yshift=0.5cm,xshift=0.5cm]D)--([yshift=-0.5cm,xshift=0.5cm]A)--([yshift=-0.5cm,xshift=-0.5cm]A)--([yshift=0.5cm,xshift=-0.5cm]A);
-		
-		
-		\draw ([yshift=-0.3cm,xshift=0.3cm]A)-- ([yshift=-0.3cm,xshift=-0.3cm]B)--
-		([yshift=0.3cm,xshift=-0.3cm]B) --([yshift=0.3cm,xshift=0.3cm]B)--([yshift=-0.3cm,xshift=0.3cm]C)--([yshift=-0.3cm,xshift=-0.3cm]C)--([yshift=0.3cm,xshift=-0.3cm]C)-- ([yshift=0.3cm,xshift=0.3cm]D)--([yshift=-0.3cm,xshift=0.3cm]D)--([yshift=-0.3cm,xshift=-0.3cm]D)--([yshift=0.3cm,xshift=-0.3cm]A)--([yshift=0.3cm,xshift=0.3cm]A)--([yshift=-0.3cm,xshift=0.3cm]A);
-		
-	\end{tikzpicture}
-	\begin{center}
-		BAN CƠ YẾU CHÍNH PHỦ\\
-		\textbf{HỌC VIỆN KỸ THUẬT MẬT MÃ}
-	\end{center}
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.25\linewidth]{"Pics/Logo HV"}
-		\label{fig:logo-hv}
-	\end{figure}
-	
-	
-	\begin{center}
-		{\large CHUYÊN ĐỀ AN TOÀN HỆ THỐNG THÔNG TIN\\}
-		\Huge{\textbf{Nghiên cứu giải pháp đảm bảo an toàn cho Microservices trên Kubernetes}}
-	\end{center}
-	\bigskip
-	\begin{flushright}
-		\large{Ngành: An toàn thông tin}
-	\end{flushright}
-	\vspace{15mm}
-	\begin{flushleft}
-		\textit{Sinh viên thực hiện:}\\
-		\textbf{Phương Văn Sơn}\\
-		Mã sinh viên: AT160250\\
-		\textbf{Lê Huy Dũng}\\
-		Mã sinh viên: AT160211
-		\bigskip\\
-		\textit{Người hướng dẫn:}\\
-		\textbf{TS. Nguyễn Mạnh Thắng}\\
-		Khoa An toàn thông tin - Học viện Kỹ thuật mật mã
-	\end{flushleft}
-	\vfill
-	\begin{center}
-		Hà Nội, 2022
-	\end{center}
-	
-\end{titlepage}
-	
-\chapter*{\centering Lời mở đầu}
+
 \pagenumbering{roman}
-\setcounter{page}{2}
+\setcounter{page}{1}
+
+\tableofcontents
+
+\listoffigures
+\addcontentsline{toc}{chapter}{Danh sách hình vẽ}
+
+\chapter*{\centering Lời mở đầu}
 \addcontentsline{toc}{chapter}{Lời mở đầu}
 \hspace{0.6cm}{Nhiều năm trước, hầu hết các ứng dụng phần mềm đều được xây dựng với kiến trúc monolith hay còn gọi là kiến trúc 1 khối là mẫu thiết kế được dùng nhiều nhất trong giới lập trình web hiện nay bởi tính đơn giản của nó khi phát triển và khi triển khai. Các ứng dụng này chạy dưới dạng một tiến trình đơn lẻ hoặc số lượng nhỏ các tiến trình trên một số ít máy chủ. Chúng có khả năng cập nhật và nâng cấp chậm và yêu cầu nâng cấp thường xuyên. Trong trường hợp có sự cố như lỗi phần cứng hệ thống phần mềm này sẽ phải được di chuyển một cách thủ công sang các máy chủ còn hoạt động tốt.\\}
 
@@ -121,12 +92,6 @@ Trong quá trình tìm hiểu nhóm chúng em xin cảm ơn các bạn sinh viê
 Do kiến thức còn nhiều hạn chế nên không thể tránh khỏi những thiếu sót trong quá trình làm đề tài.Chúng em rất mong nhận được sự đóng góp ý kiến của quý thầy cô để đề tài của chúng em đạt được kết quả tốt hơn.\\
 \medskip \\
 \textbf{Chúng em xin chân thành cảm ơn!}
-
-	
-\tableofcontents
-\addcontentsline{toc}{chapter}{\listfigurename}
-\listoffigures
-
 
 \chapter{Giới thiệu về công nghệ Container và kiến trúc Microservices}
 \setcounter{page}{1}
