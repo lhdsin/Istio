@@ -26,6 +26,8 @@ spec:
   - match:
     - uri:
         exact: /productpage
+    - uri:
+        prefix: /static
     route:
     - destination:
         host: productpage
